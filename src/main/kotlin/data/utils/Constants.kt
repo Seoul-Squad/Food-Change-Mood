@@ -1,13 +1,9 @@
 package org.seoulsquad.data.utils
 
-
-
 object Constants {
     const val CSV_FILE_PATH = "food.csv"
 
-
     object ColumnName {
-
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "name"
         const val COLUMN_MINUTES = "minutes"
@@ -20,7 +16,6 @@ object Constants {
         const val COLUMN_DESCRIPTION = "description"
         const val COLUMN_INGREDIENTS = "ingredients"
         const val COLUMN_N_INGREDIENTS = "n_ingredients"
-
     }
 
     object ColumnIndex {
@@ -31,6 +26,13 @@ object Constants {
         const val PROTEIN = 4
         const val SATURATED_FAT = 5
         const val CARBOHYDRATES = 6
+    }
 
+    object Tags {
+        const val TAG_SWEET = "sweet"
+    }
+
+    object Ingredients {
+        const val INGREDIENT_EGG = "egg"
     }
 }
