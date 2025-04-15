@@ -17,5 +17,5 @@ class GetSweetsWithNoEggsUseCase(
             ?: Result.failure(NoSuchElementException("No sweet meals without eggs found"))
 
     private fun isSweetWithNoEggs(meal: Meal): Boolean =
-        meal.tags.contains(TAG_SWEET) && meal.ingredients.any { it.contains(INGREDIENT_EGG, ignoreCase = true) }
+        meal.tags.contains(TAG_SWEET) && meal.ingredients.none { it.contains(INGREDIENT_EGG, ignoreCase = true) }
 }
