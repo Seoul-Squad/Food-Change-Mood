@@ -24,7 +24,7 @@ class ConsoleUi(
                 println("${index+1}- $ingredient")
             }
 
-            println("Steps ($numberOfSteps):")
+            println("Steps:")
             steps.forEachIndexed { index, step ->
                 println("${index+1}- $step")
             }

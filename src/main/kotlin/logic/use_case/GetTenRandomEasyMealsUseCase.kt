@@ -13,5 +13,5 @@ class GetTenRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
     }
 
     private fun isEasyMeal(meal: Meal): Boolean =
-        meal.minutes <= 30 && meal.ingredients.size <= 5 && meal.numberOfSteps <= 6
+        meal.minutes <= 30 && meal.ingredients.size <= 5 && meal.steps.size <= 6
 }
