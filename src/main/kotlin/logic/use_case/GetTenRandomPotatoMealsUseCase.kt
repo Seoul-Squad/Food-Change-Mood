@@ -5,10 +5,10 @@ import org.seoulsquad.logic.utils.Constants.POTATO_ONLY
 import org.seoulsquad.model.Meal
 
 class GetTenRandomPotatoMealsUseCase(
-    private val repository: MealRepository,
+    private val mealRepository: MealRepository,
 ) {
     operator fun invoke(): List<Meal> {
-        val mealsContainPotato = repository.getAllMeals().filter(::onlyWithPotato)
+        val mealsContainPotato = mealRepository.getAllMeals().filter(::onlyWithPotato)
         return List(10) {
             mealsContainPotato.random()
         }
