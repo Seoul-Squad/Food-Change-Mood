@@ -1,16 +1,25 @@
 package org.seoulsquad.presentation
 
 import data.model.Meal
-import org.seoulsquad.logic.use_case.GetTenRandomEasyMealsUseCase
+import org.seoulsquad.logic.use_case.GetRandomEasyMealsUseCase
 
 class ConsoleUi(
-    private val getTenRandomEasyMealsUseCase: GetTenRandomEasyMealsUseCase
+    private val getTenRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
 ) {
 
-    private fun showTenRandomEasyMeals() {
-        getTenRandomEasyMealsUseCase().forEach { meal->
-            printMeal(meal)
+
+
+    private fun printRandomEasyMeals() {
+        val result = getTenRandomEasyMealsUseCase()
+
+        result.onSuccess { randomEasyMealsList ->
+            randomEasyMealsList.forEach { meal ->
+                printMeal(meal)
+            }
+        }.onFailure { exception->
+            println(exception.message)
         }
+
     }
 
 
@@ -30,4 +39,5 @@ class ConsoleUi(
             }
         }
     }
+
 }
