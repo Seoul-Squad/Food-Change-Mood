@@ -3,7 +3,7 @@ package org.seoulsquad.data.repository
 import data.utils.MealCsvFileReader
 import data.utils.MealCsvParser
 import org.seoulsquad.logic.repository.MealRepository
-import org.seoulsquad.model.Meal
+import data.model.Meal
 
 class MealRepositoryImpl(
     private val fileReader: MealCsvFileReader,
