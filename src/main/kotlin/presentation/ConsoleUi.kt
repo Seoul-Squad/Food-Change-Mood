@@ -2,14 +2,23 @@ package org.seoulsquad.presentation
 
 import org.seoulsquad.logic.use_case.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.model.Meal
+import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
 ) {
     fun startSweetsWithNoEggsFlow() {
+        printSweetsWithNoEggsIntroductionMessage()
+        getSweetsWithNoEggs()
+    }
+
+    private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
         println("Loading, Please wait...")
+    }
+
+    private fun getSweetsWithNoEggs() {
         getSweetsWithNoEggsUseCase
             .getSweetsWithNoEggs()
             .onSuccess { sweetsList ->
@@ -24,18 +33,23 @@ class ConsoleUi(
             println("We are out of meals for now!")
             return
         }
-
         val randomMeal = meals.random()
         printShortMeal(randomMeal)
         printLikeAndDislikeOptions()
+        handleSuggestionFeedback(randomMeal, meals)
+    }
 
+    private fun handleSuggestionFeedback(
+        randomMeal: Meal,
+        meals: List<Meal>,
+    ) {
         when (readln().toIntOrNull()) {
-            1 -> {
+            SuggestionFeedbackOption.LIKE.ordinal -> {
                 printFullMeal(randomMeal)
             }
 
-            2 -> {
-                suggestMeal(meals - randomMeal)
+            SuggestionFeedbackOption.LIKE.ordinal -> {
+                suggestMeal(meals.minusElement(randomMeal))
             }
 
             else -> {
@@ -46,13 +60,12 @@ class ConsoleUi(
     }
 
     private fun printLikeAndDislikeOptions() {
-        println("1. Like")
-        println("2. Dislike")
+        SuggestionFeedbackOption.entries.forEach { println("${it.ordinal}. ${it.title}") }
     }
 
     private fun printShortMeal(meal: Meal) {
         println("\u001B[1mMeal: ${meal.name}\u001B[0m")
-        meal.description.takeIf { !it.isNullOrBlank() }.run { println("$this") }
+        meal.description.takeIf { !it.isNullOrBlank() }?.run { println(this) }
     }
 
     private fun printFullMeal(meal: Meal) {
