@@ -5,7 +5,6 @@ package org.seoulsquad.data.utils
 object Constants {
     const val CSV_FILE_PATH = "food.csv"
 
-
     object ColumnName {
 
         const val COLUMN_ID = "id"
