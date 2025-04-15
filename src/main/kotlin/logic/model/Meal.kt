@@ -1,7 +1,6 @@
-package org.seoulsquad.model
+package logic.model
 
 import kotlinx.datetime.LocalDate
-import java.util.*
 
 data class Meal(
     val name: String,
