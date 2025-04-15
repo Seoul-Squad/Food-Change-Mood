@@ -1,9 +1,9 @@
 package org.seoulsquad.data.repository
 
+import data.model.Meal
 import data.utils.MealCsvFileReader
 import data.utils.MealCsvParser
 import org.seoulsquad.logic.repository.MealRepository
-import org.seoulsquad.model.Meal
 
 class MealRepositoryImpl(
     private val fileReader: MealCsvFileReader,

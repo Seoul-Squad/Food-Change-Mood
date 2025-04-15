@@ -19,7 +19,7 @@ import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_N_STEPS
 import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_STEPS
 import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_SUBMITTED
 import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_TAGS
-import org.seoulsquad.model.Meal
+import data.model.Meal
 import org.seoulsquad.model.Nutrition
 
 class MealCsvParser {

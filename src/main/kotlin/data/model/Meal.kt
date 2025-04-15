@@ -1,7 +1,7 @@
-package org.seoulsquad.model
+package data.model
 
 import kotlinx.datetime.LocalDate
-import java.util.*
+import org.seoulsquad.model.Nutrition
 
 data class Meal(
     val name: String,
