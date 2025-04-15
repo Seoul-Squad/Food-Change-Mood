@@ -27,12 +27,4 @@ object Constants {
         const val SATURATED_FAT = 5
         const val CARBOHYDRATES = 6
     }
-
-    object Tags {
-        const val TAG_SWEET = "sweet"
-    }
-
-    object Ingredients {
-        const val INGREDIENT_EGG = "egg"
-    }
 }

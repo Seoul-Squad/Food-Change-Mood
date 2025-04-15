@@ -52,14 +52,14 @@ class ConsoleUi(
 
     private fun printShortMeal(meal: Meal) {
         println("\u001B[1mMeal: ${meal.name}\u001B[0m")
-        println("${meal.description}")
+        meal.description.takeIf { !it.isNullOrBlank() }.run { println("$this") }
     }
 
     private fun printFullMeal(meal: Meal) {
         with(meal) {
             println("Meal: $name (ID: $id)")
             println("Time to Prepare: $minutes minutes")
-            println("Description: ${description ?: "No description provided"}")
+            meal.description.takeIf { !it.isNullOrBlank() }.run { println("$this") }
             println("Ingredients ($numberOfIngredients):")
             ingredients.forEachIndexed { index, ingredient ->
                 println("  ${index + 1}. $ingredient")
