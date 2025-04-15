@@ -1,8 +1,8 @@
 package org.seoulsquad.logic.use_case
 
-import org.seoulsquad.data.utils.Constants.Ingredients.INGREDIENT_EGG
-import org.seoulsquad.data.utils.Constants.Tags.TAG_SWEET
 import org.seoulsquad.logic.repository.MealRepository
+import org.seoulsquad.logic.utils.Constants.Ingredients.INGREDIENT_EGG
+import org.seoulsquad.logic.utils.Constants.Tags.TAG_SWEET
 import org.seoulsquad.model.Meal
 
 class GetSweetsWithNoEggsUseCase(
