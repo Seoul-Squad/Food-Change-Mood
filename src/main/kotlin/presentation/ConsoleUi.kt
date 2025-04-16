@@ -3,6 +3,7 @@ package presentation
 import GetItalianLargeMealsUseCase
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.GetKetoDietMealUseCase
 import logic.useCase.GetRandomEasyMealsUseCase
 import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
@@ -12,6 +13,7 @@ import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
+import org.seoulsquad.logic.useCase.GetSortedSeafoodMealsUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 import org.seoulsquad.logic.useCase.model.MealDate
 import org.seoulsquad.logic.utils.KmpSearchAlgorithm
@@ -20,10 +22,12 @@ import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 import presentation.utils.ConsoleColors
 import presentation.utils.ConsoleStyle
 import kotlin.collections.forEachIndexed
+import kotlin.math.max
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getKetoDietMealUseCase: GetKetoDietMealUseCase,
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
@@ -33,6 +37,7 @@ class ConsoleUi(
     private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
     private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
     private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
+    private val getSortedSeafoodMealsUseCase: GetSortedSeafoodMealsUseCase,
     //
     private val ingredientGame: IngredientGame,
 ) {
@@ -44,12 +49,15 @@ class ConsoleUi(
             "4" -> printRandomEasyMeals()
             "5" -> startGuessGame()
             "6" -> startSweetsWithNoEggsFlow()
+            "7" -> startKetoDietFlow()
             "8" -> searchMealUsingDate()
             "11" -> ingredientGame.startIngredientGame()
             "10" -> exploreOtherCountriesFood()
             "12" -> startShowRandomPotatoMeals()
             "13" -> getMealsWithHighCalories()
+            "14" -> startSeafoodMealsSortedByProtein()
             "15" -> startItalianLargeMealsFlow()
+
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -61,11 +69,13 @@ class ConsoleUi(
         println("4. Easy Meals")
         println("5. Guess Game")
         println("6. Sweets without eggs")
+        println("7. Keto Diet Meals")
         println("8. search by date")
         println("10. explore other countries food")
         println("10. Ingredient Game")
         println("12. Show 10 random meals contains potato")
         println("13. Meals with high calories")
+        println("14. Seafood meals sorted by protein content")
         println("15. Italian Large Meals")
     }
 
@@ -125,7 +135,7 @@ class ConsoleUi(
         meals.forEach { printMeal(it) }
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////
 
     private fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
@@ -145,8 +155,101 @@ class ConsoleUi(
         }
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun startSeafoodMealsSortedByProtein() {
+        println("Loading, Please wait...")
+        getSortedSeafoodMealsUseCase(
+            compareByDescending<Meal> { it.nutrition.protein }.thenBy { it.name },
+        ).onSuccess(::printMealsProteinTable).onFailure { e ->
+            println("Error: ${e.message}")
+        }
+    }
+
+    private fun printMealsProteinTable(meals: List<Meal>) {
+        val indexColumnWidth = meals.size.toString().length
+        val nameColumnWidth = maxOf(MEAL_NAME_HEADER.length, meals.maxOf { it.name.length })
+        val proteinColumnWidth =
+            max(
+                MEAL_PROTEIN_HEADER.length,
+                meals.maxOf {
+                    it.nutrition.protein
+                        .toString()
+                        .length
+                },
+            )
+        val paginatedMeals = meals.chunked(TABLE_PAGE_SIZE)
+        paginatedMeals.forEachIndexed { index, mealsPage ->
+            printMealProteinTablePage(
+                pagesCount = paginatedMeals.size,
+                pageIndex = index,
+                meals = mealsPage,
+                indexColumnWidth = indexColumnWidth,
+                nameColumnWidth = nameColumnWidth,
+                proteinColumnWidth = proteinColumnWidth,
+            )
+            if (doesUserWantToExit(index, paginatedMeals)) return
+        }
+    }
+
+    private fun doesUserWantToExit(
+        index: Int,
+        paginatedMeals: List<List<Meal>>,
+    ): Boolean {
+        if (index != paginatedMeals.size - 1) {
+            while (true) {
+                println("Press Enter to view next page or 0 to exit.")
+                when (readln().trim()) {
+                    "" -> break
+                    "0" -> return true
+                    else -> println("Invalid input, Please retry again")
+                }
+            }
+        }
+        return false
+    }
+
+    private fun printMealProteinTablePage(
+        pagesCount: Int,
+        pageIndex: Int,
+        meals: List<Meal>,
+        indexColumnWidth: Int,
+        nameColumnWidth: Int,
+        proteinColumnWidth: Int,
+    ) {
+        val separatorLine =
+            "|" + "-".repeat(indexColumnWidth + 2) + "|" + "-".repeat(nameColumnWidth + 2) + "|" +
+                "-".repeat(
+                    proteinColumnWidth + 2,
+                ) + "|"
+        println(separatorLine)
+        println(
+            "| ${"#".padEnd(indexColumnWidth, ' ')} | ${MEAL_NAME_HEADER.padEnd(nameColumnWidth, ' ')} | ${
+                MEAL_PROTEIN_HEADER.padEnd(
+                    proteinColumnWidth,
+                    ' ',
+                )
+            } |",
+        )
+        println(separatorLine)
+        meals.forEachIndexed { index, meal ->
+            println(
+                "| ${
+                    ((index + 1) + (pageIndex * TABLE_PAGE_SIZE)).toString().padEnd(indexColumnWidth, ' ')
+                } | ${meal.name.padEnd(nameColumnWidth, ' ')} | ${
+                    meal.nutrition.protein.toString().padEnd(
+                        proteinColumnWidth,
+                        ' ',
+                    )
+                } |",
+            )
+        }
+        println(separatorLine)
+        println("=== Page ${pageIndex + 1} of $pagesCount ===")
+    }
+
+    /////////////////////////////////////////////////
     private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
@@ -191,16 +294,36 @@ class ConsoleUi(
             SuggestionFeedbackOption.DISLIKE.ordinal -> {
                 suggestMeal(meals.minusElement(randomMeal))
             }
-
-            else -> {
-                println("Please, enter a valid option!")
-                suggestMeal(meals)
-            }
         }
     }
 
+    //////////////////////////////////////////////////
+
+    fun startKetoDietFlow() {
+        printKetoIntroMessage()
+        getKetoMeals()
+    }
+
+    private fun printKetoIntroMessage() {
+        println("Following a Keto diet? We’ve got some low-carb options for you!")
+        println("You can like to see full details or dislike to get another meal.")
+        println("Loading Keto meals, please wait...")
+    }
+
+    private fun getKetoMeals() {
+        getKetoDietMealUseCase
+            .getKetoDietMeal()
+            .onSuccess { ketoList ->
+                suggestMeal(ketoList)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+
     private fun printLikeAndDislikeOptions() {
-        SuggestionFeedbackOption.entries.forEach { println("${it.ordinal}. ${it.title}") }
+        SuggestionFeedbackOption.entries.forEach {
+            println("${it.ordinal}. ${it.title}")
+        }
     }
 
     private fun printShortMeal(meal: Meal) {
@@ -233,7 +356,7 @@ class ConsoleUi(
         println("\n===========================================================\n")
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun getMealsWithHighCalories() {
         getMealsWithHighCaloriesUseCase()
@@ -244,7 +367,7 @@ class ConsoleUi(
             }
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
@@ -269,7 +392,7 @@ class ConsoleUi(
             }
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
@@ -284,7 +407,7 @@ class ConsoleUi(
             }
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")
@@ -321,7 +444,7 @@ class ConsoleUi(
             }
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun startGuessGame() {
         do {
@@ -366,10 +489,11 @@ class ConsoleUi(
 
             println("\nDo you want to play again? (y/n)")
             val playAgain = readlnOrNull()?.lowercase() == "y"
+
         } while (playAgain)
     }
 
-    // //////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun startShowRandomPotatoMeals() {
         println("${ConsoleStyle.BOLD}${ConsoleColors.CYAN}This is very yummy, try this potato meals and Ed3yly.${ConsoleStyle.RESET}")
@@ -405,5 +529,10 @@ class ConsoleUi(
             printFullMeal(mealsWithPotato.first { it.id == userInput.toInt() })
             println("Bon-appetit\uD83D\uDE09")
         }
+    }
+    companion object {
+        const val TABLE_PAGE_SIZE = 1000
+        const val MEAL_NAME_HEADER = "Meal Name"
+        const val MEAL_PROTEIN_HEADER = "Protein (g)"
     }
 }
