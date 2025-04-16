@@ -1,8 +1,8 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
-import logic.repository.MealRepository
 import logic.utils.Constants.Calories.HIGH_CALORIES
+import org.seoulsquad.logic.repository.MealRepository
 
 class GetMealsWithHighCaloriesUseCase(
     private val mealRepository: MealRepository

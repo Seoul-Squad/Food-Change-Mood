@@ -23,11 +23,49 @@ class ConsoleUi(
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
-    private val getMealsWithHighCaloriesUseCase: GetMealsWithHighCaloriesUseCase
+    private val getMealsWithHighCaloriesUseCase: GetMealsWithHighCaloriesUseCase,
     private val guessGameUseCase: GuessGameUseCase,
     private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
     private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
 ) {
+
+
+
+    fun start() {
+        printMenu()
+        when (getUserInput()) {
+            "2"->searchByMealName()
+            "3" -> startIraqiMealsFlow()
+            "4" ->  printRandomEasyMeals()
+            "5" -> startGuessGame()
+            "6"->startSweetsWithNoEggsFlow()
+            "8" -> searchMealUsingDate()
+            "10" -> exploreOtherCountriesFood()
+            "13" -> getMealsWithHighCalories()
+            "15" -> startItalianLargeMealsFlow()
+            else -> println("Invalid option. Please try again.")
+        }
+    }
+
+    private fun printMenu() {
+        println("Choose a task")
+        println("2. search by name")
+        println("3. Iraqi Meals")
+        println("4. Easy Meals")
+        println("5. Guess Game")
+        println("6. Sweets without eggs")
+        println("8. search by date")
+        println("10. explore other countries food")
+        println("13. Meals with high calories")
+        println("15. Italian Large Meals")
+        println("Loading, Please wait...")
+    }
+
+    private fun getUserInput(): String {
+        return readlnOrNull() ?: ""
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
     private fun searchByMealName() {
         print("Enter Meal Name:")
         val query = readlnOrNull() ?: ""
@@ -54,22 +92,7 @@ class ConsoleUi(
         )
     }
 
-
-    fun start() {
-        printMenu()
-        when (getUserInput()) {
-            "2"->searchByMealName()
-            "3" -> startIraqiMealsFlow()
-            "4" ->  printRandomEasyMeals()
-            "5" -> startGuessGame()
-            "6"->startSweetsWithNoEggsFlow()
-            "8" -> searchMealUsingDate()
-            "10" -> exploreOtherCountriesFood()
-            "15" -> startItalianLargeMealsFlow()
-            else -> println("Invalid option. Please try again.")
-        }
-    }
-    fun startItalianLargeMealsFlow() {
+    private fun startItalianLargeMealsFlow() {
         printItalianLargeMealsIntroductionMessage()
         getItalianLargeMeals()
     }
@@ -95,9 +118,9 @@ class ConsoleUi(
         meals.forEach { printMeal(it) }
     }
 
-    private fun getUserInput(): String {
-        return readlnOrNull() ?: ""
-    }
+    ////////////////////////////////////////////////////////////////////////////////////
+
+
 
     private fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
@@ -116,36 +139,22 @@ class ConsoleUi(
                 }
         }
     }
-    fun startSweetsWithNoEggsFlow() {
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
 
-    private fun printMenu() {
-        println("Choose a task")
-        println("2. search by name")
-        println("3. Iraqi Meals")
-        println("4. Easy Meals")
-        println("5. Guess Game")
-        println("6. Sweets without eggs")
-        println("8. search by date")
-        println("10. explore other countries food")
-        println("Loading, Please wait...")
-    }
+
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
         println("Loading, Please wait...")
     }
 
-    private fun getMealsWithHighCalories() {
-        getMealsWithHighCaloriesUseCase()
-            .onSuccess { mealsList ->
-                suggestMeal(mealsList)
-            }.onFailure { e ->
-                println("Error: ${e.message}")
-            }
-    }
 
     private fun getSweetsWithNoEggs() {
         getSweetsWithNoEggsUseCase
@@ -220,6 +229,21 @@ class ConsoleUi(
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun getMealsWithHighCalories() {
+        getMealsWithHighCaloriesUseCase()
+            .onSuccess { mealsList ->
+                suggestMeal(mealsList)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+
     private fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
         getIraqiMeals()
@@ -228,6 +252,8 @@ class ConsoleUi(
         println("Looking for an Iraqi meal? You're in the right place!")
         println("Loading, Please wait...")
     }
+
+
     private fun getIraqiMeals(){
         getIraqiMealsUseCase.getAllIraqMeals()
             .onSuccess { mealsList ->
@@ -241,6 +267,9 @@ class ConsoleUi(
             }
 
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     private fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
 
@@ -254,6 +283,8 @@ class ConsoleUi(
 
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")
@@ -289,6 +320,7 @@ class ConsoleUi(
             }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////
 
 
     private fun startGuessGame() {
@@ -337,5 +369,7 @@ class ConsoleUi(
 
         } while (playAgain)
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
 
 }
