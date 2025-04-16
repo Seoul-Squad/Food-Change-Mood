@@ -9,6 +9,7 @@ import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
+import logic.useCase.GuessGameUseCase
 
 val useCaseModule =
     module {
@@ -22,4 +23,7 @@ val useCaseModule =
         single { GetMealUsingIDUseCase(get()) }
         single { GetSweetsWithNoEggsUseCase(get()) }
 
+        single { GuessGameUseCase(get()) }
     }
+
+

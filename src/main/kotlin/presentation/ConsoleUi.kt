@@ -3,6 +3,8 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import logic.useCase.GuessGameUseCase
+import logic.useCase.NegativeNumberException
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
@@ -17,7 +19,8 @@ class ConsoleUi(
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
-    private val getIraqiMealsUseCase: GetIraqiMealsUseCase
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val guessGameUseCase: GuessGameUseCase,
 ) {
     private fun searchByMealName() {
         print("Enter Meal Name:")
@@ -56,6 +59,7 @@ class ConsoleUi(
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             "3" -> startIraqiMealsFlow()
+            "5" -> startGuessGame()
             "8" -> searchMealUsingDate()
             else -> println("Invalid option. Please try again.")
         }
@@ -93,6 +97,7 @@ class ConsoleUi(
         println("3. search by ID")
         println("10. search by ID")
         println("15. Italuan")
+        println("5. Guess Game")
         println("8. search by date")
         println("Loading, Please wait...")
     }
@@ -260,4 +265,51 @@ class ConsoleUi(
         println("   Protein: ${meal.nutrition.protein} g")
         println("   Sodium: ${meal.nutrition.sodium} mg")
     }
+    fun startGuessGame() {
+        do {
+            val meal = guessGameUseCase.generateRandomMeal()
+            if (meal == null) {
+                println("No meals available!")
+                return
+            }
+
+            println("Guess the preparation time (in minutes) for: ${meal.name}")
+
+            var attempts = 0
+            var isCorrect = false
+
+            while (attempts < 3 && !isCorrect) {
+                println("Attempt ${attempts + 1}:")
+                print("Enter your guess: ")
+
+                val input = readlnOrNull()
+                try {
+                    val guess = guessGameUseCase.userGuess(input)
+
+                    isCorrect = guessGameUseCase.guessIsCorrect(guess, meal.minutes)
+
+                    when {
+                        isCorrect -> println("Correct! You guessed the right time!")
+                        guessGameUseCase.guessIsTooHigh(guess, meal.minutes) -> println("Too high!")
+                        guessGameUseCase.guessIsTooLow(guess, meal.minutes) -> println("Too low!")
+                    }
+                } catch (e: IllegalArgumentException) {
+                    println("Invalid input: ${e.message}")
+                } catch (e: NegativeNumberException) {
+                    println("Invalid input: ${e.message}")
+                }
+
+                attempts++
+            }
+
+            if (!isCorrect) {
+                println("You got it wrong, better luck next time! The correct time was ${meal.minutes} minutes.")
+            }
+
+            println("\nDo you want to play again? (y/n)")
+            val playAgain = readlnOrNull()?.lowercase() == "y"
+
+        } while (playAgain)
+    }
+
 }
