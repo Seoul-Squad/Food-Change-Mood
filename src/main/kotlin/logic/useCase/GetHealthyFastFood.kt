@@ -4,7 +4,7 @@ import logic.model.Meal
 import logic.repository.MealRepository
 
 
-class GetHealthyFastFoodPreparedUnder15Minutes(
+class GetHealthyFastFood(
     private val mealRepo: MealRepository,
 ) {
 

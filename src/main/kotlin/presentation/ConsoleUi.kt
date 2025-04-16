@@ -3,18 +3,18 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.logic.useCase.GetHealthyFastFoodPreparedUnder15Minutes
+import org.seoulsquad.logic.useCase.GetHealthyFastFood
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-    private val getHealthyFastFoodPreparedUnder15Minutes : GetHealthyFastFoodPreparedUnder15Minutes,
+    private val getHealthyFastFoodPreparedUnder15Minutes : GetHealthyFastFood,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 
 
-) {
+    ) {
 
     fun start() {
         when (getUserInput()) {

@@ -5,7 +5,6 @@ import di.csvModule
 import di.repositoryModule
 import di.useCaseModule
 import org.koin.core.context.startKoin
-import org.seoulsquad.logic.useCase.GetHealthyFastFoodPreparedUnder15Minutes
 import org.koin.mp.KoinPlatform.getKoin
 import presentation.ConsoleUi
 
