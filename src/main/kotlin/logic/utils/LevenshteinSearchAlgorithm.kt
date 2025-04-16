@@ -3,7 +3,7 @@ package org.seoulsquad.logic.utils
 import logic.model.Meal
 
 class LevenshteinSearchAlgorithm(
-    private val maxDistance: Int = 3,
+    private val maxDistance: Int = 2,
 ) : SearchAlgorithm {
     override fun search(meals: List<Meal>, query: String): Result<List<Meal>> {
         if (query.isBlank()) return Result.failure(Exception("Name cannot be empty"))

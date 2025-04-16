@@ -11,12 +11,9 @@ import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-    private val getSearchByNameUseCase: GetSearchByNameUseCase
-    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val getSearchByNameUseCase: GetSearchByNameUseCase,
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase
 ) {
-    fun runApp() {
-        searchByMealName()
-    }
     private fun searchByMealName() {
         print("Enter Meal Name:")
         val query = readlnOrNull() ?: ""
@@ -48,7 +45,9 @@ class ConsoleUi(
 
 
     fun start() {
+        printMenu()
         when (getUserInput()) {
+            "2"->searchByMealName()
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             "3" -> startIraqiMealsFlow()
@@ -82,6 +81,14 @@ class ConsoleUi(
         getSweetsWithNoEggs()
     }
 
+    private fun printMenu() {
+        println("Choose a task")
+        println("2. search by name")
+        println("3. search by ID")
+        println("10. search by ID")
+        println("15. Italuan")
+        println("Loading, Please wait...")
+    }
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")

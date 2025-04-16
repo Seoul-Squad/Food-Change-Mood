@@ -4,7 +4,6 @@ import logic.useCase.ExploreOtherCountriesFoodUseCase
 import org.koin.dsl.module
 import logic.useCase.GetAllMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.koin.dsl.module
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 
