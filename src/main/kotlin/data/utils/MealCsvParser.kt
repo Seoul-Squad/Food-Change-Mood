@@ -1,26 +1,27 @@
 package data.utils
 
+import data.utils.Constants.ColumnIndex.CALORIES
+import data.utils.Constants.ColumnIndex.CARBOHYDRATES
+import data.utils.Constants.ColumnIndex.PROTEIN
+import data.utils.Constants.ColumnIndex.SATURATED_FAT
+import data.utils.Constants.ColumnIndex.SODIUM
+import data.utils.Constants.ColumnIndex.SUGAR
+import data.utils.Constants.ColumnIndex.TOTAL_FAT
+import data.utils.Constants.ColumnName.COLUMN_CONTRIBUTOR_ID
+import data.utils.Constants.ColumnName.COLUMN_DESCRIPTION
+import data.utils.Constants.ColumnName.COLUMN_ID
+import data.utils.Constants.ColumnName.COLUMN_INGREDIENTS
+import data.utils.Constants.ColumnName.COLUMN_MINUTES
+import data.utils.Constants.ColumnName.COLUMN_NAME
+import data.utils.Constants.ColumnName.COLUMN_N_INGREDIENTS
+import data.utils.Constants.ColumnName.COLUMN_N_STEPS
+import data.utils.Constants.ColumnName.COLUMN_STEPS
+import data.utils.Constants.ColumnName.COLUMN_SUBMITTED
+import data.utils.Constants.ColumnName.COLUMN_TAGS
 import kotlinx.datetime.LocalDate
-import org.seoulsquad.data.utils.Constants.ColumnIndex.CALORIES
-import org.seoulsquad.data.utils.Constants.ColumnIndex.CARBOHYDRATES
-import org.seoulsquad.data.utils.Constants.ColumnIndex.PROTEIN
-import org.seoulsquad.data.utils.Constants.ColumnIndex.SATURATED_FAT
-import org.seoulsquad.data.utils.Constants.ColumnIndex.SODIUM
-import org.seoulsquad.data.utils.Constants.ColumnIndex.SUGAR
-import org.seoulsquad.data.utils.Constants.ColumnIndex.TOTAL_FAT
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_CONTRIBUTOR_ID
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_DESCRIPTION
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_ID
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_INGREDIENTS
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_MINUTES
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_NAME
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_N_INGREDIENTS
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_N_STEPS
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_STEPS
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_SUBMITTED
-import org.seoulsquad.data.utils.Constants.ColumnName.COLUMN_TAGS
-import data.model.Meal
-import org.seoulsquad.model.Nutrition
+import logic.model.Meal
+import logic.model.Nutrition
+
 
 class MealCsvParser {
 

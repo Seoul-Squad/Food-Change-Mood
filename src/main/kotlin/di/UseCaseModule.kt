@@ -1,10 +1,13 @@
 package org.seoulsquad.di
 
+import logic.useCase.GetAllMealsUseCase
+import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.koin.dsl.module
 import org.seoulsquad.logic.use_case.GetRandomEasyMealsUseCase
-import org.seoulsquad.logic.use_case.GetAllMealsUseCase
 
-val useCaseModule= module {
-    single { GetAllMealsUseCase(get()) }
-    single { GetRandomEasyMealsUseCase(get()) }
-}
+val useCaseModule =
+    module {
+        single { GetAllMealsUseCase(get()) }
+        single { GetRandomEasyMealsUseCase(get()) }
+        single { GetSweetsWithNoEggsUseCase(get()) }
+    }
