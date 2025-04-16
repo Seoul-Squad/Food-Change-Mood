@@ -1,5 +1,6 @@
 package presentation
 
+import GetItalianLargeMealsUseCase
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
@@ -22,7 +23,8 @@ class ConsoleUi(
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val guessGameUseCase: GuessGameUseCase,
-    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
+    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
+    private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
 ) {
     private fun searchByMealName() {
         print("Enter Meal Name:")
@@ -35,9 +37,6 @@ class ConsoleUi(
         }
     }
 
-    private fun printSearchResult(meals: List<Meal>) {
-        meals.forEach { printMeal(it) }
-    }
 
     private fun printMeal(meal: Meal) {
         println(
@@ -64,8 +63,34 @@ class ConsoleUi(
             "6"->startSweetsWithNoEggsFlow()
             "8" -> searchMealUsingDate()
             "10" -> exploreOtherCountriesFood()
+            "15" -> startItalianLargeMealsFlow()
             else -> println("Invalid option. Please try again.")
         }
+    }
+    fun startItalianLargeMealsFlow() {
+        printItalianLargeMealsIntroductionMessage()
+        getItalianLargeMeals()
+    }
+    private fun printItalianLargeMealsIntroductionMessage() {
+        println(
+            """Are you a large group of friends traveling to Italy?
+            | Do you want to share a meal?",
+            |Here The suggestion
+        """.trimMargin()
+        )
+    }
+
+    private fun getItalianLargeMeals() {
+        getItalianLargeMealsUseCase
+            .getItalianLargeMeals()
+            .onSuccess { italianMeals ->
+                printSearchResult(italianMeals)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+    private fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
     }
 
     private fun getUserInput(): String {
