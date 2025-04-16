@@ -12,8 +12,8 @@ class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
         return easyMealsList
             .shuffled()
             .takeIf { it.isNotEmpty() }
-            ?.let { return Result.success(easyMealsList.take(limit)) }
-            ?: return Result.failure(Exception("The file is empty"))
+            ?.let { Result.success(easyMealsList.take(limit)) }
+            ?: Result.failure(Exception("The file is empty"))
     }
 
     private fun isEasyMeal(meal: Meal): Boolean =
