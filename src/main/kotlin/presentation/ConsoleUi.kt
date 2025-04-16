@@ -16,6 +16,7 @@ class ConsoleUi(
         when (getUserInput()) {
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
+            "3" -> startIraqiMealsFlow()
             else -> println("Invalid option. Please try again.")
         }
     }
