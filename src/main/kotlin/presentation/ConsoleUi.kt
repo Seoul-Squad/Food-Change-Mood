@@ -1,11 +1,92 @@
-package org.seoulsquad.presentation
+package presentation
 
-import org.seoulsquad.logic.use_case.GetKetoDietMealUseCase
-import org.seoulsquad.model.Meal
+import logic.model.Meal
+import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
+    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
+    private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getKetoDietMealUseCase: GetKetoDietMealUseCase,
 ) {
+    fun start() {
+        when (getUserInput()) {
+            "6" -> startSweetsWithNoEggsFlow()
+            "10" -> exploreOtherCountriesFood()
+            else -> println("Invalid option. Please try again.")
+        }
+    }
+
+    private fun getUserInput(): String {
+        return readlnOrNull() ?: ""
+    }
+
+    private fun exploreOtherCountriesFood() {
+        println("Welcome to the Food Explorer!")
+        println("Please enter a country name to explore its food:")
+        val country = readlnOrNull()
+        country?.let {
+            exploreOtherCountriesFoodUseCase.findMealsByCountry(it, 40)
+                .onSuccess { meals ->
+                    println("Here are some meals from $country:")
+                    meals.forEach { meal ->
+                        println("- ${meal.name}: ${meal.description}")
+                    }
+                }
+                .onFailure { error ->
+                    println("Oops: ${error.message}")
+                }
+        }
+    }
+
+    fun startSweetsWithNoEggsFlow() {
+        printSweetsWithNoEggsIntroductionMessage()
+        getSweetsWithNoEggs()
+    }
+
+    private fun printSweetsWithNoEggsIntroductionMessage() {
+        println("Looking for a sweet without eggs? You're in the right place!")
+        println("Like to see more details, or dislike to get another suggestion.")
+        println("Loading, Please wait...")
+    }
+
+    private fun getSweetsWithNoEggs() {
+        getSweetsWithNoEggsUseCase
+            .getSweetsWithNoEggs()
+            .onSuccess { sweetsList ->
+                suggestMeal(sweetsList)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+
+    private fun suggestMeal(meals: List<Meal>) {
+        if (meals.isEmpty()) {
+            println("We are out of meals for now!")
+            return
+        }
+        val randomMeal = meals.random()
+        printShortMeal(randomMeal)
+        printLikeAndDislikeOptions()
+        handleSuggestionFeedback(randomMeal, meals)
+    }
+
+    private fun handleSuggestionFeedback(
+        randomMeal: Meal,
+        meals: List<Meal>,
+    ) {
+        when (readln().toIntOrNull()) {
+            SuggestionFeedbackOption.LIKE.ordinal -> {
+                printFullMeal(randomMeal)
+            }
+
+            SuggestionFeedbackOption.DISLIKE.ordinal -> {
+                suggestMeal(meals.minusElement(randomMeal))
+            }
+        }
+    }
+
     fun startKetoDietFlow() {
         printKetoIntroMessage()
         getKetoMeals()
@@ -97,6 +178,4 @@ class ConsoleUi(
         LIKE("I like it! Show me full details"),
         DISLIKE("Not interested. Show me another one"),
     }
-
 }
-

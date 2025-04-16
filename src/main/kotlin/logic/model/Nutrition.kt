@@ -1,4 +1,4 @@
-package org.seoulsquad.model
+package logic.model
 
 data class Nutrition (
     val calories: Double,
