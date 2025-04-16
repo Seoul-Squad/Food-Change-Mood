@@ -1,14 +1,45 @@
 package presentation
 
 import logic.model.Meal
+import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import logic.useCase.GetRandomEasyMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
+    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
 ) {
+    fun start() {
+        when (getUserInput()) {
+            "6"->startSweetsWithNoEggsFlow()
+            "10" -> exploreOtherCountriesFood()
+            else -> println("Invalid option. Please try again.")
+        }
+    }
+
+    private fun getUserInput(): String {
+        return readlnOrNull() ?: ""
+    }
+
+    private fun exploreOtherCountriesFood() {
+        println("Welcome to the Food Explorer!")
+        println("Please enter a country name to explore its food:")
+        val country = readlnOrNull()
+        country?.let {
+            exploreOtherCountriesFoodUseCase.findMealsByCountry(it,40)
+                .onSuccess { meals ->
+                    println("Here are some meals from $country:")
+                    meals.forEach { meal ->
+                        println("- ${meal.name}: ${meal.description}")
+                    }
+                }
+                .onFailure { error ->
+                    println("Oops: ${error.message}")
+                }
+        }
+    }
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
@@ -125,4 +156,3 @@ class ConsoleUi(
         }
     }
 }
-
