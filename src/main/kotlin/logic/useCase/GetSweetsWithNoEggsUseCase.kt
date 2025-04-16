@@ -1,9 +1,9 @@
-package org.seoulsquad.logic.use_case
+package logic.useCase
 
-import org.seoulsquad.logic.repository.MealRepository
-import org.seoulsquad.logic.utils.Constants.Ingredients.INGREDIENT_EGG
-import org.seoulsquad.logic.utils.Constants.Tags.TAG_SWEET
-import org.seoulsquad.model.Meal
+import logic.model.Meal
+import logic.repository.MealRepository
+import logic.utils.Constants.Ingredients.INGREDIENT_EGG
+import logic.utils.Constants.Tags.TAG_SWEET
 
 class GetSweetsWithNoEggsUseCase(
     private val mealRepo: MealRepository,

@@ -1,4 +1,4 @@
-package org.seoulsquad.logic.utils
+package logic.utils
 
 object Constants {
     object Tags {

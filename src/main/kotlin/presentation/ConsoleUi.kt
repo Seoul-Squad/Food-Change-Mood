@@ -1,7 +1,7 @@
 package presentation
 
-import org.seoulsquad.logic.use_case.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.model.Meal
+import logic.model.Meal
+import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
