@@ -1,5 +1,5 @@
 package org.seoulsquad.logic.utils
 
 object Constants{
-    const val IRAQNAME = "Iraq"
+    const val IRAQ_NAME = "Iraq"
 }
