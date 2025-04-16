@@ -16,9 +16,10 @@ class ConsoleUi(
 
     fun start() {
         when (getUserInput()) {
+            "3" -> startIraqiMealsFlow()
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
-            "3" -> startIraqiMealsFlow()
+            "13" -> getMealsWithHighCalories()
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -55,7 +56,7 @@ class ConsoleUi(
         println("Loading, Please wait...")
     }
 
-    fun getMealsWithHighCalories() {
+    private fun getMealsWithHighCalories() {
         getMealsWithHighCaloriesUseCase()
             .onSuccess { mealsList ->
                 suggestMeal(mealsList)
