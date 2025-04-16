@@ -144,7 +144,7 @@ class ConsoleUi(
             targetCalories = targetCalories,
             targetProtein = targetProtein,
         )
-        println("The available meals with ~400 calories and ~120g protein are: ${meals.size}")
+        println("The available meals with ~${targetCalories}g calories and ~${targetProtein}g protein are: ${meals.size}")
         meals.forEach { println("- ${it.name}") }
     }
 
