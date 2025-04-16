@@ -1,14 +1,18 @@
 package presentation
 
 import logic.model.Meal
+import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.utils.KmpSearchAlgorithm
+import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
+    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 ) {
     fun runApp() {
         searchByMealName()
@@ -42,6 +46,37 @@ class ConsoleUi(
         )
     }
 
+
+    fun start() {
+        when (getUserInput()) {
+            "6"->startSweetsWithNoEggsFlow()
+            "10" -> exploreOtherCountriesFood()
+            "3" -> startIraqiMealsFlow()
+            else -> println("Invalid option. Please try again.")
+        }
+    }
+
+    private fun getUserInput(): String {
+        return readlnOrNull() ?: ""
+    }
+
+    private fun exploreOtherCountriesFood() {
+        println("Welcome to the Food Explorer!")
+        println("Please enter a country name to explore its food:")
+        val country = readlnOrNull()
+        country?.let {
+            exploreOtherCountriesFoodUseCase.findMealsByCountry(it,40)
+                .onSuccess { meals ->
+                    println("Here are some meals from $country:")
+                    meals.forEach { meal ->
+                        println("- ${meal.name}: ${meal.description}")
+                    }
+                }
+                .onFailure { error ->
+                    println("Oops: ${error.message}")
+                }
+        }
+    }
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
@@ -125,5 +160,25 @@ class ConsoleUi(
             println("  - Protein: ${nutrition.protein} g")
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
+    }
+    fun startIraqiMealsFlow() {
+        printIraqiMealsIntroductionMessage()
+        getIraqiMeals()
+    }
+    private fun printIraqiMealsIntroductionMessage() {
+        println("Looking for an Iraqi meal? You're in the right place!")
+        println("Loading, Please wait...")
+    }
+    private fun getIraqiMeals(){
+        getIraqiMealsUseCase.getAllIraqMeals()
+            .onSuccess { mealsList ->
+                mealsList.forEach {meal ->
+                    printFullMeal(meal)
+                    println("\n---\n")
+                }
+            }
+            .onFailure { exception ->
+                println(exception.message)
+            }
     }
 }
