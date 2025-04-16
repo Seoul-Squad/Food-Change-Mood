@@ -2,10 +2,12 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 ) {
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
@@ -90,5 +92,25 @@ class ConsoleUi(
             println("  - Protein: ${nutrition.protein} g")
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
+    }
+    fun startIraqiMealsFlow() {
+        printIraqiMealsIntroductionMessage()
+        getIraqiMeals()
+    }
+    private fun printIraqiMealsIntroductionMessage() {
+        println("Looking for an Iraqi meal? You're in the right place!")
+        println("Loading, Please wait...")
+    }
+    private fun getIraqiMeals(){
+        getIraqiMealsUseCase.getAllIraqMeals()
+            .onSuccess { mealsList ->
+                mealsList.forEach {meal ->
+                    printFullMeal(meal)
+                    println("\n---\n")
+                }
+            }
+            .onFailure { exception ->  
+                println(exception.message)
+            }
     }
 }
