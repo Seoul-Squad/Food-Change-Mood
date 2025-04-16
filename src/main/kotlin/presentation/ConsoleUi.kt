@@ -4,16 +4,24 @@ import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import logic.useCase.GetRandomEasyMealsUseCase
-import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
-import org.seoulsquad.logic.utils.KmpSearchAlgorithm
+import logic.useCase.GuessGameUseCase
+import logic.useCase.NegativeNumberException
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
+import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
+import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
+import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
+import org.seoulsquad.logic.useCase.model.MealDate
+import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
+    private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val guessGameUseCase: GuessGameUseCase,
     private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
 ) {
     private fun searchByMealName() {
@@ -52,7 +60,9 @@ class ConsoleUi(
             "2"->searchByMealName()
             "3" -> startIraqiMealsFlow()
             "4" ->  printRandomEasyMeals()
+            "5" -> startGuessGame()
             "6"->startSweetsWithNoEggsFlow()
+            "8" -> searchMealUsingDate()
             "10" -> exploreOtherCountriesFood()
             else -> println("Invalid option. Please try again.")
         }
@@ -89,6 +99,9 @@ class ConsoleUi(
         println("2. search by name")
         println("3. Iraqi Meals")
         println("4. Easy Meals")
+        println("5. Guess Game")
+        println("5. Sweets without eggs")
+        println("8. search by date")
         println("10. explore other countries food")
         println("15. Italian")
         println("Loading, Please wait...")
@@ -191,8 +204,8 @@ class ConsoleUi(
             .onFailure { exception ->
                 println(exception.message)
             }
-    }
 
+    }
     private fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
 
@@ -204,6 +217,117 @@ class ConsoleUi(
             println(exception.message)
         }
 
+    }
+
+
+    private fun searchMealUsingDate() {
+        println("Enter a date to search for meals (format: MM-DD-YYYY):")
+        val inputDate = readln()
+        println("Loading................")
+
+        searchFoodsUsingDateUseCase(inputDate)
+            .onSuccess { meals ->
+                displayMealListOfSearchedDate(meals, inputDate)
+                fetchMealAccordingID()
+            }
+            .onFailure { e ->
+                println("\n Error searching meals: ${e.message}")
+            }
+    }
+
+    private fun displayMealListOfSearchedDate(meals: List<MealDate>, inputDate: String) {
+        println("\n Found ${meals.size} meal(s) submitted on $inputDate:\n")
+        meals.forEachIndexed { index, meal ->
+            println("${index + 1}. [ID: ${meal.id}] ${meal.nameOfMeal} (${meal.date})")
+        }
+    }
+
+    private fun fetchMealAccordingID() {
+        println("\n If you'd like to view details for a specific meal, enter the Meal ID:")
+        val mealId = readln()
+        getMealUsingIDUseCase(mealId)
+            .onSuccess { meals ->
+                meals.forEach { meal -> displayFullMealDetails(meal) }
+            }
+            .onFailure { e ->
+                println("\n Could not retrieve meal details: ${e.message}")
+            }
+    }
+
+    private fun displayFullMealDetails(meal: Meal) {
+        println("\n Meal Details:")
+        println("   ID: ${meal.id}")
+        println("   Name: ${meal.name}")
+        println("   Contributor ID: ${meal.contributorId}")
+        println("   Preparation Time: ${meal.minutes} minutes")
+        println("   Submitted: ${meal.submitted ?: "Not submitted"}")
+        println("   Tags: ${meal.tags.joinToString(", ").ifEmpty { "No tags" }}")
+        println("   Description: ${meal.description ?: "No description"}")
+
+        println("\n Ingredients (${meal.numberOfIngredients}):")
+        meal.ingredients.forEachIndexed { index, ingredient ->
+            println("   ${index + 1}. $ingredient")
+        }
+
+        println("\n Steps (${meal.numberOfSteps}):")
+        meal.steps.forEachIndexed { index, step ->
+            println("   Step ${index + 1}: $step")
+        }
+
+        println("\n Nutrition Facts (per serving):")
+        println("   Calories: ${meal.nutrition.calories} kcal")
+        println("   Total Fat: ${meal.nutrition.totalFat} g")
+        println("   Saturated Fat: ${meal.nutrition.saturatedFat} g")
+        println("   Carbohydrates: ${meal.nutrition.carbohydrates} g")
+        println("   Sugar: ${meal.nutrition.sugar} g")
+        println("   Protein: ${meal.nutrition.protein} g")
+        println("   Sodium: ${meal.nutrition.sodium} mg")
+    }
+    fun startGuessGame() {
+        do {
+            val meal = guessGameUseCase.generateRandomMeal()
+            if (meal == null) {
+                println("No meals available!")
+                return
+            }
+
+            println("Guess the preparation time (in minutes) for: ${meal.name}")
+
+            var attempts = 0
+            var isCorrect = false
+
+            while (attempts < 3 && !isCorrect) {
+                println("Attempt ${attempts + 1}:")
+                print("Enter your guess: ")
+
+                val input = readlnOrNull()
+                try {
+                    val guess = guessGameUseCase.userGuess(input)
+
+                    isCorrect = guessGameUseCase.guessIsCorrect(guess, meal.minutes)
+
+                    when {
+                        isCorrect -> println("Correct! You guessed the right time!")
+                        guessGameUseCase.guessIsTooHigh(guess, meal.minutes) -> println("Too high!")
+                        guessGameUseCase.guessIsTooLow(guess, meal.minutes) -> println("Too low!")
+                    }
+                } catch (e: IllegalArgumentException) {
+                    println("Invalid input: ${e.message}")
+                } catch (e: NegativeNumberException) {
+                    println("Invalid input: ${e.message}")
+                }
+
+                attempts++
+            }
+
+            if (!isCorrect) {
+                println("You got it wrong, better luck next time! The correct time was ${meal.minutes} minutes.")
+            }
+
+            println("\nDo you want to play again? (y/n)")
+            val playAgain = readlnOrNull()?.lowercase() == "y"
+
+        } while (playAgain)
     }
 
 }

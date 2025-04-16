@@ -9,6 +9,11 @@ object Constants {
     object Ingredients {
         const val INGREDIENT_EGG = "egg"
     }
+
+    const val MONTH = 0
+    const val DAY = 1
+    const val YEAR = 2
+    const val LENGTH_OF_DATE = 3
     const val IRAQ_NAME = "Iraq"
 
     object EasyFood{
