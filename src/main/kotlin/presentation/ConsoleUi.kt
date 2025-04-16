@@ -3,17 +3,18 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import logic.useCase.GetRandomEasyMealsUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
-    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
-    private val getIraqiMealsUseCase: GetIraqiMealsUseCase
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
 ) {
     private fun searchByMealName() {
         print("Enter Meal Name:")
@@ -86,9 +87,10 @@ class ConsoleUi(
     private fun printMenu() {
         println("Choose a task")
         println("2. search by name")
-        println("3. search by ID")
-        println("10. search by ID")
-        println("15. Italuan")
+        println("3. Iraqi Meals")
+        println("4. Easy Meals")
+        println("10. explore other countries food")
+        println("15. Italian")
         println("Loading, Please wait...")
     }
     private fun printSweetsWithNoEggsIntroductionMessage() {
