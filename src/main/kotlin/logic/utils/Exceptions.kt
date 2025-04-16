@@ -1,5 +1,9 @@
 package logic.utils
 
+class NoMealsFoundException(message: String) : Throwable(message)
+
+
+
 
 open class InvalidDateException(message: String) : Exception(message)
 
