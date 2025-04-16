@@ -10,7 +10,7 @@ import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-    private val getHealthyFastFoodPreparedUnder15Minutes : GetHealthyFastFoodPreparedUnder15Minutes
+    private val getHealthyFastFoodPreparedUnder15Minutes : GetHealthyFastFoodPreparedUnder15Minutes,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 
 
