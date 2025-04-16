@@ -1,9 +1,9 @@
 package logic.useCase
 
 import logic.utils.Constants.NutritionConstants
-import logic.repository.MealRepository
 import logic.model.Meal
 import logic.model.Nutrition
+import org.seoulsquad.logic.repository.MealRepository
 
 class GetKetoDietMealUseCase(
     private val mealRepo: MealRepository,

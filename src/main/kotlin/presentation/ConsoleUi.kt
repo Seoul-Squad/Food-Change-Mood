@@ -43,8 +43,8 @@ class ConsoleUi(
             "4" -> printRandomEasyMeals()
             "5" -> startGuessGame()
             "6" -> startSweetsWithNoEggsFlow()
-            "8" -> searchMealUsingDate()
             "7" -> startKetoDietFlow()
+            "8" -> searchMealUsingDate()
             "10" -> exploreOtherCountriesFood()
             "12" -> startShowRandomPotatoMeals()
             "13" -> getMealsWithHighCalories()
@@ -61,6 +61,7 @@ class ConsoleUi(
         println("4. Easy Meals")
         println("5. Guess Game")
         println("6. Sweets without eggs")
+        println("7. Keto Diet Meals")
         println("8. search by date")
         println("10. explore other countries food")
         println("12. Show 10 random meals contains potato")
@@ -213,42 +214,15 @@ class ConsoleUi(
         getKetoDietMealUseCase
             .getKetoDietMeal()
             .onSuccess { ketoList ->
-                suggestKetoMeal(ketoList)
+                suggestMeal(ketoList)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }
     }
 
-    private fun suggestKetoMeal(meals: List<Meal>) {
-        if (meals.isEmpty()) {
-            println("No more keto meals available!")
-            return
-        }
-        val randomMeal = meals.random()
-        printShortMeal(randomMeal)
-        printLikeAndDislikeOptions()
-        handleFeedback(randomMeal, meals)
-    }
 
-    private fun handleFeedback(
-        randomMeal: Meal,
-        meals: List<Meal>,
-    ) {
-        when (readln().toIntOrNull()) {
-            SuggestionFeedbackOption.LIKE.ordinal -> {
-                printFullMeal(randomMeal)
-            }
 
-            SuggestionFeedbackOption.DISLIKE.ordinal -> {
-                suggestKetoMeal(meals.minusElement(randomMeal))
-            }
 
-            else -> {
-                println("Please enter a valid option!")
-                suggestKetoMeal(meals)
-            }
-        }
-    }
 
     private fun printLikeAndDislikeOptions() {
         SuggestionFeedbackOption.entries.forEach {
@@ -341,7 +315,7 @@ class ConsoleUi(
     }
 
 
-}
+
     ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun searchMealUsingDate() {
