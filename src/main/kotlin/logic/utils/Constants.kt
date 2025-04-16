@@ -5,6 +5,7 @@ object Constants {
     const val POTATO_ONLY = "potato"
     object Tags {
         const val TAG_SWEET = "sweet"
+        const val TAG_SEAFOOD = "seafood"
     }
 
     object Ingredients {
