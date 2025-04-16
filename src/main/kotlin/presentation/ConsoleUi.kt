@@ -6,21 +6,61 @@ import logic.useCase.GetSweetsWithNoEggsUseCase
 import logic.useCase.GuessGameUseCase
 import logic.useCase.NegativeNumberException
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
+import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
+import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
+import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
+import org.seoulsquad.logic.useCase.model.MealDate
+import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
+    private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
+    private val getSearchByNameUseCase: GetSearchByNameUseCase,
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase
     private val guessGameUseCase: GuessGameUseCase,
 ) {
+    private fun searchByMealName() {
+        print("Enter Meal Name:")
+        val query = readlnOrNull() ?: ""
+        println("Your search result")
+        getSearchByNameUseCase.getSearchByName(query, KmpSearchAlgorithm()).onSuccess { meals ->
+            printSearchResult(meals)
+        }.onFailure { e ->
+            println("Error: ${e.message}")
+        }
+    }
+
+    private fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
+    }
+
+    private fun printMeal(meal: Meal) {
+        println(
+            """
+                -ID: ${meal.id}
+            This recipe is called: ${meal.name},
+            ${meal.description}
+            
+            Ingredients: ${meal.ingredients}
+            
+            ==============================================
+            """.trimIndent(),
+        )
+    }
+
 
     fun start() {
+        printMenu()
         when (getUserInput()) {
+            "2"->searchByMealName()
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             "3" -> startIraqiMealsFlow()
             "5" -> startGuessGame()
+            "8" -> searchMealUsingDate()
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -51,6 +91,15 @@ class ConsoleUi(
         getSweetsWithNoEggs()
     }
 
+    private fun printMenu() {
+        println("Choose a task")
+        println("2. search by name")
+        println("3. search by ID")
+        println("10. search by ID")
+        println("15. Italuan")
+        println("8. search by date")
+        println("Loading, Please wait...")
+    }
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
@@ -149,6 +198,71 @@ class ConsoleUi(
             .onFailure { exception ->
                 println(exception.message)
             }
+    }
+
+
+    private fun searchMealUsingDate() {
+        println("Enter a date to search for meals (format: MM-DD-YYYY):")
+        val inputDate = readln()
+        println("Loading................")
+
+        searchFoodsUsingDateUseCase(inputDate)
+            .onSuccess { meals ->
+                displayMealListOfSearchedDate(meals, inputDate)
+                fetchMealAccordingID()
+            }
+            .onFailure { e ->
+                println("\n Error searching meals: ${e.message}")
+            }
+    }
+
+    private fun displayMealListOfSearchedDate(meals: List<MealDate>, inputDate: String) {
+        println("\n Found ${meals.size} meal(s) submitted on $inputDate:\n")
+        meals.forEachIndexed { index, meal ->
+            println("${index + 1}. [ID: ${meal.id}] ${meal.nameOfMeal} (${meal.date})")
+        }
+    }
+
+    private fun fetchMealAccordingID() {
+        println("\n If you'd like to view details for a specific meal, enter the Meal ID:")
+        val mealId = readln()
+        getMealUsingIDUseCase(mealId)
+            .onSuccess { meals ->
+                meals.forEach { meal -> displayFullMealDetails(meal) }
+            }
+            .onFailure { e ->
+                println("\n Could not retrieve meal details: ${e.message}")
+            }
+    }
+
+    private fun displayFullMealDetails(meal: Meal) {
+        println("\n Meal Details:")
+        println("   ID: ${meal.id}")
+        println("   Name: ${meal.name}")
+        println("   Contributor ID: ${meal.contributorId}")
+        println("   Preparation Time: ${meal.minutes} minutes")
+        println("   Submitted: ${meal.submitted ?: "Not submitted"}")
+        println("   Tags: ${meal.tags.joinToString(", ").ifEmpty { "No tags" }}")
+        println("   Description: ${meal.description ?: "No description"}")
+
+        println("\n Ingredients (${meal.numberOfIngredients}):")
+        meal.ingredients.forEachIndexed { index, ingredient ->
+            println("   ${index + 1}. $ingredient")
+        }
+
+        println("\n Steps (${meal.numberOfSteps}):")
+        meal.steps.forEachIndexed { index, step ->
+            println("   Step ${index + 1}: $step")
+        }
+
+        println("\n Nutrition Facts (per serving):")
+        println("   Calories: ${meal.nutrition.calories} kcal")
+        println("   Total Fat: ${meal.nutrition.totalFat} g")
+        println("   Saturated Fat: ${meal.nutrition.saturatedFat} g")
+        println("   Carbohydrates: ${meal.nutrition.carbohydrates} g")
+        println("   Sugar: ${meal.nutrition.sugar} g")
+        println("   Protein: ${meal.nutrition.protein} g")
+        println("   Sodium: ${meal.nutrition.sodium} mg")
     }
     fun startGuessGame() {
         do {
