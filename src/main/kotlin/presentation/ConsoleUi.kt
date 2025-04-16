@@ -2,10 +2,15 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
+import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
+import org.seoulsquad.logic.useCase.model.MealDate
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
+    private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase
 ) {
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
@@ -90,5 +95,69 @@ class ConsoleUi(
             println("  - Protein: ${nutrition.protein} g")
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
+    }
+
+    fun searchMealUsingDate() {
+        println("Enter a date to search for meals (format: MM-DD-YYYY):")
+        val inputDate = readln()
+        println("Loading................")
+
+        searchFoodsUsingDateUseCase(inputDate)
+            .onSuccess { meals ->
+                displayMealListOfSearchedDate(meals, inputDate)
+                fetchMealAccordingID()
+            }
+            .onFailure { e ->
+                println("\n Error searching meals: ${e.message}")
+            }
+    }
+
+    private fun displayMealListOfSearchedDate(meals: List<MealDate>, inputDate: String) {
+        println("\n Found ${meals.size} meal(s) submitted on $inputDate:\n")
+        meals.forEachIndexed { index, meal ->
+            println("${index + 1}. [ID: ${meal.id}] ${meal.nameOfMeal} (${meal.date})")
+        }
+    }
+
+    private fun fetchMealAccordingID() {
+        println("\n If you'd like to view details for a specific meal, enter the Meal ID:")
+        val mealId = readln()
+        getMealUsingIDUseCase(mealId)
+            .onSuccess { meals ->
+                meals.forEach { meal -> displayFullMealDetails(meal) }
+            }
+            .onFailure { e ->
+                println("\n Could not retrieve meal details: ${e.message}")
+            }
+    }
+
+    private fun displayFullMealDetails(meal: Meal) {
+        println("\n Meal Details:")
+        println("   ID: ${meal.id}")
+        println("   Name: ${meal.name}")
+        println("   Contributor ID: ${meal.contributorId}")
+        println("   Preparation Time: ${meal.minutes} minutes")
+        println("   Submitted: ${meal.submitted ?: "Not submitted"}")
+        println("   Tags: ${meal.tags.joinToString(", ").ifEmpty { "No tags" }}")
+        println("   Description: ${meal.description ?: "No description"}")
+
+        println("\n Ingredients (${meal.numberOfIngredients}):")
+        meal.ingredients.forEachIndexed { index, ingredient ->
+            println("   ${index + 1}. $ingredient")
+        }
+
+        println("\n Steps (${meal.numberOfSteps}):")
+        meal.steps.forEachIndexed { index, step ->
+            println("   Step ${index + 1}: $step")
+        }
+
+        println("\n Nutrition Facts (per serving):")
+        println("   Calories: ${meal.nutrition.calories} kcal")
+        println("   Total Fat: ${meal.nutrition.totalFat} g")
+        println("   Saturated Fat: ${meal.nutrition.saturatedFat} g")
+        println("   Carbohydrates: ${meal.nutrition.carbohydrates} g")
+        println("   Sugar: ${meal.nutrition.sugar} g")
+        println("   Protein: ${meal.nutrition.protein} g")
+        println("   Sodium: ${meal.nutrition.sodium} mg")
     }
 }
