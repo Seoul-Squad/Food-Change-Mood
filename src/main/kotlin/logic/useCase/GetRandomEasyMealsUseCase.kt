@@ -1,6 +1,6 @@
-package org.seoulsquad.logic.use_case
+package logic.useCase
 
-import data.model.Meal
+import logic.model.Meal
 import org.seoulsquad.logic.repository.MealRepository
 
 class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {

@@ -2,10 +2,11 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import logic.useCase.GetRandomEasyMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
-    private val getTenRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
+    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
 ) {
     fun startSweetsWithNoEggsFlow() {
@@ -93,8 +94,8 @@ class ConsoleUi(
         }
     }
 
-    private fun printRandomEasyMeals() {
-        val result = getTenRandomEasyMealsUseCase()
+    fun printRandomEasyMeals() {
+        val result = getRandomEasyMealsUseCase()
 
         result.onSuccess { randomEasyMealsList ->
             randomEasyMealsList.forEach { meal ->
