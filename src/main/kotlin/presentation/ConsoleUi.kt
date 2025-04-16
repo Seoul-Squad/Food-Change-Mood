@@ -2,6 +2,7 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.GetKetoDietMealUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
@@ -11,9 +12,12 @@ class ConsoleUi(
     private val getKetoDietMealUseCase: GetKetoDietMealUseCase,
 ) {
     fun start() {
+        println("Enter input number: ")
         when (getUserInput()) {
             "6" -> startSweetsWithNoEggsFlow()
+            "7" -> startKetoDietFlow()
             "10" -> exploreOtherCountriesFood()
+
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -102,13 +106,13 @@ class ConsoleUi(
         getKetoDietMealUseCase
             .getKetoDietMeal()
             .onSuccess { ketoList ->
-                suggestMeal(ketoList)
+                suggestKetoMeal(ketoList)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }
     }
 
-    private fun suggestMeal(meals: List<Meal>) {
+    private fun suggestKetoMeal(meals: List<Meal>) {
         if (meals.isEmpty()) {
             println("No more keto meals available!")
             return
@@ -124,23 +128,23 @@ class ConsoleUi(
         meals: List<Meal>,
     ) {
         when (readln().toIntOrNull()) {
-            FeedbackOption.LIKE.ordinal -> {
+            SuggestionFeedbackOption.LIKE.ordinal -> {
                 printFullMeal(randomMeal)
             }
 
-            FeedbackOption.DISLIKE.ordinal -> {
-                suggestMeal(meals.minusElement(randomMeal))
+            SuggestionFeedbackOption.DISLIKE.ordinal -> {
+                suggestKetoMeal(meals.minusElement(randomMeal))
             }
 
             else -> {
                 println("Please enter a valid option!")
-                suggestMeal(meals)
+                suggestKetoMeal(meals)
             }
         }
     }
 
     private fun printLikeAndDislikeOptions() {
-        FeedbackOption.entries.forEach {
+        SuggestionFeedbackOption.entries.forEach {
             println("${it.ordinal}. ${it.title}")
         }
     }
@@ -174,8 +178,5 @@ class ConsoleUi(
         }
     }
 
-    private enum class FeedbackOption(val title: String) {
-        LIKE("I like it! Show me full details"),
-        DISLIKE("Not interested. Show me another one"),
-    }
+
 }

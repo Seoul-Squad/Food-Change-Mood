@@ -1,9 +1,9 @@
-package org.seoulsquad.logic.use_case
+package logic.useCase
 
-import org.seoulsquad.data.utils.Constants.NutritionConstants
-import org.seoulsquad.logic.repository.MealRepository
-import org.seoulsquad.model.Meal
-import org.seoulsquad.model.Nutrition
+import data.utils.Constants.NutritionConstants
+import logic.repository.MealRepository
+import logic.model.Meal
+import logic.model.Nutrition
 
 class GetKetoDietMealUseCase(
     private val mealRepo: MealRepository,
