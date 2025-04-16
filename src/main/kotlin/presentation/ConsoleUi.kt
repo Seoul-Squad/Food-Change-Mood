@@ -48,7 +48,7 @@ class ConsoleUi(
                 printFullMeal(randomMeal)
             }
 
-            SuggestionFeedbackOption.LIKE.ordinal -> {
+            SuggestionFeedbackOption.DISLIKE.ordinal -> {
                 suggestMeal(meals.minusElement(randomMeal))
             }
 
