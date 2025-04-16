@@ -155,7 +155,7 @@ class ConsoleUi(
 
         result.onSuccess { randomEasyMealsList ->
             randomEasyMealsList.forEach { meal ->
-                printMeal(meal)
+                printFullMeal(meal)
             }
         }.onFailure { exception->
             println(exception.message)
@@ -163,21 +163,4 @@ class ConsoleUi(
 
     }
 
-
-    private fun printMeal(meal: Meal) {
-        with(meal){
-            println("Meal: $name")
-            println("Prepare time: $minutes minutes")
-
-            println("Ingredients:")
-            ingredients.forEachIndexed { index, ingredient->
-                println("${index+1}- $ingredient")
-            }
-
-            println("Steps:")
-            steps.forEachIndexed { index, step ->
-                println("${index+1}- $step")
-            }
-        }
-    }
 }
