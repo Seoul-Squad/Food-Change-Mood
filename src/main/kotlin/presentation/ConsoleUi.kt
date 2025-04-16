@@ -8,6 +8,7 @@ import logic.useCase.GetSweetsWithNoEggsUseCase
 import logic.useCase.GetRandomEasyMealsUseCase
 import logic.useCase.GuessGameUseCase
 import logic.useCase.NegativeNumberException
+import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
@@ -26,11 +27,50 @@ class ConsoleUi(
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val getMealsWithHighCaloriesUseCase: GetMealsWithHighCaloriesUseCase,
     private val guessGameUseCase: GuessGameUseCase,
     private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
     private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
     private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
 ) {
+
+
+
+    fun start() {
+        printMenu()
+        when (getUserInput()) {
+            "2"->searchByMealName()
+            "3" -> startIraqiMealsFlow()
+            "4" ->  printRandomEasyMeals()
+            "5" -> startGuessGame()
+            "6"->startSweetsWithNoEggsFlow()
+            "8" -> searchMealUsingDate()
+            "10" -> exploreOtherCountriesFood()
+            "13" -> getMealsWithHighCalories()
+            "15" -> startItalianLargeMealsFlow()
+            else -> println("Invalid option. Please try again.")
+        }
+    }
+
+    private fun printMenu() {
+        println("Choose a task")
+        println("2. search by name")
+        println("3. Iraqi Meals")
+        println("4. Easy Meals")
+        println("5. Guess Game")
+        println("6. Sweets without eggs")
+        println("8. search by date")
+        println("10. explore other countries food")
+        println("13. Meals with high calories")
+        println("15. Italian Large Meals")
+        println("Loading, Please wait...")
+    }
+
+    private fun getUserInput(): String {
+        return readlnOrNull() ?: ""
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////
     private fun searchByMealName() {
         print("Enter Meal Name:")
         val query = readlnOrNull() ?: ""
@@ -57,23 +97,7 @@ class ConsoleUi(
         )
     }
 
-
-    fun start() {
-        printMenu()
-        when (getUserInput()) {
-            "2"->searchByMealName()
-            "3" -> startIraqiMealsFlow()
-            "4" ->  printRandomEasyMeals()
-            "5" -> startGuessGame()
-            "6"->startSweetsWithNoEggsFlow()
-            "8" -> searchMealUsingDate()
-            "10" -> exploreOtherCountriesFood()
-            "12" -> startShowRandomPotatoMeals()
-            "15" -> startItalianLargeMealsFlow()
-            else -> println("Invalid option. Please try again.")
-        }
-    }
-    fun startItalianLargeMealsFlow() {
+    private fun startItalianLargeMealsFlow() {
         printItalianLargeMealsIntroductionMessage()
         getItalianLargeMeals()
     }
@@ -99,7 +123,9 @@ class ConsoleUi(
         meals.forEach { printMeal(it) }
     }
 
-    private fun getUserInput(): String = readlnOrNull() ?: ""
+    ////////////////////////////////////////////////////////////////////////////////////
+
+
 
     private fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
@@ -119,28 +145,21 @@ class ConsoleUi(
         }
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
 
-    private fun printMenu() {
-        println("Choose a task")
-        println("2. search by name")
-        println("3. Iraqi Meals")
-        println("4. Easy Meals")
-        println("5. Guess Game")
-        println("6. Sweets without eggs")
-        println("8. search by date")
-        println("10. explore other countries food")
-        println("Loading, Please wait...")
-    }
 
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
         println("Loading, Please wait...")
     }
+
 
     private fun getSweetsWithNoEggs() {
         getSweetsWithNoEggsUseCase
@@ -192,29 +211,6 @@ class ConsoleUi(
         meal.description.takeIf { !it.isNullOrBlank() }?.run { println(this) }
     }
 
-    private fun startShowRandomPotatoMeals() {
-        println("${ConsoleStyle.BOLD}${ConsoleColors.CYAN}This is very yummy, try this potato meals and Ed3yly.${ConsoleStyle.RESET}")
-        getRandomPotatoMealsUseCase()
-            .onSuccess { mealsWithPotato ->
-                printPotatoMealsResult(mealsWithPotato)
-            }.onFailure { exception ->
-                println(exception.message)
-            }
-    }
-
-    private fun printPotatoMealsResult(mealsWithPotato: List<Meal>) {
-        if (mealsWithPotato.size < 10) {
-            println("Unfortunately we don't have 10 meals right now.\uD83E\uDD7A")
-            Thread.sleep(500)
-            println("But cheers up he have: ${mealsWithPotato.size}\uD83D\uDE03")
-            Thread.sleep(500)
-            println("So here is ${mealsWithPotato.size} potato meals instead\uD83D\uDE09\n\n")
-            Thread.sleep(500)
-        }
-        mealsWithPotato.forEach { printFullMeal(it) }
-        println("Bon-appetit")
-    }
-
     private fun printFullMeal(meal: Meal) {
         with(meal) {
             println("Meal: $name (ID: $id)")
@@ -239,6 +235,21 @@ class ConsoleUi(
         }
         println("\n===========================================================\n")
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun getMealsWithHighCalories() {
+        getMealsWithHighCaloriesUseCase()
+            .onSuccess { mealsList ->
+                suggestMeal(mealsList)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+
     private fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
         getIraqiMeals()
@@ -249,7 +260,8 @@ class ConsoleUi(
         println("Loading, Please wait...")
     }
 
-    private fun getIraqiMeals() {
+
+    private fun getIraqiMeals(){
         getIraqiMealsUseCase.getAllIraqMeals()
             .onSuccess { mealsList ->
                 mealsList.forEach { meal ->
@@ -262,6 +274,9 @@ class ConsoleUi(
             }
 
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     private fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
 
@@ -275,6 +290,8 @@ class ConsoleUi(
 
     }
 
+
+    ////////////////////////////////////////////////////////////////////////////////////////
 
     private fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")
@@ -310,6 +327,7 @@ class ConsoleUi(
             }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////
 
 
     private fun startGuessGame() {
@@ -357,6 +375,31 @@ class ConsoleUi(
             val playAgain = readlnOrNull()?.lowercase() == "y"
 
         } while (playAgain)
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////
+
+    private fun startShowRandomPotatoMeals() {
+        println("${ConsoleStyle.BOLD}${ConsoleColors.CYAN}This is very yummy, try this potato meals and Ed3yly.${ConsoleStyle.RESET}")
+        getRandomPotatoMealsUseCase()
+            .onSuccess { mealsWithPotato ->
+                printPotatoMealsResult(mealsWithPotato)
+            }.onFailure { exception ->
+                println(exception.message)
+            }
+    }
+
+    private fun printPotatoMealsResult(mealsWithPotato: List<Meal>) {
+        if (mealsWithPotato.size < 10) {
+            println("Unfortunately we don't have 10 meals right now.\uD83E\uDD7A")
+            Thread.sleep(500)
+            println("But cheers up he have: ${mealsWithPotato.size}\uD83D\uDE03")
+            Thread.sleep(500)
+            println("So here is ${mealsWithPotato.size} potato meals instead\uD83D\uDE09\n\n")
+            Thread.sleep(500)
+        }
+        mealsWithPotato.forEach { printFullMeal(it) }
+        println("Bon-appetit")
     }
 
 }
