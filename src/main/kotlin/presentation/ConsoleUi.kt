@@ -4,19 +4,24 @@ import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.logic.useCase.GetHealthyFastFoodPreparedUnder15Minutes
+import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getHealthyFastFoodPreparedUnder15Minutes : GetHealthyFastFoodPreparedUnder15Minutes
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 
-    ) {
+
+) {
+
     fun start() {
         when (getUserInput()) {
             "1"->presentHealthyMeal()
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
+            "3" -> startIraqiMealsFlow()
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -126,6 +131,26 @@ class ConsoleUi(
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
     }
+    fun startIraqiMealsFlow() {
+        printIraqiMealsIntroductionMessage()
+        getIraqiMeals()
+    }
+    private fun printIraqiMealsIntroductionMessage() {
+        println("Looking for an Iraqi meal? You're in the right place!")
+        println("Loading, Please wait...")
+    }
+    private fun getIraqiMeals(){
+        getIraqiMealsUseCase.getAllIraqMeals()
+            .onSuccess { mealsList ->
+                mealsList.forEach {meal ->
+                    printFullMeal(meal)
+                    println("\n---\n")
+                }
+            }
+            .onFailure { exception ->
+                println(exception.message)
+            }
+    }
     private fun presentHealthyMeal (){
         GreetingMessageForGetHealthyMealFeature()
 val healthyMealList = getHealthyFastFoodPreparedUnder15Minutes.getFastHealthyMeals()
@@ -154,5 +179,3 @@ val healthyMealList = getHealthyFastFoodPreparedUnder15Minutes.getFastHealthyMea
     }
 
 }
-
-

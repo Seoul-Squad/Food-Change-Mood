@@ -1,4 +1,5 @@
-package logic.utils
+
+package logic.utils 
 
 object Constants {
     object Tags {
@@ -8,4 +9,5 @@ object Constants {
     object Ingredients {
         const val INGREDIENT_EGG = "egg"
     }
+    const val IRAQ_NAME = "Iraq"
 }
