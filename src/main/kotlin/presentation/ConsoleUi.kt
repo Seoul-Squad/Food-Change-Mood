@@ -2,11 +2,46 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
+import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getSearchByNameUseCase: GetSearchByNameUseCase
 ) {
+    fun runApp() {
+        searchByMealName()
+    }
+    private fun searchByMealName() {
+        print("Enter Meal Name:")
+        val query = readlnOrNull() ?: ""
+        println("Your search result")
+        getSearchByNameUseCase.getSearchByName(query, KmpSearchAlgorithm()).onSuccess { meals ->
+            printSearchResult(meals)
+        }.onFailure { e ->
+            println("Error: ${e.message}")
+        }
+    }
+
+    private fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
+    }
+
+    private fun printMeal(meal: Meal) {
+        println(
+            """
+                -ID: ${meal.id}
+            This recipe is called: ${meal.name},
+            ${meal.description}
+            
+            Ingredients: ${meal.ingredients}
+            
+            ==============================================
+            """.trimIndent(),
+        )
+    }
+
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
