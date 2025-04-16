@@ -1,31 +1,36 @@
-package org.seoulsquad.logic.use_case
+package logic.useCase
 
-import org.seoulsquad.logic.repository.MealRepository
+import logic.model.Meal
+import logic.repository.MealRepository
 
 class GuessGameUseCase (
     private val mealRepository: MealRepository
 ) {
-    fun generateRandomMeal() {
-        TODO("implement code for generating random meal")
+    fun generateRandomMeal(): Meal? {
+        val meals = mealRepository.getAllMeals().filter { meal ->
+            meal.name.isNotBlank()
+        }
+        return meals.randomOrNull()
     }
 
-    fun guessIsCorrect() {
-        TODO("implement code showing that returns that the guess is correct")
+    fun guessIsCorrect(guess: Int, actualTime: Int): Boolean {
+        return guess == actualTime
     }
 
-    fun guessIsTooHigh() {
-        TODO("implement code that checks if the guess is too high")
+    fun guessIsTooHigh(guess: Int, actualTime: Int): Boolean  {
+        return guess > actualTime
     }
 
-    fun guessIsTooLow() {
-        TODO("implement code that checks if the guess is too low")
+    fun guessIsTooLow(guess: Int, actualTime: Int): Boolean  {
+        return guess < actualTime
     }
 
-    fun userGuess() {
-        TODO("implement code to take input from user")
+    fun userGuess(input: String?): Int {
+        val guess = input?.toIntOrNull() ?: throw IllegalArgumentException(" please enter a number.")
+        if (guess < 0) throw NegativeNumberException("Input must be greater than 0")
+        return guess
     }
 
-    fun gameResult() {
-        TODO("implement code to show game result")
-    }
 }
+
+class NegativeNumberException(message: String) : Exception(message)
