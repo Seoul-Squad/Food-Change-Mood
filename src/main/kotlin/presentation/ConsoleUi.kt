@@ -2,10 +2,12 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getMealsWithHighCaloriesUseCase: GetMealsWithHighCaloriesUseCase
 ) {
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
@@ -16,6 +18,15 @@ class ConsoleUi(
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
         println("Loading, Please wait...")
+    }
+
+    fun getMealsWithHighCalories() {
+        getMealsWithHighCaloriesUseCase()
+            .onSuccess { mealsList ->
+                suggestMeal(mealsList)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
     }
 
     private fun getSweetsWithNoEggs() {
