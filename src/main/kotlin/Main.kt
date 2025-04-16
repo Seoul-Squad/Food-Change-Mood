@@ -12,7 +12,9 @@ fun main() {
     startKoin {
         modules(appModule,repositoryModule,useCaseModule,csvModule)
     }
-    val consoleUi: ConsoleUi =getKoin().get()
+
+    println("Loading, Please wait...")
+    val consoleUi: ConsoleUi = getKoin().get()
     consoleUi.start()
 
 }

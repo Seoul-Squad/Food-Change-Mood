@@ -1,9 +1,9 @@
 package logic.useCase
 
 import logic.model.Meal
-import logic.repository.MealRepository
 import logic.utils.Constants.Ingredients.INGREDIENT_EGG
 import logic.utils.Constants.Tags.TAG_SWEET
+import org.seoulsquad.logic.repository.MealRepository
 
 class GetSweetsWithNoEggsUseCase(
     private val mealRepo: MealRepository,
