@@ -4,16 +4,16 @@ import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import logic.useCase.GetIraqiMealsUseCase
-import logic.useCase.GetMealUsingIDUseCase
-import logic.useCase.GetRandomPotatoMealsUseCase
-import logic.useCase.GetSearchByNameUseCase
-import logic.useCase.SearchFoodsUsingDateUseCase
-import logic.useCase.model.MealDate
-import logic.utils.KmpSearchAlgorithm
+import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
+import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
+import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
+import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
+import org.seoulsquad.logic.useCase.model.MealDate
+import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 import presentation.utils.ConsoleColors
 import presentation.utils.ConsoleStyle
+import kotlin.collections.forEachIndexed
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
@@ -57,8 +57,8 @@ class ConsoleUi(
     fun start() {
         printMenu()
         when (getUserInput()) {
-            "2"->searchByMealName()
-            "6"->startSweetsWithNoEggsFlow()
+            "2" -> searchByMealName()
+            "6" -> startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             "3" -> startIraqiMealsFlow()
             "8" -> searchMealUsingDate()
@@ -101,6 +101,7 @@ class ConsoleUi(
         println("8. search by date")
         println("Loading, Please wait...")
     }
+
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
@@ -204,18 +205,21 @@ class ConsoleUi(
         }
         println("\n===========================================================\n")
     }
+
     fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
         getIraqiMeals()
     }
+
     private fun printIraqiMealsIntroductionMessage() {
         println("Looking for an Iraqi meal? You're in the right place!")
         println("Loading, Please wait...")
     }
-    private fun getIraqiMeals(){
+
+    private fun getIraqiMeals() {
         getIraqiMealsUseCase.getAllIraqMeals()
             .onSuccess { mealsList ->
-                mealsList.forEach {meal ->
+                mealsList.forEach { meal ->
                     printFullMeal(meal)
                     println("\n---\n")
                 }
@@ -240,7 +244,6 @@ class ConsoleUi(
                 println("\n Error searching meals: ${e.message}")
             }
     }
-}
 
     private fun displayMealListOfSearchedDate(meals: List<MealDate>, inputDate: String) {
         println("\n Found ${meals.size} meal(s) submitted on $inputDate:\n")
