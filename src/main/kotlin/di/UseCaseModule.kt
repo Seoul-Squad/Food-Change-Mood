@@ -13,4 +13,5 @@ val useCaseModule =
         single { GetSweetsWithNoEggsUseCase(get()) }
         single { GetIraqiMealsUseCase(get()) }
         single { ExploreOtherCountriesFoodUseCase(get()) }
+        single { GetItalianLargeMealsUseCase(get()) }
     }
