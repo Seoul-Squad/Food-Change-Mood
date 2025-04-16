@@ -1,5 +1,5 @@
 
-package logic.utils 
+package logic.utils
 
 object Constants {
     object Tags {
@@ -15,6 +15,10 @@ object Constants {
     const val YEAR = 2
     const val LENGTH_OF_DATE = 3
     const val IRAQ_NAME = "Iraq"
+
+    object Calories {
+        const val HIGH_CALORIES = 700
+    }
     const val ITALIAN_NAME  = "Italian"
     const val LARGE_GROUP_NAME  = "for-large-groups"
 

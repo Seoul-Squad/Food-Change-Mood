@@ -6,5 +6,5 @@ import presentation.ConsoleUi
 
 val appModule =
     module {
-        singleOf (::ConsoleUi)
+        singleOf(::ConsoleUi)
     }
