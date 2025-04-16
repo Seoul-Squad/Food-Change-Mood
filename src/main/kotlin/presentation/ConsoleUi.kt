@@ -2,18 +2,22 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.GetMealsByCaloriesAndProtein
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getMealsByCaloriesAndProtein: GetMealsByCaloriesAndProtein,
 
     ) {
     fun start() {
+            println("Choose your operation [6: SweetsWithNoEggs, 10: exploreOtherCountriesFood, 9: GetMealsByCaloriesAndProtein ]")
         when (getUserInput()) {
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
+            "9" -> startGetMealsByCaloriesAndProtein()
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -123,6 +127,27 @@ class ConsoleUi(
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
     }
+
+    fun startGetMealsByCaloriesAndProtein() {
+        println("=== Meal Nutrition Filter ===")
+//        val allMeals = getAllMealsUseCase()  // Call the GetAllMealsUseCase
+//
+//        println("Total meals: ${allMeals.size}")
+        print("Enter target calories: ")
+        val targetCalories = readLine()?.toIntOrNull() ?: 0
+
+        print("Enter target protein (g): ")
+        val targetProtein = readLine()?.toIntOrNull() ?: 0
+
+        // Execute use case with user input
+        val meals = getMealsByCaloriesAndProtein.execute(
+            targetCalories = targetCalories,
+            targetProtein = targetProtein,
+        )
+        println("The available meals with ~400 calories and ~120g protein are: ${meals.size}")
+        meals.forEach { println("- ${it.name}") }
+    }
+
 
 }
 
