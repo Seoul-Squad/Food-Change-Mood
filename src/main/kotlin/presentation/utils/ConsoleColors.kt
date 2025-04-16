@@ -1,4 +1,4 @@
-package org.seoulsquad.presentation.utils
+package presentation.utils
 
 object ConsoleColors {
     const val RED = "\u001B[91m"
