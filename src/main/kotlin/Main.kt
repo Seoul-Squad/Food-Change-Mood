@@ -3,9 +3,9 @@ package org.seoulsquad
 import di.appModule
 import di.csvModule
 import di.repositoryModule
+import di.useCaseModule
 import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
-import org.seoulsquad.di.useCaseModule
 import presentation.ConsoleUi
 
 fun main() {

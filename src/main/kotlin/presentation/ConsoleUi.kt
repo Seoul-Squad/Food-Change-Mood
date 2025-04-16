@@ -3,12 +3,12 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
-import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
+import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 import org.seoulsquad.logic.useCase.model.MealDate
+import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
@@ -93,6 +93,7 @@ class ConsoleUi(
         println("3. search by ID")
         println("10. search by ID")
         println("15. Italuan")
+        println("8. search by date")
         println("Loading, Please wait...")
     }
     private fun printSweetsWithNoEggsIntroductionMessage() {
