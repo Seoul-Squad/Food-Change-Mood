@@ -1,9 +1,9 @@
 package org.seoulsquad.logic.useCase
 
-import logic.repository.MealRepository
 import logic.model.Meal
 import logic.utils.Constants.IRAQ_NAME
 import logic.utils.NoIraqiMealsFoundException
+import org.seoulsquad.logic.repository.MealRepository
 
 class GetIraqiMealsUseCase(
     private val mealRepository: MealRepository

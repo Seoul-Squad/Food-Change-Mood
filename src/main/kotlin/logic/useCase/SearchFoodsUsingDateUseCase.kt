@@ -1,10 +1,10 @@
 package org.seoulsquad.logic.useCase
 
 import kotlinx.datetime.*
-import logic.repository.MealRepository
 import logic.utils.Constants
 import logic.utils.InvalidDateForSearchException
 import logic.utils.InvalidSearchException
+import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.useCase.model.MealDate
 
 
