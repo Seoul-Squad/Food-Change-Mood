@@ -1,6 +1,6 @@
 package logic.useCase
 
-import data.utils.Constants.NutritionConstants
+import logic.utils.Constants.NutritionConstants
 import logic.repository.MealRepository
 import logic.model.Meal
 import logic.model.Nutrition
