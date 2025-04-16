@@ -1,6 +1,6 @@
 import logic.model.Meal
-import logic.repository.MealRepository
 import logic.utils.Constants
+import org.seoulsquad.logic.repository.MealRepository
 
 class GetItalianLargeMealsUseCase(
     private val mealRepository: MealRepository

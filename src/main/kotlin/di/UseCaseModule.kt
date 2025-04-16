@@ -9,7 +9,6 @@ import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.koin.dsl.module
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
-import org.koin.dsl.module
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import logic.useCase.GuessGameUseCase

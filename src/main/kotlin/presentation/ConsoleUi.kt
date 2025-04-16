@@ -23,7 +23,7 @@ class ConsoleUi(
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val guessGameUseCase: GuessGameUseCase,
-    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
+    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
     private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
 ) {
     private fun searchByMealName() {
@@ -37,9 +37,6 @@ class ConsoleUi(
         }
     }
 
-    private fun printSearchResult(meals: List<Meal>) {
-        meals.forEach { printMeal(it) }
-    }
 
     private fun printMeal(meal: Meal) {
         println(
@@ -96,19 +93,6 @@ class ConsoleUi(
         meals.forEach { printMeal(it) }
     }
 
-    private fun printMeal(meal: Meal) {
-        println(
-            """
-                -ID: ${meal.id}
-            This recipe is called: ${meal.name},
-            ${meal.description}
-            
-            Ingredients: ${meal.ingredients}
-            
-            ==============================================
-            """.trimIndent(),
-        )
-    }
     private fun getUserInput(): String {
         return readlnOrNull() ?: ""
     }
