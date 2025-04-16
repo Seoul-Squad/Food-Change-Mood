@@ -13,6 +13,7 @@ class ConsoleUi(
 ) {
     fun start() {
         when (getUserInput()) {
+            "4" ->  printRandomEasyMeals()
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             else -> println("Invalid option. Please try again.")
@@ -28,7 +29,7 @@ class ConsoleUi(
         println("Please enter a country name to explore its food:")
         val country = readlnOrNull()
         country?.let {
-            exploreOtherCountriesFoodUseCase.findMealsByCountry(it,40)
+            exploreOtherCountriesFoodUseCase.findMealsByCountry(it)
                 .onSuccess { meals ->
                     println("Here are some meals from $country:")
                     meals.forEach { meal ->
@@ -40,7 +41,7 @@ class ConsoleUi(
                 }
         }
     }
-    fun startSweetsWithNoEggsFlow() {
+    private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
@@ -125,7 +126,7 @@ class ConsoleUi(
         }
     }
 
-    fun printRandomEasyMeals() {
+    private fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
 
         result.onSuccess { randomEasyMealsList ->

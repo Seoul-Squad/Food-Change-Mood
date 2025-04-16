@@ -8,7 +8,7 @@ import logic.utils.Constants.EasyFood.MAX_STEPS
 
 class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
 
-    operator fun invoke(limit:Int = 10): Result<List<Meal>> {
+    operator fun invoke(limit:Int = DEFAULT_LIMIT): Result<List<Meal>> {
         val easyMealsList =
             mealRepository.getAllMeals().filter(::isEasyMeal)
 
@@ -21,4 +21,9 @@ class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
 
     private fun isEasyMeal(meal: Meal): Boolean =
         meal.minutes <= MAX_MINUTES && meal.ingredients.size <= MAX_INGREDIENTS && meal.steps.size <= MAX_STEPS
+
+
+    companion object{
+        const val DEFAULT_LIMIT = 10
+    }
 }
