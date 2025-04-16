@@ -6,6 +6,7 @@ import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 import org.seoulsquad.logic.useCase.model.MealDate
+import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
@@ -13,11 +14,14 @@ class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 ) {
+
     fun start() {
         when (getUserInput()) {
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
+            "3" -> startIraqiMealsFlow()
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -127,6 +131,27 @@ class ConsoleUi(
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
     }
+    fun startIraqiMealsFlow() {
+        printIraqiMealsIntroductionMessage()
+        getIraqiMeals()
+    }
+    private fun printIraqiMealsIntroductionMessage() {
+        println("Looking for an Iraqi meal? You're in the right place!")
+        println("Loading, Please wait...")
+    }
+    private fun getIraqiMeals(){
+        getIraqiMealsUseCase.getAllIraqMeals()
+            .onSuccess { mealsList ->
+                mealsList.forEach {meal ->
+                    printFullMeal(meal)
+                    println("\n---\n")
+                }
+            }
+            .onFailure { exception ->
+                println(exception.message)
+            }
+    }
+}
 
     fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")

@@ -4,6 +4,7 @@ import di.appModule
 import di.csvModule
 import di.repositoryModule
 import org.koin.core.context.startKoin
+import org.koin.mp.KoinPlatform.getKoin
 import org.seoulsquad.di.useCaseModule
 import org.koin.java.KoinJavaComponent.getKoin
 import presentation.ConsoleUi
