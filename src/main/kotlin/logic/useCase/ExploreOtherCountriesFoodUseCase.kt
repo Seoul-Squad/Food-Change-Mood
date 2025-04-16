@@ -1,13 +1,14 @@
-package org.seoulsquad.logic.use_case
+package logic.useCase
 
-import org.seoulsquad.logic.repository.MealRepository
-import data.model.Meal
-import org.seoulsquad.logic.utils.NoMealsFoundException
+import logic.model.Meal
+import logic.repository.MealRepository
+import logic.utils.NoMealsFoundException
+
 
 class ExploreOtherCountriesFoodUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun findMealsByCountry(countryName: String,limit:Int=5): Result<List<Meal>> {
+    fun findMealsByCountry(countryName: String,limit:Int=DEFAULT_LIMIT): Result<List<Meal>> {
         val meals = mealRepository
             .getAllMeals()
             .filter { isMealFromCountry(it, countryName) }
@@ -24,5 +25,10 @@ class ExploreOtherCountriesFoodUseCase(
         meal.name.contains(countryName, ignoreCase = true) ||
         meal.description?.contains(countryName, ignoreCase = true) ?: false ||
         meal.tags.contains(countryName)
+
+    companion object{
+        const val DEFAULT_LIMIT = 20
+    }
 }
+
 

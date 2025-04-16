@@ -4,5 +4,5 @@ import org.koin.dsl.module
 import presentation.ConsoleUi
 
 val appModule = module {
-    single { ConsoleUi() }
+    single { ConsoleUi(get()) }
 }

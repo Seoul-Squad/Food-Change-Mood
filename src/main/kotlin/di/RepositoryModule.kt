@@ -7,5 +7,4 @@ import org.koin.dsl.module
 
 val repositoryModule = module {
     single<MealRepository> { MealRepositoryImpl(get(), get()) }
-    single { ConsoleUi(get()) }
 }

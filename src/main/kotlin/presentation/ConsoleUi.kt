@@ -1,6 +1,6 @@
 package presentation
 
-import org.seoulsquad.logic.use_case.ExploreOtherCountriesFoodUseCase
+import logic.useCase.ExploreOtherCountriesFoodUseCase
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase
@@ -21,7 +21,7 @@ class ConsoleUi(
         println("Please enter a country name to explore its food:")
         val country = readlnOrNull()
         country?.let {
-            exploreOtherCountriesFoodUseCase.findMealsByCountry(it)
+            exploreOtherCountriesFoodUseCase.findMealsByCountry(it,40)
                 .onSuccess { meals ->
                     println("Here are some meals from $country:")
                     meals.forEach { meal ->
