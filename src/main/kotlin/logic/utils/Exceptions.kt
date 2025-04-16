@@ -8,4 +8,4 @@ class InvalidDateForSearchException : InvalidDateException("Invalid date for sea
 class InvalidSearchException : InvalidDateException("No meals found")
 
 
-class InvalidId : Exception("Invalid id")
+class InvalidIdException : Exception("Invalid id")

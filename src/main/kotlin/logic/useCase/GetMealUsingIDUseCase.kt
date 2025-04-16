@@ -2,14 +2,14 @@ package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
 import logic.repository.MealRepository
-import logic.utils.InvalidId
+import logic.utils.InvalidIdException
 import logic.utils.InvalidSearchException
 
 class GetMealUsingIDUseCase(
     private val repository: MealRepository
 ) {
     operator fun invoke(id: String): Result<List<Meal>> {
-        val isIdValid =checkIDValidation(id).getOrElse { return Result.failure(InvalidId()) }
+        val isIdValid = checkIDValidation(id).getOrElse { return Result.failure(InvalidIdException()) }
         return repository.getAllMeals()
             .takeIf { isIdValid }
             ?.filter { it.id == id.toInt() }
