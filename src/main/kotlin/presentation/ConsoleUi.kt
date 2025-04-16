@@ -2,16 +2,59 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetItalianLargeMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
 ) {
+
+    fun startItalianLargeMealsFlow() {
+        printItalianLargeMealsIntroductionMessage()
+        getItalianLargeMeals()
+    }
+
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
 
+    private fun printItalianLargeMealsIntroductionMessage() {
+        println(
+            """Are you a large group of friends traveling to Italy?
+            | Do you want to share a meal?",
+            |Here The suggestion
+        """.trimMargin()
+        )
+    }
+
+    private fun getItalianLargeMeals() {
+        getItalianLargeMealsUseCase
+            .getItalianLargeMeals()
+            .onSuccess { italianMeals ->
+                printSearchResult(italianMeals)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+    private fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
+    }
+
+    private fun printMeal(meal: Meal) {
+        println(
+            """
+                -ID: ${meal.id}
+            This recipe is called: ${meal.name},
+            ${meal.description}
+            
+            Ingredients: ${meal.ingredients}
+            
+            ==============================================
+            """.trimIndent(),
+        )
+    }
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
