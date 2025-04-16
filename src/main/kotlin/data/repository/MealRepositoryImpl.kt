@@ -1,24 +1,37 @@
-package org.seoulsquad.data.repository
+package data.repository
 
-import data.utils.MealCsvFileReader
+import data.utils.CsvFileReader
 import data.utils.MealCsvParser
-import org.seoulsquad.logic.repository.MealRepository
-import org.seoulsquad.model.Meal
+import logic.model.Meal
+import logic.repository.MealRepository
 
 class MealRepositoryImpl(
-    private val fileReader: MealCsvFileReader,
+    private val fileReader: CsvFileReader,
     private val parser: MealCsvParser,
 ) : MealRepository {
-    override fun getAllMeals(): List<Meal> {
+    private val allMeals: List<Meal>
+
+    init {
+        allMeals = loadMeals()
+    }
+
+    override fun getAllMeals(): List<Meal> = allMeals
+
+    private fun loadMeals(): List<Meal> {
         val csvData = fileReader.readCsv()
         val headers = csvData.headers
         val dataRows = csvData.rows
 
         if (headers.isEmpty() || dataRows.isEmpty()) return emptyList()
 
-        val meals = dataRows.mapNotNull { row ->
-            try { parser.parse(headers, row)} catch (e: Exception) { null }
-        }
+        val meals =
+            dataRows.mapNotNull { row ->
+                try {
+                    parser.parse(headers, row)
+                } catch (e: Exception) {
+                    null
+                }
+            }
 
         return meals
     }
