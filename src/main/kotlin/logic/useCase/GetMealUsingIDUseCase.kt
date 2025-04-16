@@ -18,6 +18,8 @@ class GetMealUsingIDUseCase(
     }
 
     private fun checkIDValidation(id: String): Result<Boolean> {
-        return Result.success(id.toIntOrNull() != null && id.toInt() > 0)
+        return id.takeIf { it.toIntOrNull() != null && it.toInt() > 0 }?.let { Result.success(true) } ?: Result.failure(
+            InvalidIdException()
+        )
     }
 }

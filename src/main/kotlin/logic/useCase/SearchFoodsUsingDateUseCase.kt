@@ -23,7 +23,8 @@ class SearchFoodsUsingDateUseCase(
 
     private fun paresDate(data: String): Result<List<String>> {
         return splitDate(data)
-            .takeIf { checkDateValidation(it.getOrThrow()) }
+            .takeIf { checkDateValidation(it) }
+            ?.let { Result.success(it) }
             ?: Result.failure(InvalidDateForSearchException())
     }
 
@@ -36,8 +37,8 @@ class SearchFoodsUsingDateUseCase(
 
     }
 
-    private fun splitDate(date: String): Result<List<String>> {
-        return Result.success(date.split(Regex("[/-]")))
+    private fun splitDate(date: String): List<String> {
+        return date.split(Regex("[/-]"))
     }
 
     private fun checkDateValidation(partsOfDate: List<String>) =
