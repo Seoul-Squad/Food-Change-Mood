@@ -5,5 +5,5 @@ import presentation.ConsoleUi
 
 val appModule =
     module {
-        single { ConsoleUi(get()) }
+        single { ConsoleUi(get(),get()) }
     }
