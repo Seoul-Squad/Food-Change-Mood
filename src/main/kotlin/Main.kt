@@ -6,6 +6,7 @@ import di.repositoryModule
 import di.useCaseModule
 import org.koin.core.context.startKoin
 import org.koin.java.KoinJavaComponent.getKoin
+import org.seoulsquad.logic.useCase.GetHealthyFastFoodPreparedUnder15Minutes
 import presentation.ConsoleUi
 
 fun main() {
@@ -14,6 +15,7 @@ fun main() {
     }
     val consoleUi: ConsoleUi =getKoin().get()
     consoleUi.start()
+
 
 
 

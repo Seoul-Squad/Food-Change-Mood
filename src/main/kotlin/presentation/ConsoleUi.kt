@@ -3,15 +3,18 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetHealthyFastFoodPreparedUnder15Minutes
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getHealthyFastFoodPreparedUnder15Minutes : GetHealthyFastFoodPreparedUnder15Minutes
 
     ) {
     fun start() {
         when (getUserInput()) {
+            "1"->presentHealthyMeal()
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             else -> println("Invalid option. Please try again.")
@@ -113,6 +116,32 @@ class ConsoleUi(
             steps.forEachIndexed { index, step ->
                 println("  Step ${index + 1}: $step")
             }
+            println("Nutrition:")
+            println("  - Calories: ${nutrition.calories} kcal")
+            println("  - Total Fat: ${nutrition.totalFat} g")
+            println("  - Saturated Fat: ${nutrition.saturatedFat} g")
+            println("  - Sugar: ${nutrition.sugar} g")
+            println("  - Sodium: ${nutrition.sodium} mg")
+            println("  - Protein: ${nutrition.protein} g")
+            println("  - Carbohydrates: ${nutrition.carbohydrates} g")
+        }
+    }
+    private fun presentHealthyMeal (){
+        GreetingMessageForGetHealthyMealFeature()
+val healthyMealList = getHealthyFastFoodPreparedUnder15Minutes.getFastHealthyMeals()
+        healthyMealList.map { mealList ->mealList.map {
+            printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(it)
+        } }
+
+    }
+    private fun GreetingMessageForGetHealthyMealFeature (){
+        println("Hello this is your list of healthy fast food that can be prepared in under 15 with Low nutrition's")
+    }
+
+    private  fun printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition ( meal : Meal) {
+        with(meal) {
+            println("Meal: $name")
+            println("Time to Prepare: $minutes minutes")
             println("Nutrition:")
             println("  - Calories: ${nutrition.calories} kcal")
             println("  - Total Fat: ${nutrition.totalFat} g")
