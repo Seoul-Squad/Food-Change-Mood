@@ -1,5 +1,6 @@
 package di
 
+import GetItalianLargeMealsUseCase
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import org.koin.dsl.module
 import logic.useCase.GetAllMealsUseCase
