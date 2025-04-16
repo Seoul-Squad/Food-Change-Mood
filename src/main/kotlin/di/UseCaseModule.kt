@@ -21,11 +21,7 @@ val useCaseModule =
         single { GetSearchByNameUseCase(get()) }
         single { GetIraqiMealsUseCase(get()) }
         single { ExploreOtherCountriesFoodUseCase(get()) }
-        single { GetAllMealsUseCase(get()) }
         single { SearchFoodsUsingDateUseCase(get()) }
         single { GetMealUsingIDUseCase(get()) }
-        single { GetSweetsWithNoEggsUseCase(get()) }
-
-        single { GuessGameUseCase(get()) }
         single { GuessGameUseCase(get()) }
     }

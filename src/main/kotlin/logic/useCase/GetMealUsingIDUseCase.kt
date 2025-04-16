@@ -1,9 +1,9 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
-import logic.repository.MealRepository
 import logic.utils.InvalidIdException
 import logic.utils.InvalidSearchException
+import org.seoulsquad.logic.repository.MealRepository
 
 class GetMealUsingIDUseCase(
     private val repository: MealRepository
