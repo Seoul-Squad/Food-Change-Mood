@@ -12,7 +12,8 @@ fun main() {
     startKoin {
         modules(appModule,repositoryModule,useCaseModule,csvModule)
     }
-    val consoleUi:ConsoleUi = getKoin().get()
-    consoleUi.startIraqiMealsFlow()
+    val consoleUi: ConsoleUi =getKoin().get()
+    consoleUi.start()
+
 }
 
