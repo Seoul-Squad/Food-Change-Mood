@@ -1,8 +1,8 @@
-package org.seoulsquad.logic.use_case
+package logic.useCase
 
-import org.seoulsquad.logic.repository.MealRepository
-import org.seoulsquad.logic.utils.Constants.POTATO_ONLY
-import org.seoulsquad.model.Meal
+import logic.model.Meal
+import logic.repository.MealRepository
+import logic.utils.Constants.POTATO_ONLY
 
 class GetRandomPotatoMealsUseCase(
     private val mealRepository: MealRepository,

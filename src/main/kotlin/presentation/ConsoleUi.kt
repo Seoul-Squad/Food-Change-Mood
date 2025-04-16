@@ -2,47 +2,47 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
-import logic.useCase.GetSweetsWithNoEggsUseCase
 import logic.useCase.GetRandomPotatoMealsUseCase
+import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
-import org.seoulsquad.presentation.utils.ConsoleColors
-import org.seoulsquad.presentation.utils.ConsoleStyle
+import presentation.utils.ConsoleColors
+import presentation.utils.ConsoleStyle
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
-    ) {
+) {
     fun start() {
         when (getUserInput()) {
-            "6"->startSweetsWithNoEggsFlow()
+            "6" -> startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
+            "12" -> startShowRandomPotatoMeals()
             else -> println("Invalid option. Please try again.")
         }
     }
 
-    private fun getUserInput(): String {
-        return readlnOrNull() ?: ""
-    }
+    private fun getUserInput(): String = readlnOrNull() ?: ""
 
     private fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
         println("Please enter a country name to explore its food:")
         val country = readlnOrNull()
         country?.let {
-            exploreOtherCountriesFoodUseCase.findMealsByCountry(it,40)
+            exploreOtherCountriesFoodUseCase
+                .findMealsByCountry(it, 40)
                 .onSuccess { meals ->
                     println("Here are some meals from $country:")
                     meals.forEach { meal ->
                         println("- ${meal.name}: ${meal.description}")
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     println("Oops: ${error.message}")
                 }
         }
     }
-    fun startSweetsWithNoEggsFlow() {
+
+    private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
@@ -150,5 +150,4 @@ class ConsoleUi(
         }
         println("\n===========================================================\n")
     }
-
 }
