@@ -19,7 +19,7 @@ class ConsoleUi(
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
-    private val getIraqiMealsUseCase: GetIraqiMealsUseCase
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val guessGameUseCase: GuessGameUseCase,
 ) {
     private fun searchByMealName() {
@@ -97,6 +97,7 @@ class ConsoleUi(
         println("3. search by ID")
         println("10. search by ID")
         println("15. Italuan")
+        println("5. Guess Game")
         println("8. search by date")
         println("Loading, Please wait...")
     }
