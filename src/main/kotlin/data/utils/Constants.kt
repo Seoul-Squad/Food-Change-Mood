@@ -26,4 +26,6 @@ object Constants {
         const val SATURATED_FAT = 5
         const val CARBOHYDRATES = 6
     }
+
+
 }

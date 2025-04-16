@@ -1,8 +1,8 @@
 package logic.useCase
 
 import logic.model.Meal
-import logic.repository.MealRepository
 import logic.utils.NoMealsFoundException
+import org.seoulsquad.logic.repository.MealRepository
 
 
 class ExploreOtherCountriesFoodUseCase(
