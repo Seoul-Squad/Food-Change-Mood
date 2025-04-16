@@ -17,8 +17,8 @@ class GetItalianLargeMealsUseCase(
     }
 
     private fun isItalianLargeMeal(meal: Meal) =
-        (meal.tags.any { it.equals(Constants.Italian.ITALIAN_NAME, ignoreCase = true) } ||
-                meal.description?.contains(Constants.Italian.ITALIAN_NAME, ignoreCase = true) ?: false) &&
-                (meal.tags.any { it.equals(Constants.LargeGroup.LARGE_GROUP_NAME, ignoreCase = true) })
+        (meal.tags.any { it.equals(Constants.Tags.ITALIAN_NAME, ignoreCase = true) } ||
+                meal.description?.contains(Constants.Tags.ITALIAN_NAME, ignoreCase = true) ?: false) &&
+                (meal.tags.any { it.equals(Constants.Tags.LARGE_GROUP_NAME, ignoreCase = true) })
 
 }
