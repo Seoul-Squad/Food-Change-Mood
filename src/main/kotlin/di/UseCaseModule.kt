@@ -5,10 +5,12 @@ import org.koin.dsl.module
 import logic.useCase.GetAllMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import org.koin.dsl.module
+import org.seoulsquad.logic.useCase.GetSortedSeafoodMealsUseCase
 
 val useCaseModule =
     module {
         single { GetAllMealsUseCase(get()) }
         single { GetSweetsWithNoEggsUseCase(get()) }
         single { ExploreOtherCountriesFoodUseCase(get()) }
+        single { GetSortedSeafoodMealsUseCase(get()) }
     }
