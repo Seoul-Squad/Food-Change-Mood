@@ -2,14 +2,17 @@ package presentation
 
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
-    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase
+    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
 
     ) {
     fun start() {
         when (getUserInput()) {
+            "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             else -> println("Invalid option. Please try again.")
         }
