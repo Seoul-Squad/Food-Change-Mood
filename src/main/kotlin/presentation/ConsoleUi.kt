@@ -10,6 +10,7 @@ class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
 ) {
 
     fun start() {
@@ -17,10 +18,49 @@ class ConsoleUi(
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             "3" -> startIraqiMealsFlow()
+            "15" -> startItalianLargeMealsFlow()
             else -> println("Invalid option. Please try again.")
         }
     }
+    fun startItalianLargeMealsFlow() {
+        printItalianLargeMealsIntroductionMessage()
+        getItalianLargeMeals()
+    }
+    private fun printItalianLargeMealsIntroductionMessage() {
+        println(
+            """Are you a large group of friends traveling to Italy?
+            | Do you want to share a meal?",
+            |Here The suggestion
+        """.trimMargin()
+        )
+    }
 
+    private fun getItalianLargeMeals() {
+        getItalianLargeMealsUseCase
+            .getItalianLargeMeals()
+            .onSuccess { italianMeals ->
+                printSearchResult(italianMeals)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+    private fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
+    }
+
+    private fun printMeal(meal: Meal) {
+        println(
+            """
+                -ID: ${meal.id}
+            This recipe is called: ${meal.name},
+            ${meal.description}
+            
+            Ingredients: ${meal.ingredients}
+            
+            ==============================================
+            """.trimIndent(),
+        )
+    }
     private fun getUserInput(): String {
         return readlnOrNull() ?: ""
     }
