@@ -1,4 +1,4 @@
-package logic.repository
+package org.seoulsquad.logic.repository
 
 import logic.model.Meal
 

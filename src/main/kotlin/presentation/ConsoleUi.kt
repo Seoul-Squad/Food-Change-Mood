@@ -1,9 +1,11 @@
 package presentation
 
+import GetItalianLargeMealsUseCase
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import logic.useCase.GetRandomEasyMealsUseCase
 import logic.useCase.GuessGameUseCase
 import logic.useCase.NegativeNumberException
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
@@ -25,6 +27,8 @@ class ConsoleUi(
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
     private val guessGameUseCase: GuessGameUseCase,
+    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
+    private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
     private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
 ) {
     private fun searchByMealName() {
@@ -38,9 +42,6 @@ class ConsoleUi(
         }
     }
 
-    private fun printSearchResult(meals: List<Meal>) {
-        meals.forEach { printMeal(it) }
-    }
 
     private fun printMeal(meal: Meal) {
         println(
@@ -60,15 +61,42 @@ class ConsoleUi(
     fun start() {
         printMenu()
         when (getUserInput()) {
-            "2" -> searchByMealName()
-            "6" -> startSweetsWithNoEggsFlow()
-            "10" -> exploreOtherCountriesFood()
+            "2"->searchByMealName()
             "3" -> startIraqiMealsFlow()
+            "4" ->  printRandomEasyMeals()
             "5" -> startGuessGame()
+            "6"->startSweetsWithNoEggsFlow()
             "8" -> searchMealUsingDate()
+            "10" -> exploreOtherCountriesFood()
             "12" -> startShowRandomPotatoMeals()
+            "15" -> startItalianLargeMealsFlow()
             else -> println("Invalid option. Please try again.")
         }
+    }
+    fun startItalianLargeMealsFlow() {
+        printItalianLargeMealsIntroductionMessage()
+        getItalianLargeMeals()
+    }
+    private fun printItalianLargeMealsIntroductionMessage() {
+        println(
+            """Are you a large group of friends traveling to Italy?
+            | Do you want to share a meal?",
+            |Here The suggestion
+        """.trimMargin()
+        )
+    }
+
+    private fun getItalianLargeMeals() {
+        getItalianLargeMealsUseCase
+            .getItalianLargeMeals()
+            .onSuccess { italianMeals ->
+                printSearchResult(italianMeals)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+    private fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
     }
 
     private fun getUserInput(): String = readlnOrNull() ?: ""
@@ -99,11 +127,12 @@ class ConsoleUi(
     private fun printMenu() {
         println("Choose a task")
         println("2. search by name")
-        println("3. search by ID")
-        println("10. search by ID")
-        println("15. Italuan")
+        println("3. Iraqi Meals")
+        println("4. Easy Meals")
         println("5. Guess Game")
+        println("6. Sweets without eggs")
         println("8. search by date")
+        println("10. explore other countries food")
         println("Loading, Please wait...")
     }
 
@@ -190,7 +219,7 @@ class ConsoleUi(
         with(meal) {
             println("Meal: $name (ID: $id)")
             println("Time to Prepare: $minutes minutes")
-            meal.description.takeIf { !it.isNullOrBlank() }.run { println("$this") }
+            meal.description.takeIf { !it.isNullOrBlank() }?.run { println(this) }
             println("Ingredients ($numberOfIngredients):")
             ingredients.forEachIndexed { index, ingredient ->
                 println("  ${index + 1}. $ingredient")
@@ -210,8 +239,7 @@ class ConsoleUi(
         }
         println("\n===========================================================\n")
     }
-
-    fun startIraqiMealsFlow() {
+    private fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
         getIraqiMeals()
     }
@@ -232,6 +260,19 @@ class ConsoleUi(
             .onFailure { exception ->
                 println(exception.message)
             }
+
+    }
+    private fun printRandomEasyMeals() {
+        val result = getRandomEasyMealsUseCase()
+
+        result.onSuccess { randomEasyMealsList ->
+            randomEasyMealsList.forEach { meal ->
+                printFullMeal(meal)
+            }
+        }.onFailure { exception->
+            println(exception.message)
+        }
+
     }
 
 
@@ -262,43 +303,16 @@ class ConsoleUi(
         val mealId = readln()
         getMealUsingIDUseCase(mealId)
             .onSuccess { meals ->
-                meals.forEach { meal -> displayFullMealDetails(meal) }
+                meals.forEach { meal -> printFullMeal(meal) }
             }
             .onFailure { e ->
                 println("\n Could not retrieve meal details: ${e.message}")
             }
     }
 
-    private fun displayFullMealDetails(meal: Meal) {
-        println("\n Meal Details:")
-        println("   ID: ${meal.id}")
-        println("   Name: ${meal.name}")
-        println("   Contributor ID: ${meal.contributorId}")
-        println("   Preparation Time: ${meal.minutes} minutes")
-        println("   Submitted: ${meal.submitted ?: "Not submitted"}")
-        println("   Tags: ${meal.tags.joinToString(", ").ifEmpty { "No tags" }}")
-        println("   Description: ${meal.description ?: "No description"}")
 
-        println("\n Ingredients (${meal.numberOfIngredients}):")
-        meal.ingredients.forEachIndexed { index, ingredient ->
-            println("   ${index + 1}. $ingredient")
-        }
 
-        println("\n Steps (${meal.numberOfSteps}):")
-        meal.steps.forEachIndexed { index, step ->
-            println("   Step ${index + 1}: $step")
-        }
-
-        println("\n Nutrition Facts (per serving):")
-        println("   Calories: ${meal.nutrition.calories} kcal")
-        println("   Total Fat: ${meal.nutrition.totalFat} g")
-        println("   Saturated Fat: ${meal.nutrition.saturatedFat} g")
-        println("   Carbohydrates: ${meal.nutrition.carbohydrates} g")
-        println("   Sugar: ${meal.nutrition.sugar} g")
-        println("   Protein: ${meal.nutrition.protein} g")
-        println("   Sodium: ${meal.nutrition.sodium} mg")
-    }
-    fun startGuessGame() {
+    private fun startGuessGame() {
         do {
             val meal = guessGameUseCase.generateRandomMeal()
             if (meal == null) {
