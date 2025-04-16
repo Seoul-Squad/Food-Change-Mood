@@ -52,10 +52,8 @@ class ConsoleUi(
 
     private fun printMealsProteinTable(meals: List<Meal>) {
         val indexColumnWidth = meals.size.toString().length
-        val nameHeader = "Name"
-        val nameColumnWidth = maxOf(nameHeader.length, meals.maxOf { it.name.length })
-        val proteinHeader = "Protein (g)"
-        val proteinColumnWidth = max(proteinHeader.length, meals.maxOf { "%.1f".format(it.nutrition.protein).length })
+        val nameColumnWidth = maxOf(MEAL_NAME_HEADER.length, meals.maxOf { it.name.length })
+        val proteinColumnWidth = max(MEAL_PROTEIN_HEADER.length, meals.maxOf { it.nutrition.protein.toString().length })
         val paginatedMeals = meals.chunked(TABLE_PAGE_SIZE)
         paginatedMeals.forEachIndexed { index, mealsPage ->
             printMealProteinTablePage(
@@ -102,8 +100,8 @@ class ConsoleUi(
                 ) + "|"
         println(separatorLine)
         println(
-            "| ${"#".padEnd(indexColumnWidth, ' ')} | ${"Meal Name".padEnd(nameColumnWidth, ' ')} | ${
-                "Protein (g)".padEnd(
+            "| ${"#".padEnd(indexColumnWidth, ' ')} | ${MEAL_NAME_HEADER.padEnd(nameColumnWidth, ' ')} | ${
+                MEAL_PROTEIN_HEADER.padEnd(
                     proteinColumnWidth,
                     ' ',
                 )
@@ -213,5 +211,7 @@ class ConsoleUi(
 
     companion object {
         const val TABLE_PAGE_SIZE = 1000
+        const val MEAL_NAME_HEADER = "Meal Name"
+        const val MEAL_PROTEIN_HEADER = "Protein (g)"
     }
 }
