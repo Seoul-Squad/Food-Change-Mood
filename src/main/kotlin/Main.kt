@@ -12,7 +12,7 @@ fun main() {
     startKoin {
         modules(appModule,repositoryModule,useCaseModule,csvModule)
     }
-    val consoleUi: ConsoleUi =getKoin().get()
+    val consoleUi: ConsoleUi = getKoin().get()
     consoleUi.start()
 
 }
