@@ -3,18 +3,19 @@ package presentation
 import GetItalianLargeMealsUseCase
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.GetRandomEasyMealsUseCase
 import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import logic.useCase.GetRandomEasyMealsUseCase
 import logic.useCase.GuessGameUseCase
 import logic.useCase.NegativeNumberException
-import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
+import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 import org.seoulsquad.logic.useCase.model.MealDate
 import org.seoulsquad.logic.utils.KmpSearchAlgorithm
+import org.seoulsquad.presentation.IngredientGame
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 import presentation.utils.ConsoleColors
 import presentation.utils.ConsoleStyle
@@ -32,6 +33,8 @@ class ConsoleUi(
     private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
     private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
     private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
+    //
+    private val ingredientGame: IngredientGame,
 ) {
     fun start() {
         printMenu()
@@ -42,6 +45,7 @@ class ConsoleUi(
             "5" -> startGuessGame()
             "6" -> startSweetsWithNoEggsFlow()
             "8" -> searchMealUsingDate()
+            "11" -> ingredientGame.startIngredientGame()
             "10" -> exploreOtherCountriesFood()
             "12" -> startShowRandomPotatoMeals()
             "13" -> getMealsWithHighCalories()
@@ -59,27 +63,27 @@ class ConsoleUi(
         println("6. Sweets without eggs")
         println("8. search by date")
         println("10. explore other countries food")
+        println("10. Ingredient Game")
         println("12. Show 10 random meals contains potato")
         println("13. Meals with high calories")
         println("15. Italian Large Meals")
     }
 
-    private fun getUserInput(): String {
-        return readlnOrNull() ?: ""
-    }
+    private fun getUserInput(): String = readlnOrNull() ?: ""
 
-    ////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////
     private fun searchByMealName() {
         print("Enter Meal Name:")
         val query = readlnOrNull() ?: ""
         println("Your search result")
-        getSearchByNameUseCase.getSearchByName(query, KmpSearchAlgorithm()).onSuccess { meals ->
-            printSearchResult(meals)
-        }.onFailure { e ->
-            println("Error: ${e.message}")
-        }
+        getSearchByNameUseCase
+            .getSearchByName(query, KmpSearchAlgorithm())
+            .onSuccess { meals ->
+                printSearchResult(meals)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
     }
-
 
     private fun printMeal(meal: Meal) {
         println(
@@ -87,7 +91,7 @@ class ConsoleUi(
             -ID: ${meal.id}
                 This recipe is called: ${meal.name},
             ${meal.description}
-       
+            
             ==============================================
             """.trimIndent(),
         )
@@ -103,7 +107,7 @@ class ConsoleUi(
             """Are you a large group of friends traveling to Italy?
             | Do you want to share a meal?",
             |Here The suggestion
-        """.trimMargin()
+            """.trimMargin(),
         )
     }
 
@@ -121,8 +125,7 @@ class ConsoleUi(
         meals.forEach { printMeal(it) }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
-
+    // //////////////////////////////////////////////////////////////////////////////////
 
     private fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
@@ -142,21 +145,18 @@ class ConsoleUi(
         }
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
 
-
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
         println("Loading, Please wait...")
     }
-
 
     private fun getSweetsWithNoEggs() {
         getSweetsWithNoEggsUseCase
@@ -233,7 +233,7 @@ class ConsoleUi(
         println("\n===========================================================\n")
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun getMealsWithHighCalories() {
         getMealsWithHighCaloriesUseCase()
@@ -244,8 +244,7 @@ class ConsoleUi(
             }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
-
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
@@ -257,38 +256,35 @@ class ConsoleUi(
         println("Loading, Please wait...")
     }
 
-
     private fun getIraqiMeals() {
-        getIraqiMealsUseCase.getAllIraqMeals()
+        getIraqiMealsUseCase
+            .getAllIraqMeals()
             .onSuccess { mealsList ->
                 mealsList.forEach { meal ->
                     printFullMeal(meal)
                     println("\n---\n")
                 }
-            }
-            .onFailure { exception ->
+            }.onFailure { exception ->
                 println(exception.message)
             }
-
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
 
-        result.onSuccess { randomEasyMealsList ->
-            randomEasyMealsList.forEach { meal ->
-                printFullMeal(meal)
+        result
+            .onSuccess { randomEasyMealsList ->
+                randomEasyMealsList.forEach { meal ->
+                    printFullMeal(meal)
+                }
+            }.onFailure { exception ->
+                println(exception.message)
             }
-        }.onFailure { exception ->
-            println(exception.message)
-        }
-
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")
@@ -299,13 +295,15 @@ class ConsoleUi(
             .onSuccess { meals ->
                 displayMealListOfSearchedDate(meals, inputDate)
                 fetchMealAccordingID()
-            }
-            .onFailure { e ->
+            }.onFailure { e ->
                 println("\n Error searching meals: ${e.message}")
             }
     }
 
-    private fun displayMealListOfSearchedDate(meals: List<MealDate>, inputDate: String) {
+    private fun displayMealListOfSearchedDate(
+        meals: List<MealDate>,
+        inputDate: String,
+    ) {
         println("\n Found ${meals.size} meal(s) submitted on $inputDate:\n")
         meals.forEachIndexed { index, meal ->
             println("${index + 1}. [ID: ${meal.id}] ${meal.nameOfMeal} (${meal.date})")
@@ -318,14 +316,12 @@ class ConsoleUi(
         getMealUsingIDUseCase(mealId)
             .onSuccess { meals ->
                 meals.forEach { meal -> printFullMeal(meal) }
-            }
-            .onFailure { e ->
+            }.onFailure { e ->
                 println("\n Could not retrieve meal details: ${e.message}")
             }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
-
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startGuessGame() {
         do {
@@ -370,11 +366,10 @@ class ConsoleUi(
 
             println("\nDo you want to play again? (y/n)")
             val playAgain = readlnOrNull()?.lowercase() == "y"
-
         } while (playAgain)
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startShowRandomPotatoMeals() {
         println("${ConsoleStyle.BOLD}${ConsoleColors.CYAN}This is very yummy, try this potato meals and Ed3yly.${ConsoleStyle.RESET}")
@@ -411,5 +406,4 @@ class ConsoleUi(
             println("Bon-appetit\uD83D\uDE09")
         }
     }
-
 }

@@ -1,8 +1,8 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
-import logic.repository.MealRepository
 import org.seoulsquad.logic.model.IngredientQuestion
+import org.seoulsquad.logic.repository.MealRepository
 
 class IngredientGameUseCase(
     private val mealRepository: MealRepository,
