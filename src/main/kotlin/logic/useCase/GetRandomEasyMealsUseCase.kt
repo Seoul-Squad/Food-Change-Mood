@@ -1,7 +1,10 @@
 package logic.useCase
 
 import logic.model.Meal
+import logic.utils.Constants.EasyFood.MAX_INGREDIENTS
 import org.seoulsquad.logic.repository.MealRepository
+import logic.utils.Constants.EasyFood.MAX_MINUTES
+import logic.utils.Constants.EasyFood.MAX_STEPS
 
 class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
 
@@ -17,5 +20,5 @@ class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
     }
 
     private fun isEasyMeal(meal: Meal): Boolean =
-        meal.minutes <= 30 && meal.ingredients.size <= 5 && meal.steps.size <= 6
+        meal.minutes <= MAX_MINUTES && meal.ingredients.size <= MAX_INGREDIENTS && meal.steps.size <= MAX_STEPS
 }
