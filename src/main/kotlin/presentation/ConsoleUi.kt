@@ -3,43 +3,130 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetSortedSeafoodMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
+import kotlin.math.max
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-
-    ) {
+    private val getSortedSeafoodMealsUseCase: GetSortedSeafoodMealsUseCase,
+) {
     fun start() {
         when (getUserInput()) {
-            "6"->startSweetsWithNoEggsFlow()
+            "6" -> startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
+            "14" -> startSeafoodMealsSortedByProtein()
             else -> println("Invalid option. Please try again.")
         }
     }
 
-    private fun getUserInput(): String {
-        return readlnOrNull() ?: ""
-    }
+    private fun getUserInput(): String = readlnOrNull() ?: ""
 
     private fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
         println("Please enter a country name to explore its food:")
         val country = readlnOrNull()
         country?.let {
-            exploreOtherCountriesFoodUseCase.findMealsByCountry(it,40)
+            exploreOtherCountriesFoodUseCase
+                .findMealsByCountry(it, 40)
                 .onSuccess { meals ->
                     println("Here are some meals from $country:")
                     meals.forEach { meal ->
                         println("- ${meal.name}: ${meal.description}")
                     }
-                }
-                .onFailure { error ->
+                }.onFailure { error ->
                     println("Oops: ${error.message}")
                 }
         }
     }
-    fun startSweetsWithNoEggsFlow() {
+
+    private fun startSeafoodMealsSortedByProtein() {
+        println("Loading, Please wait...")
+        getSortedSeafoodMealsUseCase(
+            compareByDescending<Meal> { it.nutrition.protein }.thenBy { it.name },
+        ).onSuccess(::printMealsProteinTable).onFailure { e ->
+            println("Error: ${e.message}")
+        }
+    }
+
+    private fun printMealsProteinTable(meals: List<Meal>) {
+        val indexColumnWidth = meals.size.toString().length
+        val nameHeader = "Name"
+        val nameColumnWidth = maxOf(nameHeader.length, meals.maxOf { it.name.length })
+        val proteinHeader = "Protein (g)"
+        val proteinColumnWidth = max(proteinHeader.length, meals.maxOf { "%.1f".format(it.nutrition.protein).length })
+        val paginatedMeals = meals.chunked(TABLE_PAGE_SIZE)
+        paginatedMeals.forEachIndexed { index, mealsPage ->
+            printMealProteinTablePage(
+                pagesCount = paginatedMeals.size,
+                pageIndex = index,
+                meals = mealsPage,
+                indexColumnWidth = indexColumnWidth,
+                nameColumnWidth = nameColumnWidth,
+                proteinColumnWidth = proteinColumnWidth,
+            )
+            if (doesUserWantToExit(index, paginatedMeals)) return
+        }
+    }
+
+    private fun doesUserWantToExit(
+        index: Int,
+        paginatedMeals: List<List<Meal>>,
+    ): Boolean {
+        if (index != paginatedMeals.size - 1) {
+            while (true) {
+                println("Press Enter to view next page or 0 to exit.")
+                when (readln().trim()) {
+                    "" -> break
+                    "0" -> return true
+                    else -> println("Invalid input, Please retry again")
+                }
+            }
+        }
+        return false
+    }
+
+    private fun printMealProteinTablePage(
+        pagesCount: Int,
+        pageIndex: Int,
+        meals: List<Meal>,
+        indexColumnWidth: Int,
+        nameColumnWidth: Int,
+        proteinColumnWidth: Int,
+    ) {
+        val separatorLine =
+            "|" + "-".repeat(indexColumnWidth + 2) + "|" + "-".repeat(nameColumnWidth + 2) + "|" +
+                "-".repeat(
+                    proteinColumnWidth + 2,
+                ) + "|"
+        println(separatorLine)
+        println(
+            "| ${"#".padEnd(indexColumnWidth, ' ')} | ${"Meal Name".padEnd(nameColumnWidth, ' ')} | ${
+                "Protein (g)".padEnd(
+                    proteinColumnWidth,
+                    ' ',
+                )
+            } |",
+        )
+        println(separatorLine)
+        meals.forEachIndexed { index, meal ->
+            println(
+                "| ${
+                    ((index + 1) + (pageIndex * TABLE_PAGE_SIZE)).toString().padEnd(indexColumnWidth, ' ')
+                } | ${meal.name.padEnd(nameColumnWidth, ' ')} | ${
+                    meal.nutrition.protein.toString().padEnd(
+                        proteinColumnWidth,
+                        ' ',
+                    )
+                } |",
+            )
+        }
+        println(separatorLine)
+        println("=== Page ${pageIndex + 1} of $pagesCount ===")
+    }
+
+    private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
@@ -124,6 +211,7 @@ class ConsoleUi(
         }
     }
 
+    companion object {
+        const val TABLE_PAGE_SIZE = 1000
+    }
 }
-
-
