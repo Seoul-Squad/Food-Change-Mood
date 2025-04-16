@@ -3,6 +3,8 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
+import org.seoulsquad.logic.utils.KmpSearchAlgorithm
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
@@ -14,11 +16,43 @@ class ConsoleUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
-    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val getSearchByNameUseCase: GetSearchByNameUseCase,
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase
 ) {
+    private fun searchByMealName() {
+        print("Enter Meal Name:")
+        val query = readlnOrNull() ?: ""
+        println("Your search result")
+        getSearchByNameUseCase.getSearchByName(query, KmpSearchAlgorithm()).onSuccess { meals ->
+            printSearchResult(meals)
+        }.onFailure { e ->
+            println("Error: ${e.message}")
+        }
+    }
+
+    private fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
+    }
+
+    private fun printMeal(meal: Meal) {
+        println(
+            """
+                -ID: ${meal.id}
+            This recipe is called: ${meal.name},
+            ${meal.description}
+            
+            Ingredients: ${meal.ingredients}
+            
+            ==============================================
+            """.trimIndent(),
+        )
+    }
+
 
     fun start() {
+        printMenu()
         when (getUserInput()) {
+            "2"->searchByMealName()
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             "3" -> startIraqiMealsFlow()
@@ -53,6 +87,14 @@ class ConsoleUi(
         getSweetsWithNoEggs()
     }
 
+    private fun printMenu() {
+        println("Choose a task")
+        println("2. search by name")
+        println("3. search by ID")
+        println("10. search by ID")
+        println("15. Italuan")
+        println("Loading, Please wait...")
+    }
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
