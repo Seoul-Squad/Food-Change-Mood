@@ -3,17 +3,17 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 import org.seoulsquad.logic.useCase.model.MealDate
-import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
-    private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase
+    private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 ) {
 
@@ -22,6 +22,7 @@ class ConsoleUi(
             "6"->startSweetsWithNoEggsFlow()
             "10" -> exploreOtherCountriesFood()
             "3" -> startIraqiMealsFlow()
+            "8" -> searchMealUsingDate()
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -151,9 +152,9 @@ class ConsoleUi(
                 println(exception.message)
             }
     }
-}
 
-    fun searchMealUsingDate() {
+
+    private fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")
         val inputDate = readln()
         println("Loading................")
