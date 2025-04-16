@@ -1,6 +1,6 @@
-package org.seoulsquad.logic.repository
+package logic.repository
 
-import data.model.Meal
+import logic.model.Meal
 
 interface MealRepository {
     fun getAllMeals(): List<Meal>

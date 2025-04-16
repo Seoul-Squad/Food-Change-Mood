@@ -1,7 +1,8 @@
-package org.seoulsquad.logic.use_case
+package logic.useCase
 
-import org.seoulsquad.logic.repository.MealRepository
-import data.model.Meal
+import logic.model.Meal
+import logic.repository.MealRepository
+
 
 class GetAllMealsUseCase(private val repository: MealRepository) {
     operator fun invoke(): List<Meal> {

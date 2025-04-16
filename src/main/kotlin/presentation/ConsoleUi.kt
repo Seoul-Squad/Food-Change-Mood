@@ -1,4 +1,4 @@
-package org.seoulsquad.presentation
+package presentation
 
 import org.seoulsquad.logic.use_case.ExploreOtherCountriesFoodUseCase
 

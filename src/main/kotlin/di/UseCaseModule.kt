@@ -1,8 +1,7 @@
 package org.seoulsquad.di
 
 import org.koin.dsl.module
-import org.seoulsquad.logic.use_case.ExploreOtherCountriesFoodUseCase
-import org.seoulsquad.logic.use_case.GetAllMealsUseCase
+import logic.useCase.GetAllMealsUseCase
 
 val useCaseModule= module {
     single { GetAllMealsUseCase(get()) }

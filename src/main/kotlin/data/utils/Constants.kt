@@ -1,12 +1,10 @@
 package data.utils
 
-
-
 object Constants {
     const val CSV_FILE_PATH = "food.csv"
 
-
     object ColumnName {
+
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "name"
         const val COLUMN_MINUTES = "minutes"

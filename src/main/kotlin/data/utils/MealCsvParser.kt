@@ -1,7 +1,5 @@
 package data.utils
 
-import data.utils.Constants.ColumnName.COLUMN_ID
-import kotlinx.datetime.LocalDate
 import data.utils.Constants.ColumnIndex.CALORIES
 import data.utils.Constants.ColumnIndex.CARBOHYDRATES
 import data.utils.Constants.ColumnIndex.PROTEIN
@@ -11,6 +9,7 @@ import data.utils.Constants.ColumnIndex.SUGAR
 import data.utils.Constants.ColumnIndex.TOTAL_FAT
 import data.utils.Constants.ColumnName.COLUMN_CONTRIBUTOR_ID
 import data.utils.Constants.ColumnName.COLUMN_DESCRIPTION
+import data.utils.Constants.ColumnName.COLUMN_ID
 import data.utils.Constants.ColumnName.COLUMN_INGREDIENTS
 import data.utils.Constants.ColumnName.COLUMN_MINUTES
 import data.utils.Constants.ColumnName.COLUMN_NAME
@@ -19,8 +18,10 @@ import data.utils.Constants.ColumnName.COLUMN_N_STEPS
 import data.utils.Constants.ColumnName.COLUMN_STEPS
 import data.utils.Constants.ColumnName.COLUMN_SUBMITTED
 import data.utils.Constants.ColumnName.COLUMN_TAGS
-import data.model.Meal
-import org.seoulsquad.model.Nutrition
+import kotlinx.datetime.LocalDate
+import logic.model.Meal
+import logic.model.Nutrition
+
 
 class MealCsvParser {
 
