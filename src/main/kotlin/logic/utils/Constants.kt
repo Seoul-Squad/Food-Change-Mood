@@ -8,4 +8,8 @@ object Constants {
     object Ingredients {
         const val INGREDIENT_EGG = "egg"
     }
+
+    object Calories {
+        const val HIGH_CALORIES = 700
+    }
 }

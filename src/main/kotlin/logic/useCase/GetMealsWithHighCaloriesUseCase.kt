@@ -2,6 +2,7 @@ package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
 import logic.repository.MealRepository
+import logic.utils.Constants.Calories.HIGH_CALORIES
 
 class GetMealsWithHighCaloriesUseCase(
     private val mealRepository: MealRepository
@@ -15,5 +16,5 @@ class GetMealsWithHighCaloriesUseCase(
             ?: Result.failure(Exception("No meals found"))
 
     private fun isMealWithHighCalories(meal: Meal): Boolean =
-        meal.nutrition.calories > 700
+        meal.nutrition.calories > HIGH_CALORIES
 }
