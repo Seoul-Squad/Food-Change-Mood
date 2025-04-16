@@ -1,4 +1,4 @@
-package org.seoulsquad.presentation
+package presentation
 
 class ConsoleUi {
 }

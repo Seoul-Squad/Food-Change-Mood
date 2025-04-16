@@ -4,7 +4,7 @@ import data.model.CsvData
 import java.io.BufferedReader
 import java.io.FileReader
 
-class MealCsvFileReader(private val fileReader: FileReader , private val parser: CsvLineParser) {
+class CsvFileReader(private val fileReader: FileReader, private val parser: CsvLineParser) {
 
     fun readCsv(): CsvData {
         val rows = mutableListOf<List<String>>()
