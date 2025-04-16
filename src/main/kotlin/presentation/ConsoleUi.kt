@@ -1,60 +1,49 @@
 package presentation
 
 import logic.model.Meal
+import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.logic.useCase.GetItalianLargeMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
+    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-    private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
-) {
 
-    fun startItalianLargeMealsFlow() {
-        printItalianLargeMealsIntroductionMessage()
-        getItalianLargeMeals()
+    ) {
+    fun start() {
+        when (getUserInput()) {
+            "6"->startSweetsWithNoEggsFlow()
+            "10" -> exploreOtherCountriesFood()
+            else -> println("Invalid option. Please try again.")
+        }
     }
 
+    private fun getUserInput(): String {
+        return readlnOrNull() ?: ""
+    }
+
+    private fun exploreOtherCountriesFood() {
+        println("Welcome to the Food Explorer!")
+        println("Please enter a country name to explore its food:")
+        val country = readlnOrNull()
+        country?.let {
+            exploreOtherCountriesFoodUseCase.findMealsByCountry(it,40)
+                .onSuccess { meals ->
+                    println("Here are some meals from $country:")
+                    meals.forEach { meal ->
+                        println("- ${meal.name}: ${meal.description}")
+                    }
+                }
+                .onFailure { error ->
+                    println("Oops: ${error.message}")
+                }
+        }
+    }
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
     }
 
-    private fun printItalianLargeMealsIntroductionMessage() {
-        println(
-            """Are you a large group of friends traveling to Italy?
-            | Do you want to share a meal?",
-            |Here The suggestion
-        """.trimMargin()
-        )
-    }
-
-    private fun getItalianLargeMeals() {
-        getItalianLargeMealsUseCase
-            .getItalianLargeMeals()
-            .onSuccess { italianMeals ->
-                printSearchResult(italianMeals)
-            }.onFailure { e ->
-                println("Error: ${e.message}")
-            }
-    }
-    private fun printSearchResult(meals: List<Meal>) {
-        meals.forEach { printMeal(it) }
-    }
-
-    private fun printMeal(meal: Meal) {
-        println(
-            """
-                -ID: ${meal.id}
-            This recipe is called: ${meal.name},
-            ${meal.description}
-            
-            Ingredients: ${meal.ingredients}
-            
-            ==============================================
-            """.trimIndent(),
-        )
-    }
     private fun printSweetsWithNoEggsIntroductionMessage() {
         println("Looking for a sweet without eggs? You're in the right place!")
         println("Like to see more details, or dislike to get another suggestion.")
@@ -134,4 +123,7 @@ class ConsoleUi(
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
     }
+
 }
+
+
