@@ -33,19 +33,17 @@ class ConsoleUi(
     private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
     private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
 ) {
-
-
-
     fun start() {
         printMenu()
         when (getUserInput()) {
-            "2"->searchByMealName()
+            "2" -> searchByMealName()
             "3" -> startIraqiMealsFlow()
-            "4" ->  printRandomEasyMeals()
+            "4" -> printRandomEasyMeals()
             "5" -> startGuessGame()
-            "6"->startSweetsWithNoEggsFlow()
+            "6" -> startSweetsWithNoEggsFlow()
             "8" -> searchMealUsingDate()
             "10" -> exploreOtherCountriesFood()
+            "12" -> startShowRandomPotatoMeals()
             "13" -> getMealsWithHighCalories()
             "15" -> startItalianLargeMealsFlow()
             else -> println("Invalid option. Please try again.")
@@ -61,9 +59,9 @@ class ConsoleUi(
         println("6. Sweets without eggs")
         println("8. search by date")
         println("10. explore other countries food")
+        println("12. Show 10 random meals contains potato")
         println("13. Meals with high calories")
         println("15. Italian Large Meals")
-        println("Loading, Please wait...")
     }
 
     private fun getUserInput(): String {
@@ -86,12 +84,10 @@ class ConsoleUi(
     private fun printMeal(meal: Meal) {
         println(
             """
-                -ID: ${meal.id}
-            This recipe is called: ${meal.name},
+            -ID: ${meal.id}
+                This recipe is called: ${meal.name},
             ${meal.description}
-            
-            Ingredients: ${meal.ingredients}
-            
+       
             ==============================================
             """.trimIndent(),
         )
@@ -101,6 +97,7 @@ class ConsoleUi(
         printItalianLargeMealsIntroductionMessage()
         getItalianLargeMeals()
     }
+
     private fun printItalianLargeMealsIntroductionMessage() {
         println(
             """Are you a large group of friends traveling to Italy?
@@ -119,12 +116,12 @@ class ConsoleUi(
                 println("Error: ${e.message}")
             }
     }
+
     private fun printSearchResult(meals: List<Meal>) {
         meals.forEach { printMeal(it) }
     }
 
     ////////////////////////////////////////////////////////////////////////////////////
-
 
 
     private fun exploreOtherCountriesFood() {
@@ -261,7 +258,7 @@ class ConsoleUi(
     }
 
 
-    private fun getIraqiMeals(){
+    private fun getIraqiMeals() {
         getIraqiMealsUseCase.getAllIraqMeals()
             .onSuccess { mealsList ->
                 mealsList.forEach { meal ->
@@ -284,7 +281,7 @@ class ConsoleUi(
             randomEasyMealsList.forEach { meal ->
                 printFullMeal(meal)
             }
-        }.onFailure { exception->
+        }.onFailure { exception ->
             println(exception.message)
         }
 
@@ -392,14 +389,27 @@ class ConsoleUi(
     private fun printPotatoMealsResult(mealsWithPotato: List<Meal>) {
         if (mealsWithPotato.size < 10) {
             println("Unfortunately we don't have 10 meals right now.\uD83E\uDD7A")
-            Thread.sleep(500)
+            Thread.sleep(1000)
             println("But cheers up he have: ${mealsWithPotato.size}\uD83D\uDE03")
-            Thread.sleep(500)
+            Thread.sleep(1500)
             println("So here is ${mealsWithPotato.size} potato meals instead\uD83D\uDE09\n\n")
-            Thread.sleep(500)
+            Thread.sleep(1000)
         }
-        mealsWithPotato.forEach { printFullMeal(it) }
-        println("Bon-appetit")
+        mealsWithPotato.forEach { printMeal(it) }
+
+        getUserPotatoInterestMeal(mealsWithPotato)
+    }
+
+    private fun getUserPotatoInterestMeal(mealsWithPotato: List<Meal>) {
+        println("Are you interest in any of this meals? (y/n)")
+        var userInput = readlnOrNull() ?: ""
+
+        if (userInput == "y") {
+            println("Please enter meal id: ")
+            userInput = readlnOrNull() ?: ""
+            printFullMeal(mealsWithPotato.first { it.id == userInput.toInt() })
+            println("Bon-appetit\uD83D\uDE09")
+        }
     }
 
 }
