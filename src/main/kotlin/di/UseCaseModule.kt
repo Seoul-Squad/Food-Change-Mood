@@ -14,11 +14,8 @@ import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.useCase.GetSortedSeafoodMealsUseCase
-import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
-import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
-import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
-import logic.useCase.GuessGameUseCase
 import org.seoulsquad.logic.useCase.IngredientGameUseCase
+import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 
 val useCaseModule =
     module {
