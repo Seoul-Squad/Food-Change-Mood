@@ -1,4 +1,4 @@
-package org.seoulsquad.di
+package di
 
 import org.koin.dsl.module
 import org.seoulsquad.logic.use_case.GetAllMealsUseCase

@@ -1,4 +1,4 @@
-package org.seoulsquad.data.utils
+package data.utils
 
 object Constants {
     const val CSV_FILE_PATH = "food.csv"
@@ -10,7 +10,6 @@ object Constants {
         const val COLUMN_CONTRIBUTOR_ID = "contributor_id"
         const val COLUMN_SUBMITTED = "submitted"
         const val COLUMN_TAGS = "tags"
-        const val COLUMN_NUTRITION = "nutrition"
         const val COLUMN_N_STEPS = "n_steps"
         const val COLUMN_STEPS = "steps"
         const val COLUMN_DESCRIPTION = "description"
