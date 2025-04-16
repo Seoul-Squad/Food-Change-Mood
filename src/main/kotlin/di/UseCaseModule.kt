@@ -6,6 +6,7 @@ import logic.useCase.GetAllMealsUseCase
 import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.useCase.GetRandomEasyMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
+import logic.useCase.GetKetoDietMealUseCase
 import org.koin.dsl.module
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
@@ -23,6 +24,7 @@ val useCaseModule =
         single { GetSearchByNameUseCase(get()) }
         single { GetIraqiMealsUseCase(get()) }
         single { ExploreOtherCountriesFoodUseCase(get()) }
+        single { GetKetoDietMealUseCase(get()) }
         single { GetMealsWithHighCaloriesUseCase(get()) }
         single { GetItalianLargeMealsUseCase(get()) }
         single { SearchFoodsUsingDateUseCase(get()) }

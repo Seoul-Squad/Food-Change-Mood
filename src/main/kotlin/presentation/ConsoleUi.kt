@@ -3,6 +3,7 @@ package presentation
 import GetItalianLargeMealsUseCase
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.GetKetoDietMealUseCase
 import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import logic.useCase.GetRandomEasyMealsUseCase
@@ -23,6 +24,7 @@ import kotlin.collections.forEachIndexed
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val getKetoDietMealUseCase: GetKetoDietMealUseCase,
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
     private val getSearchByNameUseCase: GetSearchByNameUseCase,
@@ -41,11 +43,13 @@ class ConsoleUi(
             "4" -> printRandomEasyMeals()
             "5" -> startGuessGame()
             "6" -> startSweetsWithNoEggsFlow()
+            "7" -> startKetoDietFlow()
             "8" -> searchMealUsingDate()
             "10" -> exploreOtherCountriesFood()
             "12" -> startShowRandomPotatoMeals()
             "13" -> getMealsWithHighCalories()
             "15" -> startItalianLargeMealsFlow()
+
             else -> println("Invalid option. Please try again.")
         }
     }
@@ -57,6 +61,7 @@ class ConsoleUi(
         println("4. Easy Meals")
         println("5. Guess Game")
         println("6. Sweets without eggs")
+        println("7. Keto Diet Meals")
         println("8. search by date")
         println("10. explore other countries food")
         println("12. Show 10 random meals contains potato")
@@ -191,16 +196,38 @@ class ConsoleUi(
             SuggestionFeedbackOption.DISLIKE.ordinal -> {
                 suggestMeal(meals.minusElement(randomMeal))
             }
-
-            else -> {
-                println("Please, enter a valid option!")
-                suggestMeal(meals)
-            }
         }
     }
 
+    fun startKetoDietFlow() {
+        printKetoIntroMessage()
+        getKetoMeals()
+    }
+
+    private fun printKetoIntroMessage() {
+        println("Following a Keto diet? We’ve got some low-carb options for you!")
+        println("You can like to see full details or dislike to get another meal.")
+        println("Loading Keto meals, please wait...")
+    }
+
+    private fun getKetoMeals() {
+        getKetoDietMealUseCase
+            .getKetoDietMeal()
+            .onSuccess { ketoList ->
+                suggestMeal(ketoList)
+            }.onFailure { e ->
+                println("Error: ${e.message}")
+            }
+    }
+
+
+
+
+
     private fun printLikeAndDislikeOptions() {
-        SuggestionFeedbackOption.entries.forEach { println("${it.ordinal}. ${it.title}") }
+        SuggestionFeedbackOption.entries.forEach {
+            println("${it.ordinal}. ${it.title}")
+        }
     }
 
     private fun printShortMeal(meal: Meal) {
@@ -286,6 +313,7 @@ class ConsoleUi(
         }
 
     }
+
 
 
     ////////////////////////////////////////////////////////////////////////////////////////
