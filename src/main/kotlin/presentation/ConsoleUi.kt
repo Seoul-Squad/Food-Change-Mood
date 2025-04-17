@@ -3,14 +3,14 @@ package presentation
 import logic.model.Meal
 import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.logic.useCase.GetHealthyFastFood
+import org.seoulsquad.logic.useCase.GetHealthyFastFoodUseCase
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class ConsoleUi(
     private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-    private val getHealthyFastFoodPreparedUnder15Minutes : GetHealthyFastFood,
+    private val getHealthyFastFoodUseCase : GetHealthyFastFoodUseCase,
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
 
 
@@ -153,10 +153,9 @@ class ConsoleUi(
     }
     private fun presentHealthyMeal (){
         GreetingMessageForGetHealthyMealFeature()
-val healthyMealList = getHealthyFastFoodPreparedUnder15Minutes.getFastHealthyMeals()
-        healthyMealList.map { mealList ->mealList.map {
-            printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(it)
-        } }
+ getHealthyFastFoodUseCase.getFastHealthyMeals().onSuccess { it.forEach{printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(it)} }
+     .onFailure { println(it.message) }
+
 
     }
     private fun GreetingMessageForGetHealthyMealFeature (){
