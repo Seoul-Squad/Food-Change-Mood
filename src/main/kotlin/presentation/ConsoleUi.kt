@@ -51,8 +51,8 @@ class ConsoleUi(
             "6" -> startSweetsWithNoEggsFlow()
             "7" -> startKetoDietFlow()
             "8" -> searchMealUsingDate()
-            "11" -> ingredientGame.startIngredientGame()
             "10" -> exploreOtherCountriesFood()
+            "11" -> ingredientGame.startIngredientGame()
             "12" -> startShowRandomPotatoMeals()
             "13" -> getMealsWithHighCalories()
             "14" -> startSeafoodMealsSortedByProtein()
@@ -72,7 +72,7 @@ class ConsoleUi(
         println("7. Keto Diet Meals")
         println("8. search by date")
         println("10. explore other countries food")
-        println("10. Ingredient Game")
+        println("11. Ingredient Game")
         println("12. Show 10 random meals contains potato")
         println("13. Meals with high calories")
         println("14. Seafood meals sorted by protein content")
@@ -135,7 +135,7 @@ class ConsoleUi(
         meals.forEach { printMeal(it) }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////
 
     private fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
@@ -155,8 +155,7 @@ class ConsoleUi(
         }
     }
 
-
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startSeafoodMealsSortedByProtein() {
         println("Loading, Please wait...")
@@ -249,7 +248,7 @@ class ConsoleUi(
         println("=== Page ${pageIndex + 1} of $pagesCount ===")
     }
 
-    /////////////////////////////////////////////////
+    // ///////////////////////////////////////////////
     private fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
         getSweetsWithNoEggs()
@@ -297,7 +296,7 @@ class ConsoleUi(
         }
     }
 
-    //////////////////////////////////////////////////
+    // ////////////////////////////////////////////////
 
     fun startKetoDietFlow() {
         printKetoIntroMessage()
@@ -356,7 +355,7 @@ class ConsoleUi(
         println("\n===========================================================\n")
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun getMealsWithHighCalories() {
         getMealsWithHighCaloriesUseCase()
@@ -367,7 +366,7 @@ class ConsoleUi(
             }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
@@ -392,7 +391,7 @@ class ConsoleUi(
             }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
@@ -407,7 +406,7 @@ class ConsoleUi(
             }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")
@@ -444,7 +443,7 @@ class ConsoleUi(
             }
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startGuessGame() {
         do {
@@ -489,11 +488,10 @@ class ConsoleUi(
 
             println("\nDo you want to play again? (y/n)")
             val playAgain = readlnOrNull()?.lowercase() == "y"
-
         } while (playAgain)
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+    // //////////////////////////////////////////////////////////////////////////////////////
 
     private fun startShowRandomPotatoMeals() {
         println("${ConsoleStyle.BOLD}${ConsoleColors.CYAN}This is very yummy, try this potato meals and Ed3yly.${ConsoleStyle.RESET}")
@@ -530,6 +528,7 @@ class ConsoleUi(
             println("Bon-appetit\uD83D\uDE09")
         }
     }
+
     companion object {
         const val TABLE_PAGE_SIZE = 1000
         const val MEAL_NAME_HEADER = "Meal Name"

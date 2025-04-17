@@ -19,8 +19,6 @@ class IngredientGameUseCase(
                 false to wrongAnswer[1],
             ).shuffled()
 
-        println(answers.size)
-
         return Result.success(IngredientQuestion(randomMeal, answers))
     }
 
