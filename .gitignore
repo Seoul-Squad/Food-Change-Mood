@@ -38,7 +38,7 @@ bin/
 /dist/
 /nbdist/
 /.nb-gradle/
-
+/food.csv
 ### VS Code ###
 .vscode/
 
