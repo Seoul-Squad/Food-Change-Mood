@@ -10,13 +10,10 @@ import presentation.ConsoleUi
 
 fun main() {
     startKoin {
-        modules(appModule,repositoryModule,useCaseModule,csvModule)
+        modules(appModule, repositoryModule, useCaseModule, csvModule)
     }
 
     println("Loading, Please wait...")
     val consoleUi: ConsoleUi = getKoin().get()
     consoleUi.start()
-
 }
-
-

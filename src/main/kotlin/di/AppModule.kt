@@ -1,6 +1,5 @@
 package di
 
-
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 import org.seoulsquad.presentation.*
@@ -21,5 +20,5 @@ val appModule =
         singleOf(::SearchMealUsingDateUi)
         singleOf(::ShowRandomPotatoMealsUi)
         singleOf(::SweetsWithNoEggsUi)
-
+        singleOf(::IngredientGameUi)
     }

@@ -1,21 +1,10 @@
 package di
 
 import GetItalianLargeMealsUseCase
-import logic.useCase.ExploreOtherCountriesFoodUseCase
-import logic.useCase.GetAllMealsUseCase
-import logic.useCase.GetKetoDietMealUseCase
-import logic.useCase.GetRandomEasyMealsUseCase
-import logic.useCase.GetRandomPotatoMealsUseCase
-import logic.useCase.GetSweetsWithNoEggsUseCase
-import logic.useCase.GuessGameUseCase
+import logic.useCase.*
 import org.koin.dsl.module
+import org.seoulsquad.logic.useCase.*
 import org.seoulsquad.logic.useCase.GetHealthyFastFoodUseCase
-import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
-import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
-import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
-import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
-import org.seoulsquad.logic.useCase.GetSortedSeafoodMealsUseCase
-import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
 
 val useCaseModule =
     module {
@@ -34,5 +23,5 @@ val useCaseModule =
         single { GetMealUsingIDUseCase(get()) }
         single { GuessGameUseCase(get()) }
         single { GetHealthyFastFoodUseCase(get()) }
-
+        single { GetRandomIngredientQuestion(get()) }
     }
