@@ -19,8 +19,6 @@ class ConsoleUi(
     private val getHealthyFastFoodUseCase: GetHealthyFastFoodUseCase,
     private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi,
     private val italianLargeMealsConsole: ItalianLargeMealsUi,
-    private val showRandomPotatoMealsUi: ShowRandomPotatoMealsUi,
-    private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi,
     private val mealsByCaloriesAndProteinUi: MealsByCaloriesAndProteinUi,
 ) {
     fun start() {
