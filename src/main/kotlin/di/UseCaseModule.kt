@@ -9,6 +9,7 @@ import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.useCase.GetSweetsWithNoEggsUseCase
 import logic.useCase.GuessGameUseCase
 import org.koin.dsl.module
+import org.seoulsquad.logic.useCase.GetHealthyFastFoodUseCase
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
@@ -32,4 +33,6 @@ val useCaseModule =
         single { SearchFoodsUsingDateUseCase(get()) }
         single { GetMealUsingIDUseCase(get()) }
         single { GuessGameUseCase(get()) }
+        single { GetHealthyFastFoodUseCase(get()) }
+
     }
