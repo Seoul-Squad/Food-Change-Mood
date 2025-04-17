@@ -21,5 +21,5 @@ val appModule =
         singleOf(::SearchMealUsingDateUi)
         singleOf(::ShowRandomPotatoMealsUi)
         singleOf(::SweetsWithNoEggsUi)
-
+        singleOf(::MealsByCaloriesAndProteinUi)
     }

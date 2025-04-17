@@ -1,7 +1,7 @@
 package logic.useCase
 
 import logic.model.Meal
-import logic.repository.MealRepository
+import org.seoulsquad.logic.repository.MealRepository
 
 class GetMealsByCaloriesAndProtein(
     private val mealRepository: MealRepository
