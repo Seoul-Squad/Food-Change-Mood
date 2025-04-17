@@ -1,24 +1,39 @@
 package presentation
 
-import logic.model.Meal
-import logic.useCase.ExploreOtherCountriesFoodUseCase
-import logic.useCase.GetMealsByCaloriesAndProtein
-import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
+import org.seoulsquad.presentation.*
 
 class ConsoleUi(
-    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
-    private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
-    private val getMealsByCaloriesAndProtein: GetMealsByCaloriesAndProtein,
-
-    ) {
+    private val exploreOtherCountriesFoodConsole: ExploreOtherCountriesFoodUi,
+    private val sweetsWithNoEggsConsole: SweetsWithNoEggsUi,
+    private val ketoDietMealsUi: KetoDietMealsUi,
+    private val searchMealUsingDateUi: SearchMealUsingDateUi,
+    private val searchByNameConsole: SearchByNameUi,
+    private val iraqiMealsUi: IraqiMealsUi,
+    private val mealsWithHighCaloriesUi: MealsWithHighCaloriesUi,
+    private val guessGameUi: GuessGameUi,
+    private val randomEasyMealsUi: RandomEasyMealsUi,
+    private val italianLargeMealsConsole: ItalianLargeMealsUi,
+    private val showRandomPotatoMealsUi: ShowRandomPotatoMealsUi,
+    private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi
+) {
     fun start() {
-            println("Choose your operation [6: SweetsWithNoEggs, 10: exploreOtherCountriesFood, 9: GetMealsByCaloriesAndProtein ]")
+        showWelcomeScreen()
+        printMenu()
         when (getUserInput()) {
-            "6"->startSweetsWithNoEggsFlow()
-            "10" -> exploreOtherCountriesFood()
+            "2" -> searchByNameConsole.searchByMealName()
+            "3" -> iraqiMealsUi.startIraqiMealsFlow()
+            "4" -> randomEasyMealsUi.printRandomEasyMeals()
+            "5" -> guessGameUi.startGuessGame()
+            "6" -> sweetsWithNoEggsConsole.startSweetsWithNoEggsFlow()
+            "7" -> ketoDietMealsUi.startKetoDietFlow()
+            "8" -> searchMealUsingDateUi.searchMealUsingDate()
             "9" -> startGetMealsByCaloriesAndProtein()
-            else -> println("Invalid option. Please try again.")
+            "10" -> exploreOtherCountriesFoodConsole.exploreOtherCountriesFood()
+            "12" -> showRandomPotatoMealsUi.startShowRandomPotatoMeals()
+            "13" -> mealsWithHighCaloriesUi.getMealsWithHighCalories()
+            "14" -> seaFoodMealsSortedByProteinConsole.startSeafoodMealsSortedByProtein()
+            "15" -> italianLargeMealsConsole.startItalianLargeMealsFlow()
+            else -> println("❌ Invalid option. Please try again!")
         }
     }
 
@@ -99,35 +114,33 @@ class ConsoleUi(
         SuggestionFeedbackOption.entries.forEach { println("${it.ordinal}. ${it.title}") }
     }
 
-    private fun printShortMeal(meal: Meal) {
-        println("\u001B[1mMeal: ${meal.name}\u001B[0m")
-        meal.description.takeIf { !it.isNullOrBlank() }?.run { println(this) }
+    private fun showWelcomeScreen() {
+        println("╔═════════════════════════════════════════╗")
+        println("║ 🍽️ Welcome to Meal Explorer Terminal 🍽️ ║")
+        println("╚═════════════════════════════════════════╝")
+        println("✨ Discover meals from around the world, explore diets, and enjoy a tasty adventure!\n")
     }
 
-    private fun printFullMeal(meal: Meal) {
-        with(meal) {
-            println("Meal: $name (ID: $id)")
-            println("Time to Prepare: $minutes minutes")
-            meal.description.takeIf { !it.isNullOrBlank() }.run { println("$this") }
-            println("Ingredients ($numberOfIngredients):")
-            ingredients.forEachIndexed { index, ingredient ->
-                println("  ${index + 1}. $ingredient")
-            }
-            println("Steps ($numberOfSteps):")
-            steps.forEachIndexed { index, step ->
-                println("  Step ${index + 1}: $step")
-            }
-            println("Nutrition:")
-            println("  - Calories: ${nutrition.calories} kcal")
-            println("  - Total Fat: ${nutrition.totalFat} g")
-            println("  - Saturated Fat: ${nutrition.saturatedFat} g")
-            println("  - Sugar: ${nutrition.sugar} g")
-            println("  - Sodium: ${nutrition.sodium} mg")
-            println("  - Protein: ${nutrition.protein} g")
-            println("  - Carbohydrates: ${nutrition.carbohydrates} g")
-        }
+    private fun printMenu() {
+        println("🌟 Choose a task by entering the number:")
+        println("------------------------------------------------")
+        println("2  🔍 Search Meal by Name")
+        println("3  🍲 Iraqi Meals")
+        println("4  🥗 Easy Meals")
+        println("5  🎯 Guess the Meal Game")
+        println("6  🍰 Sweets Without Eggs")
+        println("7  🥓 Keto Diet Meals")
+        println("8  📅 Search Meals by Date")
+        println("10 🌍 Explore Other Countries' Food")
+        println("12 🥔 Show 10 Random Potato Meals")
+        println("13 🔥 Meals with High Calories")
+        println("14 🐟 Seafood Meals Sorted by Protein")
+        println("15 🍝 Italian Large Meals")
+        println("------------------------------------------------")
+        print("👉 Enter your choice: ")
     }
 
+    private fun getUserInput(): String = readlnOrNull() ?: ""
     fun startGetMealsByCaloriesAndProtein() {
         println("=== Meal Nutrition Filter ===")
 //        val allMeals = getAllMealsUseCase()  // Call the GetAllMealsUseCase
@@ -150,5 +163,3 @@ class ConsoleUi(
 
 
 }
-
-
