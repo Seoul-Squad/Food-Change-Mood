@@ -1,9 +1,9 @@
 package org.seoulsquad.presentation
 
-import logic.useCase.GetMealsByCaloriesAndProtein
+import logic.useCase.GetMealsByCaloriesAndProteinUseCase
 
 class MealsByCaloriesAndProteinUi(
-        private val getMealsByCaloriesAndProtein: GetMealsByCaloriesAndProtein
+        private val getMealsByCaloriesAndProtein: GetMealsByCaloriesAndProteinUseCase
 ) {
     fun startGetMealsByCaloriesAndProtein() {
         println("=== Meal Nutrition Filter ===")
@@ -18,7 +18,7 @@ class MealsByCaloriesAndProteinUi(
             targetCalories = targetCalories,
             targetProtein = targetProtein,
         )
-        println("The available meals with ~${targetCalories}g calories and ~${targetProtein}g protein are: ${meals.size}")
+        println("The available meals with ~${targetCalories} calories and ~${targetProtein}g protein are: ${meals.size}")
         meals.forEach { println("- ${it.name}") }
     }
 
