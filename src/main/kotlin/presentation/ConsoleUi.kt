@@ -19,6 +19,7 @@ class ConsoleUi(
     private val getHealthyFastFoodUseCase: GetHealthyFastFoodUseCase,
     private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi,
     private val italianLargeMealsConsole: ItalianLargeMealsUi,
+    private val mealsByCaloriesAndProteinUi: MealsByCaloriesAndProteinUi,
 ) {
     fun start() {
         showWelcomeScreen()
@@ -33,6 +34,7 @@ class ConsoleUi(
                 "6" -> sweetsWithNoEggsConsole.startSweetsWithNoEggsFlow()
                 "7" -> ketoDietMealsUi.startKetoDietFlow()
                 "8" -> searchMealUsingDateUi.searchMealUsingDate()
+                "9" -> mealsByCaloriesAndProteinUi.startGetMealsByCaloriesAndProtein()
                 "10" -> exploreOtherCountriesFoodConsole.exploreOtherCountriesFood()
                 "11" -> ingredientGameUi.startIngredientGame()
                 "12" -> showRandomPotatoMealsUi.startShowRandomPotatoMeals()
@@ -63,6 +65,7 @@ class ConsoleUi(
         println("6  🍰 Sweets Without Eggs")
         println("7  🥓 Keto Diet Meals")
         println("8  📅 Search Meals by Date")
+        println("9     Gym Helper ")
         println("10 🌍 Explore Other Countries' Food")
         println("11 🥨 Ingredient Game")
         println("12 🥔 Show 10 Random Potato Meals")
