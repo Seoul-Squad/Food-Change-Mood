@@ -4,7 +4,6 @@ import logic.model.Meal
 import org.seoulsquad.logic.useCase.GetHealthyFastFoodUseCase
 import org.seoulsquad.presentation.*
 
-
 class ConsoleUi(
     private val searchByNameConsole: SearchByNameUi,
     private val iraqiMealsUi: IraqiMealsUi,
@@ -76,16 +75,16 @@ class ConsoleUi(
     }
 
     private fun getUserInput(): String = readlnOrNull() ?: ""
+
     private fun presentHealthyMeal() {
-        GreetingMessageForGetHealthyMealFeature()
-        getHealthyFastFoodUseCase.getFastHealthyMeals()
+        greetingMessageForGetHealthyMealFeature()
+        getHealthyFastFoodUseCase
+            .getFastHealthyMeals()
             .onSuccess { it.forEach { printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(it) } }
             .onFailure { println(it.message) }
-
-
     }
 
-    private fun GreetingMessageForGetHealthyMealFeature() {
+    private fun greetingMessageForGetHealthyMealFeature() {
         println("Hello this is your list of healthy fast food that can be prepared in under 15 with Low nutrition's")
     }
 
@@ -103,5 +102,4 @@ class ConsoleUi(
             println("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
     }
-
 }
