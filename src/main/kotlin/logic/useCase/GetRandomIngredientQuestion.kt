@@ -1,22 +1,34 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
+import logic.utils.NoEnoughMealsFoundException
 import org.seoulsquad.logic.model.IngredientQuestion
 import org.seoulsquad.logic.repository.MealRepository
 
-class IngredientGameUseCase(
+class GetRandomIngredientQuestion(
     private val mealRepository: MealRepository,
 ) {
     operator fun invoke(): Result<IngredientQuestion> {
-        val randomMeal = mealRepository.getAllMeals().random()
-        val allMeals = mealRepository.getAllMeals().filter { it.id != randomMeal.id }.shuffled()
-        val correctAnswer = randomMeal.ingredients.random()
-        val wrongAnswer = getRandomWrongAnswers(randomMeal, allMeals)
+        val allMeals = mealRepository.getAllMeals()
+        if (allMeals.size < 2) return Result.failure(NoEnoughMealsFoundException("Not enough meals to generate a question."))
+
+        val randomMeal = allMeals.random()
+        val correctAnswer =
+            randomMeal.ingredients.randomOrNull()
+                ?: return Result.failure(Exception("Meal has no ingredients."))
+
+        val otherMeals = allMeals.filter { it.id != randomMeal.id }
+        val wrongAnswers = getRandomWrongAnswers(randomMeal, otherMeals)
+
+        if (wrongAnswers.size < 2) {
+            return Result.failure(Exception("Not enough wrong answers."))
+        }
+
         val answers =
             listOf(
                 true to correctAnswer,
-                false to wrongAnswer[0],
-                false to wrongAnswer[1],
+                false to wrongAnswers[0],
+                false to wrongAnswers[1],
             ).shuffled()
 
         return Result.success(IngredientQuestion(randomMeal, answers))
@@ -27,7 +39,12 @@ class IngredientGameUseCase(
         allMeal: List<Meal>,
     ): List<String> {
         val mealIngredients = meal.ingredients
-        val randomIngredient = allMeal.take(2).flatMap { it.ingredients }.take(2)
+        val randomIngredient =
+            allMeal
+                .shuffled()
+                .take(2)
+                .flatMap { it.ingredients }
+                .take(2)
 
         return if (mealIngredients.any {
                 it.contains(

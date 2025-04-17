@@ -1,18 +1,6 @@
 package presentation
 
-import org.seoulsquad.presentation.ExploreOtherCountriesFoodUi
-import org.seoulsquad.presentation.GuessGameUi
-import org.seoulsquad.presentation.IngredientGame
-import org.seoulsquad.presentation.IraqiMealsUi
-import org.seoulsquad.presentation.ItalianLargeMealsUi
-import org.seoulsquad.presentation.KetoDietMealsUi
-import org.seoulsquad.presentation.MealsWithHighCaloriesUi
-import org.seoulsquad.presentation.RandomEasyMealsUi
-import org.seoulsquad.presentation.SeaFoodMealsSortedByProteinUi
-import org.seoulsquad.presentation.SearchByNameUi
-import org.seoulsquad.presentation.SearchMealUsingDateUi
-import org.seoulsquad.presentation.ShowRandomPotatoMealsUi
-import org.seoulsquad.presentation.SweetsWithNoEggsUi
+import org.seoulsquad.presentation.*
 
 class ConsoleUi(
     private val searchByNameConsole: SearchByNameUi,
@@ -23,7 +11,7 @@ class ConsoleUi(
     private val ketoDietMealsUi: KetoDietMealsUi,
     private val searchMealUsingDateUi: SearchMealUsingDateUi,
     private val exploreOtherCountriesFoodConsole: ExploreOtherCountriesFoodUi,
-    private val ingredientGame: IngredientGame,
+    private val ingredientGameUi: IngredientGameUi,
     private val showRandomPotatoMealsUi: ShowRandomPotatoMealsUi,
     private val mealsWithHighCaloriesUi: MealsWithHighCaloriesUi,
     private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi,
@@ -31,22 +19,25 @@ class ConsoleUi(
 ) {
     fun start() {
         showWelcomeScreen()
-        printMenu()
-        when (getUserInput()) {
-            "2" -> searchByNameConsole.searchByMealName()
-            "3" -> iraqiMealsUi.startIraqiMealsFlow()
-            "4" -> randomEasyMealsUi.printRandomEasyMeals()
-            "5" -> guessGameUi.startGuessGame()
-            "6" -> sweetsWithNoEggsConsole.startSweetsWithNoEggsFlow()
-            "7" -> ketoDietMealsUi.startKetoDietFlow()
-            "8" -> searchMealUsingDateUi.searchMealUsingDate()
-            "10" -> exploreOtherCountriesFoodConsole.exploreOtherCountriesFood()
-            "11" -> ingredientGame.startIngredientGame()
-            "12" -> showRandomPotatoMealsUi.startShowRandomPotatoMeals()
-            "13" -> mealsWithHighCaloriesUi.getMealsWithHighCalories()
-            "14" -> seaFoodMealsSortedByProteinConsole.startSeafoodMealsSortedByProtein()
-            "15" -> italianLargeMealsConsole.startItalianLargeMealsFlow()
-            else -> println("❌ Invalid option. Please try again!")
+        while (true) {
+            printMenu()
+            when (getUserInput()) {
+                "2" -> searchByNameConsole.searchByMealName()
+                "3" -> iraqiMealsUi.startIraqiMealsFlow()
+                "4" -> randomEasyMealsUi.printRandomEasyMeals()
+                "5" -> guessGameUi.startGuessGame()
+                "6" -> sweetsWithNoEggsConsole.startSweetsWithNoEggsFlow()
+                "7" -> ketoDietMealsUi.startKetoDietFlow()
+                "8" -> searchMealUsingDateUi.searchMealUsingDate()
+                "10" -> exploreOtherCountriesFoodConsole.exploreOtherCountriesFood()
+                "11" -> ingredientGameUi.startIngredientGame()
+                "12" -> showRandomPotatoMealsUi.startShowRandomPotatoMeals()
+                "13" -> mealsWithHighCaloriesUi.getMealsWithHighCalories()
+                "14" -> seaFoodMealsSortedByProteinConsole.startSeafoodMealsSortedByProtein()
+                "15" -> italianLargeMealsConsole.startItalianLargeMealsFlow()
+                "0" -> return
+                else -> println("❌ Invalid option. Please try again!")
+            }
         }
     }
 
@@ -68,10 +59,12 @@ class ConsoleUi(
         println("7  🥓 Keto Diet Meals")
         println("8  📅 Search Meals by Date")
         println("10 🌍 Explore Other Countries' Food")
+        println("11 🥨 Ingredient Game")
         println("12 🥔 Show 10 Random Potato Meals")
         println("13 🔥 Meals with High Calories")
         println("14 🐟 Seafood Meals Sorted by Protein")
         println("15 🍝 Italian Large Meals")
+        println("0  🚶‍♂️ Exit")
         println("------------------------------------------------")
         print("👉 Enter your choice: ")
     }

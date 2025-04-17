@@ -1,16 +1,16 @@
 package org.seoulsquad.presentation
 
-import org.seoulsquad.logic.useCase.IngredientGameUseCase
+import org.seoulsquad.logic.useCase.GetRandomIngredientQuestion
 
-class IngredientGame(
-    private val ingredientGameUseCase: IngredientGameUseCase,
+class IngredientGameUi(
+    private val getRandomIngredientQuestion: GetRandomIngredientQuestion,
 ) {
     fun startIngredientGame() {
         var score = 0
         var roundNumber = 1
         var isGameOver = false
         while (roundNumber <= 15 && !isGameOver) {
-            val ingredientQuestion = ingredientGameUseCase()
+            val ingredientQuestion = getRandomIngredientQuestion()
 
             ingredientQuestion
                 .onSuccess { question ->
