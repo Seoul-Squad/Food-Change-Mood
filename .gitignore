@@ -12,6 +12,7 @@ build/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/ktlint-plugin.xml
 *.iws
 *.iml
 *.ipr
