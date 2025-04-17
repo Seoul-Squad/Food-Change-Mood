@@ -1,6 +1,9 @@
 package presentation
 
+import logic.model.Meal
+import org.seoulsquad.logic.useCase.GetHealthyFastFoodUseCase
 import org.seoulsquad.presentation.*
+
 
 class ConsoleUi(
     private val searchByNameConsole: SearchByNameUi,
@@ -14,6 +17,7 @@ class ConsoleUi(
     private val ingredientGameUi: IngredientGameUi,
     private val showRandomPotatoMealsUi: ShowRandomPotatoMealsUi,
     private val mealsWithHighCaloriesUi: MealsWithHighCaloriesUi,
+    private val getHealthyFastFoodUseCase: GetHealthyFastFoodUseCase,
     private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi,
     private val italianLargeMealsConsole: ItalianLargeMealsUi,
 ) {
@@ -22,6 +26,7 @@ class ConsoleUi(
         while (true) {
             printMenu()
             when (getUserInput()) {
+                "1" -> presentHealthyMeal()
                 "2" -> searchByNameConsole.searchByMealName()
                 "3" -> iraqiMealsUi.startIraqiMealsFlow()
                 "4" -> randomEasyMealsUi.printRandomEasyMeals()
@@ -51,6 +56,7 @@ class ConsoleUi(
     private fun printMenu() {
         println("🌟 Choose a task by entering the number:")
         println("------------------------------------------------")
+        println("1  🥦 Get healthy meals")
         println("2  🔍 Search Meal by Name")
         println("3  🍲 Iraqi Meals")
         println("4  🥗 Easy Meals")
@@ -70,4 +76,32 @@ class ConsoleUi(
     }
 
     private fun getUserInput(): String = readlnOrNull() ?: ""
+    private fun presentHealthyMeal() {
+        GreetingMessageForGetHealthyMealFeature()
+        getHealthyFastFoodUseCase.getFastHealthyMeals()
+            .onSuccess { it.forEach { printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(it) } }
+            .onFailure { println(it.message) }
+
+
+    }
+
+    private fun GreetingMessageForGetHealthyMealFeature() {
+        println("Hello this is your list of healthy fast food that can be prepared in under 15 with Low nutrition's")
+    }
+
+    private fun printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(meal: Meal) {
+        with(meal) {
+            println("Meal: $name")
+            println("Time to Prepare: $minutes minutes")
+            println("Nutrition:")
+            println("  - Calories: ${nutrition.calories} kcal")
+            println("  - Total Fat: ${nutrition.totalFat} g")
+            println("  - Saturated Fat: ${nutrition.saturatedFat} g")
+            println("  - Sugar: ${nutrition.sugar} g")
+            println("  - Sodium: ${nutrition.sodium} mg")
+            println("  - Protein: ${nutrition.protein} g")
+            println("  - Carbohydrates: ${nutrition.carbohydrates} g")
+        }
+    }
+
 }

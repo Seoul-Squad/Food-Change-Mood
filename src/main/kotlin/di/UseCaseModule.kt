@@ -4,6 +4,7 @@ import GetItalianLargeMealsUseCase
 import logic.useCase.*
 import org.koin.dsl.module
 import org.seoulsquad.logic.useCase.*
+import org.seoulsquad.logic.useCase.GetHealthyFastFoodUseCase
 
 val useCaseModule =
     module {
@@ -21,5 +22,6 @@ val useCaseModule =
         single { SearchFoodsUsingDateUseCase(get()) }
         single { GetMealUsingIDUseCase(get()) }
         single { GuessGameUseCase(get()) }
+        single { GetHealthyFastFoodUseCase(get()) }
         single { GetRandomIngredientQuestion(get()) }
     }
