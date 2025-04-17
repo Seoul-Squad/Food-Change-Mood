@@ -1,21 +1,33 @@
 package presentation
 
-import org.seoulsquad.presentation.*
+import org.seoulsquad.presentation.ExploreOtherCountriesFoodUi
+import org.seoulsquad.presentation.GuessGameUi
+import org.seoulsquad.presentation.IngredientGame
+import org.seoulsquad.presentation.IraqiMealsUi
+import org.seoulsquad.presentation.ItalianLargeMealsUi
+import org.seoulsquad.presentation.KetoDietMealsUi
+import org.seoulsquad.presentation.MealsWithHighCaloriesUi
+import org.seoulsquad.presentation.RandomEasyMealsUi
+import org.seoulsquad.presentation.SeaFoodMealsSortedByProteinUi
+import org.seoulsquad.presentation.SearchByNameUi
+import org.seoulsquad.presentation.SearchMealUsingDateUi
+import org.seoulsquad.presentation.ShowRandomPotatoMealsUi
+import org.seoulsquad.presentation.SweetsWithNoEggsUi
 
 class ConsoleUi(
-    private val ingredientGame: IngredientGame,
-    private val exploreOtherCountriesFoodConsole:ExploreOtherCountriesFoodUi,
+    private val searchByNameConsole: SearchByNameUi,
+    private val iraqiMealsUi: IraqiMealsUi,
+    private val randomEasyMealsUi: RandomEasyMealsUi,
+    private val guessGameUi: GuessGameUi,
     private val sweetsWithNoEggsConsole: SweetsWithNoEggsUi,
     private val ketoDietMealsUi: KetoDietMealsUi,
     private val searchMealUsingDateUi: SearchMealUsingDateUi,
-    private val searchByNameConsole: SearchByNameUi,
-    private val iraqiMealsUi: IraqiMealsUi,
-    private val mealsWithHighCaloriesUi: MealsWithHighCaloriesUi,
-    private val guessGameUi: GuessGameUi,
-    private val randomEasyMealsUi: RandomEasyMealsUi,
-    private val italianLargeMealsConsole: ItalianLargeMealsUi,
+    private val exploreOtherCountriesFoodConsole: ExploreOtherCountriesFoodUi,
+    private val ingredientGame: IngredientGame,
     private val showRandomPotatoMealsUi: ShowRandomPotatoMealsUi,
-    private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi
+    private val mealsWithHighCaloriesUi: MealsWithHighCaloriesUi,
+    private val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi,
+    private val italianLargeMealsConsole: ItalianLargeMealsUi,
 ) {
     fun start() {
         printMenu()
@@ -56,5 +68,4 @@ class ConsoleUi(
     }
 
     private fun getUserInput(): String = readlnOrNull() ?: ""
-
 }
