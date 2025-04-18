@@ -2,6 +2,7 @@ package logic.useCase
 
 import logic.model.Meal
 import org.seoulsquad.logic.repository.MealRepository
+import logic.utils.NoMealsFoundException
 
 class GetMealsByCaloriesAndProteinUseCase(
     private val mealRepository: MealRepository
@@ -15,9 +16,14 @@ class GetMealsByCaloriesAndProteinUseCase(
         val calorieRange = targetCalories * tolerancePercent / 100
         val proteinRange = targetProtein * tolerancePercent / 100
 
-        return allMeals.filter { meal ->
+        val filteredMeals = allMeals.filter { meal ->
             isMealWithinRange(meal, targetCalories, targetProtein, calorieRange, proteinRange)
         }
+
+        if (filteredMeals.isEmpty()) {
+            throw NoMealsFoundException("No meals match your nutrition criteria.")
+        }
+        return filteredMeals
     }
 
     private fun isMealWithinRange(
