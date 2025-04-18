@@ -2,7 +2,7 @@ package org.seoulsquad.logic.utils
 
 import logic.model.Meal
 
-class KmpSearchAlgorithm : SearchAlgorithm {
+class KnuthMorrisPrattSearchAlgorithm : SearchAlgorithm {
 
     override fun search(meals: List<Meal>, query: String): Result<List<Meal>> {
         if (query.isBlank()) return Result.failure(Exception("Name cannot be empty"))
@@ -14,7 +14,7 @@ class KmpSearchAlgorithm : SearchAlgorithm {
             kmpSearch(it.name, lowerCaseQuery, lps)
         }.takeIf { it.isNotEmpty() }
             ?.let { Result.success(it) }
-            ?: Result.failure(NoSuchElementException("No Meals found"))
+            ?: LevenshteinSearchAlgorithm().search(meals, query)
     }
 
     private fun computeLPSArray(pattern: String): IntArray {
