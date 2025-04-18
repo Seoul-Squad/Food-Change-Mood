@@ -11,4 +11,5 @@ object ConsoleStyle {
     const val RESET = "\u001B[0m"
     const val UNDERLINED = "\u001B[4m"
     const val BOLD = "\u001B[1m"
+
 }

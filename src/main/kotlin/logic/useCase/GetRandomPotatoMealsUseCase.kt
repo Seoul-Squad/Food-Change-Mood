@@ -3,6 +3,7 @@ package logic.useCase
 import logic.model.Meal
 import org.seoulsquad.logic.repository.MealRepository
 import logic.utils.Constants.POTATO_ONLY
+import logic.utils.NoMealsFoundException
 
 class GetRandomPotatoMealsUseCase(
     private val mealRepository: MealRepository,
@@ -18,7 +19,7 @@ class GetRandomPotatoMealsUseCase(
                     meals.take(numberOfRandomPotatoMeals),
                 )
             }
-            ?: Result.failure(Exception("No meals found containing potato"))
+            ?: Result.failure(NoMealsFoundException("No meals found containing potato"))
 
-    private fun hasPotato(meal: Meal): Boolean = meal.ingredients.contains(POTATO_ONLY)
+    private fun hasPotato(meal: Meal): Boolean = meal.ingredients.any { it.contains(POTATO_ONLY , ignoreCase = true) }
 }
