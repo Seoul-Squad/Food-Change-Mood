@@ -1,20 +1,19 @@
 package org.seoulsquad.presentation
 
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
-import org.seoulsquad.logic.utils.KmpSearchAlgorithm
+import org.seoulsquad.logic.utils.KnuthMorrisPrattSearchAlgorithm
 import org.seoulsquad.presentation.utils.SharedFunctions
-import presentation.ConsoleUi
 
 class SearchByNameUi (
     private val getSearchByNameUseCase: GetSearchByNameUseCase
     ){
 
-    public fun searchByMealName() {
+    fun searchByMealName() {
         print("Enter Meal Name:")
         val query = readlnOrNull() ?: ""
         println("Your search result")
         getSearchByNameUseCase
-            .getSearchByName(query, KmpSearchAlgorithm())
+            .getSearchByName(query, KnuthMorrisPrattSearchAlgorithm())
             .onSuccess { meals ->
                 SharedFunctions.printSearchResult(meals)
             }.onFailure { e ->

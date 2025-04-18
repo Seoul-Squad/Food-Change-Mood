@@ -33,4 +33,5 @@ val useCaseModule =
         single { GuessGameUseCase(get()) }
         single { GetHealthyFastFoodUseCase(get()) }
         single { GetRandomIngredientQuestion(get()) }
+
     }
