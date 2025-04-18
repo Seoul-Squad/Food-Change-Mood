@@ -22,4 +22,5 @@ val appModule =
         singleOf(::SweetsWithNoEggsUi)
         singleOf(::MealsByCaloriesAndProteinUi)
         singleOf(::IngredientGameUi)
+        singleOf(::HealthyMealUi)
     }
