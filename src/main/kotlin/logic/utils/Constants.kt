@@ -23,7 +23,7 @@ object Constants {
     }
     const val ITALIAN_NAME  = "Italian"
     const val LARGE_GROUP_NAME  = "for-large-groups"
-
+    const val EXIT = "0"
     object EasyFood{
         const val MAX_MINUTES = 30
         const val MAX_INGREDIENTS = 5

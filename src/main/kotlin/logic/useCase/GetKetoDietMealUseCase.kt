@@ -22,8 +22,8 @@ class GetKetoDietMealUseCase(
         val nutrition = meal.nutrition
         val netCarbs = nutrition.carbohydrates
 
-        val (fatCal, proteinCal, carbCal) = calculateTotalCalories(nutrition)
-        val (fatPercent, proteinPercent, carbPercent) = calculateMacrosPercentages(fatCal, proteinCal, carbCal)
+        val (fatCalories, proteinCalories, carbCalories) = calculateTotalCalories(nutrition)
+        val (fatPercent, proteinPercent, carbPercent) = calculateMacrosPercentages(fatCalories, proteinCalories, carbCalories)
 
         return fatPercent in NutritionConstants.FAT_PERCENT_MIN..NutritionConstants.FAT_PERCENT_MAX &&
                 proteinPercent in NutritionConstants.PROTEIN_PERCENT_MIN..NutritionConstants.PROTEIN_PERCENT_MAX &&
@@ -54,7 +54,5 @@ class GetKetoDietMealUseCase(
 
         return Triple(fatPercent, proteinPercent, carbPercent)
     }
-
-
 
 }
