@@ -12,6 +12,7 @@ build/
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/ktlint-plugin.xml
 *.iws
 *.iml
 *.ipr
@@ -37,7 +38,7 @@ bin/
 /dist/
 /nbdist/
 /.nb-gradle/
-
+/food.csv
 ### VS Code ###
 .vscode/
 
