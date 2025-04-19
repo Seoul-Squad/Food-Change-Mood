@@ -1,7 +1,6 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
-import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.utils.KnuthMorrisPrattMealSearchAlgorithm
 

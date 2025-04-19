@@ -5,7 +5,7 @@ import logic.utils.Constants
 import logic.utils.InvalidDateForSearchException
 import logic.utils.InvalidSearchException
 import org.seoulsquad.logic.repository.MealRepository
-import org.seoulsquad.logic.useCase.model.MealDate
+import org.seoulsquad.logic.model.MealDate
 
 
 class SearchFoodsUsingDateUseCase(

@@ -1,10 +1,10 @@
 package org.seoulsquad.presentation
 
 import logic.useCase.GuessGameUseCase
-import logic.useCase.NegativeNumberException
+import logic.utils.NegativeNumberException
 
 class GuessGameUi(
-    private val guessGameUseCase: GuessGameUseCase
+    private val guessGameUseCase: GuessGameUseCase,
 ) {
     fun startGuessGame() {
         do {
@@ -51,5 +51,4 @@ class GuessGameUi(
             val playAgain = readlnOrNull()?.lowercase() == "y"
         } while (playAgain)
     }
-
 }

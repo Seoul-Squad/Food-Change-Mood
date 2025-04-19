@@ -21,3 +21,7 @@ class InvalidIdException : Exception("Invalid id")
 class NoEnoughMealsFoundException(
     message: String,
 ) : Exception(message)
+
+class NegativeNumberException(
+    message: String,
+) : Exception(message)

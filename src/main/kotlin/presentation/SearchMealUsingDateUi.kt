@@ -2,7 +2,7 @@ package org.seoulsquad.presentation
 
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
-import org.seoulsquad.logic.useCase.model.MealDate
+import org.seoulsquad.logic.model.MealDate
 import org.seoulsquad.presentation.utils.SharedFunctions
 
 class SearchMealUsingDateUi(

@@ -16,10 +16,11 @@ val appModule =
         singleOf(::MealsWithHighCaloriesUi)
         singleOf(::RandomEasyMealsUi)
         singleOf(::SeaFoodMealsSortedByProteinUi)
-        singleOf(::SearchByNameUi)
+        singleOf(::SearchMealByNameUi)
         singleOf(::SearchMealUsingDateUi)
         singleOf(::ShowRandomPotatoMealsUi)
         singleOf(::SweetsWithNoEggsUi)
         singleOf(::MealsByCaloriesAndProteinUi)
         singleOf(::IngredientGameUi)
+        singleOf(::HealthyMealUi)
     }

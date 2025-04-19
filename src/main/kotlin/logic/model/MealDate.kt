@@ -1,4 +1,4 @@
-package org.seoulsquad.logic.useCase.model
+package org.seoulsquad.logic.model
 
 import kotlinx.datetime.LocalDate
 
