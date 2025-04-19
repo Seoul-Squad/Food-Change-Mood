@@ -2,46 +2,29 @@ package org.seoulsquad.presentation
 
 import logic.model.Meal
 import logic.useCase.GetRandomPotatoMealsUseCase
+import logic.utils.Constants.MAX_POTATO_MEALS
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.presentation.utils.SharedFunctions
-import presentation.utils.ConsoleColors
-import presentation.utils.ConsoleStyle
 
 class ShowRandomPotatoMealsUi(
-    private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase
+    private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
 ) {
     fun startShowRandomPotatoMeals() {
-        println("${ConsoleStyle.BOLD}${ConsoleColors.CYAN}This is very yummy, try this potato meals and Ed3yly.${ConsoleStyle.RESET}")
         getRandomPotatoMealsUseCase()
             .onSuccess { mealsWithPotato ->
+                if (isNotEnoughMeals(mealsWithPotato)) println("We couldn't find $MAX_POTATO_MEALS meals containing potato.")
+                println("\n\nHere is ${mealsWithPotato.size} meals containing potato.\n")
                 printPotatoMealsResult(mealsWithPotato)
             }.onFailure { exception ->
-                println(exception.message)
+                when (exception) {
+                    is NoMealsFoundException -> println(exception.message)
+                }
             }
     }
 
+    private fun isNotEnoughMeals(mealsWithPotato: List<Meal>): Boolean = mealsWithPotato.size < MAX_POTATO_MEALS
+
     private fun printPotatoMealsResult(mealsWithPotato: List<Meal>) {
-        if (mealsWithPotato.size < 10) {
-            println("Unfortunately we don't have 10 meals right now.\uD83E\uDD7A")
-            Thread.sleep(1000)
-            println("But cheers up he have: ${mealsWithPotato.size}\uD83D\uDE03")
-            Thread.sleep(1500)
-            println("So here is ${mealsWithPotato.size} potato meals instead\uD83D\uDE09\n\n")
-            Thread.sleep(1000)
-        }
-        mealsWithPotato.forEach { SharedFunctions.printMeal(it) }
-
-        getUserPotatoInterestMeal(mealsWithPotato)
-    }
-
-    private fun getUserPotatoInterestMeal(mealsWithPotato: List<Meal>) {
-        println("Are you interest in any of this meals? (y/n)")
-        var userInput = readlnOrNull() ?: ""
-
-        if (userInput == "y") {
-            println("Please enter meal id: ")
-            userInput = readlnOrNull() ?: ""
-            SharedFunctions.printFullMeal(mealsWithPotato.first { it.id == userInput.toInt() })
-            println("Bon-appetit\uD83D\uDE09")
-        }
+        mealsWithPotato.forEach { SharedFunctions.printFullMeal(it) }
     }
 }

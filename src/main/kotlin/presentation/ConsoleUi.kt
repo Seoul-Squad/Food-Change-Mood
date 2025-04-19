@@ -1,5 +1,6 @@
 package presentation
 
+import logic.utils.Constants.MAX_POTATO_MEALS
 import org.seoulsquad.presentation.*
 
 class ConsoleUi(
@@ -66,7 +67,7 @@ class ConsoleUi(
         println("9  💪 Gym Helper ")
         println("10 🌍 Explore Other Countries 'Food'")
         println("11 🥨 Ingredient Game")
-        println("12 🥔 Show 10 Random Potato Meals")
+        println("12 🥔 Show $MAX_POTATO_MEALS Random Potato Meals")
         println("13 🔥 Meals with High Calories")
         println("14 🐟 Seafood Meals Sorted by Protein")
         println("15 🍝 Italian Large Meals")
@@ -76,5 +77,4 @@ class ConsoleUi(
     }
 
     private fun getUserInput(): String = readlnOrNull() ?: ""
-
 }
