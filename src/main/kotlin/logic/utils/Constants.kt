@@ -3,6 +3,8 @@ package logic.utils
 
 object Constants {
     const val POTATO_ONLY = "potato"
+    const val MAX_POTATO_MEALS = 10
+
     object Tags {
         const val TAG_SWEET = "sweet"
         const val TAG_SEAFOOD = "seafood"
@@ -21,10 +23,12 @@ object Constants {
     object Calories {
         const val HIGH_CALORIES = 700
     }
-    const val ITALIAN_NAME  = "Italian"
-    const val LARGE_GROUP_NAME  = "for-large-groups"
+
+    const val ITALIAN_NAME = "Italian"
+    const val LARGE_GROUP_NAME = "for-large-groups"
     const val EXIT = "0"
-    object EasyFood{
+
+    object EasyFood {
         const val MAX_MINUTES = 30
         const val MAX_INGREDIENTS = 5
         const val MAX_STEPS = 6
@@ -48,6 +52,3 @@ object Constants {
         const val CARB_PERCENT_MAX = 10.0
     }
 }
-
-
-
