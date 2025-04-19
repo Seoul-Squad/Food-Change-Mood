@@ -6,7 +6,7 @@ import org.seoulsquad.logic.repository.MealRepository
 class GetItalianLargeMealsUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun getItalianLargeMeals(): Result<List<Meal>> {
+    operator fun invoke(): Result<List<Meal>> {
         return mealRepository.getAllMeals()
             .filter(::isItalianLargeMeal)
             .takeIf { it.isNotEmpty() }
