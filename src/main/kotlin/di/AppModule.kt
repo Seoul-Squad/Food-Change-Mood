@@ -9,7 +9,7 @@ val appModule =
     module {
         singleOf(::ConsoleUi)
         singleOf(::ExploreOtherCountriesFoodUi)
-        singleOf(::GuessGameUi)
+        singleOf(::GuessMealPreparationTimeGameUI)
         singleOf(::IraqiMealsUi)
         singleOf(::ItalianLargeMealsUi)
         singleOf(::KetoDietMealsUi)
