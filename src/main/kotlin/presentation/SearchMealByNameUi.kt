@@ -2,7 +2,7 @@ package org.seoulsquad.presentation
 
 import logic.utils.Constants.EXIT
 import org.seoulsquad.logic.useCase.SearchMealsByNameUseCase
-import org.seoulsquad.presentation.utils.SharedFunctions
+import org.seoulsquad.presentation.utils.SharedUi
 
 class SearchMealByNameUi(
     private val searchMealByNameUseCase: SearchMealsByNameUseCase
@@ -20,7 +20,7 @@ class SearchMealByNameUi(
             searchMealByNameUseCase(query)
                 .onSuccess { meals ->
                     println("Your search result")
-                    SharedFunctions.printSearchResult(meals)
+                    SharedUi().printSearchResult(meals)
                 }.onFailure { e ->
                     println("Error: ${e.message}")
                 }

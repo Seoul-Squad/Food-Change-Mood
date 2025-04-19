@@ -3,8 +3,6 @@ package org.seoulsquad.presentation
 import org.seoulsquad.logic.model.MealDate
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
-import org.seoulsquad.presentation.utils.SharedFunctions
-import org.seoulsquad.logic.model.MealDate
 import org.seoulsquad.presentation.utils.SharedUi
 
 class SearchMealUsingDateUi(
@@ -40,10 +38,7 @@ class SearchMealUsingDateUi(
         val mealId = readln()
         getMealUsingIDUseCase(mealId, dateMeals)
             .onSuccess { meals ->
-                SharedFunctions.printFullMeal(meals)
-            }
-            .onFailure { e ->
-                meals.forEach { meal -> SharedUi().printFullMeal(meal) }
+                SharedUi().printFullMeal(meals)
             }.onFailure { e ->
                 println("\n Could not retrieve meal details: ${e.message}")
             }

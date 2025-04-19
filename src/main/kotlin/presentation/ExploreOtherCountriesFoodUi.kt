@@ -1,7 +1,6 @@
 package org.seoulsquad.presentation
 
 import logic.useCase.ExploreCountryMealsUseCase
-import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.utils.Constants.EXIT
 
 class ExploreOtherCountriesFoodUi(

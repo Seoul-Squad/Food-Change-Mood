@@ -111,7 +111,7 @@ class GuessMealPreparationTimeGameUI(
             displayGameOver(
                 isTooHigh = isTooHigh,
                 maxAttempts = guessGameUseCase.getMaxAttempts(),
-                correctTime = guessGameUseCase.getCurrentMeal()!!.minutes
+                correctTime = guessGameUseCase.getCurrentMeal()!!.preparationTimeInMinutes
             )
         } else {
             displayIncorrectGuess(isTooHigh = isTooHigh)

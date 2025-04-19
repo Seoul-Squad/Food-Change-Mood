@@ -1,7 +1,6 @@
 package di
 
 import GetItalianLargeMealsUseCase
-import logic.useCase.ExploreOtherCountriesFoodUseCase
 import logic.useCase.ExploreCountryMealsUseCase
 import logic.useCase.GetAllMealsUseCase
 import logic.useCase.GetKetoDietMealUseCase
