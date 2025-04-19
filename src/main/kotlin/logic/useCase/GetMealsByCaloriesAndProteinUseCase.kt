@@ -7,7 +7,7 @@ import logic.utils.NoMealsFoundException
 class GetMealsByCaloriesAndProteinUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun getMealsByCaloriesAndProtein(
+    operator fun invoke(
         targetCalories: Int,
         targetProtein: Int,
         tolerancePercent: Int = 10

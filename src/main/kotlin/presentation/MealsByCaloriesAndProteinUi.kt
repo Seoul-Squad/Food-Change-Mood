@@ -15,7 +15,7 @@ class MealsByCaloriesAndProteinUi(
         val targetProtein = readLine()?.toIntOrNull() ?: 0
     try {
 
-        val meals = getMealsByCaloriesAndProtein.getMealsByCaloriesAndProtein(
+        val meals = getMealsByCaloriesAndProtein.invoke(
             targetCalories = targetCalories,
             targetProtein = targetProtein,
         )
