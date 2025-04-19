@@ -12,10 +12,9 @@ class GetKetoDietMealUseCase(
         mealRepo
             .getAllMeals()
             .filter(::isKetoDietMeal)
-            .let {
-                if (it.isNotEmpty()) Result.success(it)
-                else Result.failure(NoSuchElementException("No Keto Diet Meals found"))
-            }
+            .takeIf { it.isNotEmpty() }
+            ?.let { Result.success(it) }
+            ?: Result.failure(NoSuchElementException("No sweet meals without eggs found"))
 
 
     private fun isKetoDietMeal(meal: Meal): Boolean {

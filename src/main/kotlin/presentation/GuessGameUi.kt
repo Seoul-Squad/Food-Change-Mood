@@ -27,12 +27,12 @@ class GuessGameUi(
                 try {
                     val guess = guessGameUseCase.userGuess(input)
 
-                    isCorrect = guessGameUseCase.guessIsCorrect(guess, meal.minutes)
+                    isCorrect = guessGameUseCase.guessIsCorrect(guess, meal.preparationTimeInMinutes)
 
                     when {
                         isCorrect -> println("Correct! You guessed the right time!")
-                        guessGameUseCase.guessIsTooHigh(guess, meal.minutes) -> println("Too high!")
-                        guessGameUseCase.guessIsTooLow(guess, meal.minutes) -> println("Too low!")
+                        guessGameUseCase.guessIsTooHigh(guess, meal.preparationTimeInMinutes) -> println("Too high!")
+                        guessGameUseCase.guessIsTooLow(guess, meal.preparationTimeInMinutes) -> println("Too low!")
                     }
                 } catch (e: IllegalArgumentException) {
                     println("Invalid input: ${e.message}")
@@ -44,7 +44,7 @@ class GuessGameUi(
             }
 
             if (!isCorrect) {
-                println("You got it wrong, better luck next time! The correct time was ${meal.minutes} minutes.")
+                println("You got it wrong, better luck next time! The correct time was ${meal.preparationTimeInMinutes} minutes.")
             }
 
             println("\nDo you want to play again? (y/n)")

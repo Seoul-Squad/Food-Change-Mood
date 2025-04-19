@@ -1,7 +1,7 @@
 package org.seoulsquad.presentation
 
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
-import org.seoulsquad.presentation.utils.SharedFunctions
+import org.seoulsquad.presentation.utils.SharedUi
 
 class IraqiMealsUi(
     private val getIraqiMealsUseCase: GetIraqiMealsUseCase
@@ -21,7 +21,7 @@ class IraqiMealsUi(
             .getAllIraqMeals()
             .onSuccess { mealsList ->
                 mealsList.forEach { meal ->
-                    SharedFunctions.printFullMeal(meal)
+                    SharedUi().printFullMeal(meal)
                     println("\n---\n")
                 }
             }.onFailure { exception ->

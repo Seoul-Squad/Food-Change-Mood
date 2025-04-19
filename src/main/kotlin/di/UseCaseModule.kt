@@ -1,8 +1,7 @@
 package di
 
 import GetItalianLargeMealsUseCase
-import logic.useCase.*
-import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.ExploreCountryMealsUseCase
 import logic.useCase.GetAllMealsUseCase
 import logic.useCase.GetKetoDietMealUseCase
 import logic.useCase.GetRandomEasyMealsUseCase
@@ -22,9 +21,9 @@ val useCaseModule =
         single { GetSweetsWithNoEggsUseCase(get()) }
         single { GetSearchByNameUseCase(get()) }
         single { GetIraqiMealsUseCase(get()) }
-        single { ExploreOtherCountriesFoodUseCase(get()) }
+        single { ExploreCountryMealsUseCase(get()) }
         single { GetMealsByCaloriesAndProteinUseCase(get()) }
-        single { GetSortedSeafoodMealsUseCase(get()) }
+        single { GetSeafoodMealsSortedByProteinUseCase(get()) }
         single { GetKetoDietMealUseCase(get()) }
         single { GetMealsWithHighCaloriesUseCase(get()) }
         single { GetItalianLargeMealsUseCase(get()) }

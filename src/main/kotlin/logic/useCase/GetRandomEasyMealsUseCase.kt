@@ -20,7 +20,7 @@ class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
     }
 
     private fun isEasyMeal(meal: Meal): Boolean =
-        meal.minutes <= MAX_MINUTES && meal.ingredients.size <= MAX_INGREDIENTS && meal.steps.size <= MAX_STEPS
+        meal.preparationTimeInMinutes <= MAX_MINUTES && meal.ingredients.size <= MAX_INGREDIENTS && meal.steps.size <= MAX_STEPS
 
 
     companion object{

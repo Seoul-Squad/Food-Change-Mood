@@ -32,7 +32,7 @@ class GetHealthyFastFoodUseCase(
 
     private fun isMealHealthyAndFastToPrepare(meal: Meal, lowNutrition: List<Double>): Boolean {
         val (lowFat, lowSaturatedFat, lowCarbohydrate) = lowNutrition
-        return meal.minutes <= 15 &&
+        return meal.preparationTimeInMinutes <= 15 &&
                 meal.nutrition.totalFat <= lowFat &&
                 meal.nutrition.saturatedFat <= lowSaturatedFat &&
                 meal.nutrition.carbohydrates <= lowCarbohydrate

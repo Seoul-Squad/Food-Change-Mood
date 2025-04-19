@@ -2,7 +2,7 @@ package org.seoulsquad.presentation
 
 import logic.model.Meal
 import logic.useCase.GetRandomPotatoMealsUseCase
-import org.seoulsquad.presentation.utils.SharedFunctions
+import org.seoulsquad.presentation.utils.SharedUi
 import presentation.utils.ConsoleColors
 import presentation.utils.ConsoleStyle
 
@@ -28,7 +28,7 @@ class ShowRandomPotatoMealsUi(
             println("So here is ${mealsWithPotato.size} potato meals instead\uD83D\uDE09\n\n")
             Thread.sleep(1000)
         }
-        mealsWithPotato.forEach { SharedFunctions.printMeal(it) }
+        mealsWithPotato.forEach { SharedUi().printMeal(it) }
 
         getUserPotatoInterestMeal(mealsWithPotato)
     }
@@ -40,7 +40,7 @@ class ShowRandomPotatoMealsUi(
         if (userInput == "y") {
             println("Please enter meal id: ")
             userInput = readlnOrNull() ?: ""
-            SharedFunctions.printFullMeal(mealsWithPotato.first { it.id == userInput.toInt() })
+            SharedUi().printFullMeal(mealsWithPotato.first { it.id == userInput.toInt() })
             println("Bon-appetit\uD83D\uDE09")
         }
     }

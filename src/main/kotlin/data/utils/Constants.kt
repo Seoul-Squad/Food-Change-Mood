@@ -2,7 +2,7 @@ package data.utils
 
 object Constants {
     const val CSV_FILE_PATH = "food.csv"
-
+    const val NUTRITION = "nutrition"
     object ColumnName {
         const val COLUMN_ID = "id"
         const val COLUMN_NAME = "name"

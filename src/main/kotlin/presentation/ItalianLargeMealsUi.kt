@@ -1,8 +1,7 @@
 package org.seoulsquad.presentation
 
 import GetItalianLargeMealsUseCase
-import org.seoulsquad.presentation.utils.SharedFunctions
-import presentation.ConsoleUi
+import org.seoulsquad.presentation.utils.SharedUi
 
 class ItalianLargeMealsUi(
     private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase
@@ -25,7 +24,7 @@ class ItalianLargeMealsUi(
         getItalianLargeMealsUseCase
             .getItalianLargeMeals()
             .onSuccess { italianMeals ->
-                SharedFunctions.printSearchResult(italianMeals)
+                SharedUi().printSearchResult(italianMeals)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }

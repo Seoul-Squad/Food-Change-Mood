@@ -1,7 +1,7 @@
 package org.seoulsquad.presentation
 
 import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
-import org.seoulsquad.presentation.utils.SharedFunctions
+import org.seoulsquad.presentation.utils.SharedUi
 
 class MealsWithHighCaloriesUi(
     private val getMealsWithHighCaloriesUseCase: GetMealsWithHighCaloriesUseCase
@@ -9,7 +9,7 @@ class MealsWithHighCaloriesUi(
     fun getMealsWithHighCalories() {
         getMealsWithHighCaloriesUseCase()
             .onSuccess { mealsList ->
-                SharedFunctions.suggestMeal(mealsList)
+                SharedUi().suggestMeal(mealsList)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }

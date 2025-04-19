@@ -2,7 +2,7 @@ package org.seoulsquad.presentation
 
 import org.seoulsquad.logic.useCase.GetSearchByNameUseCase
 import org.seoulsquad.logic.utils.KnuthMorrisPrattSearchAlgorithm
-import org.seoulsquad.presentation.utils.SharedFunctions
+import org.seoulsquad.presentation.utils.SharedUi
 
 class SearchByNameUi (
     private val getSearchByNameUseCase: GetSearchByNameUseCase
@@ -15,7 +15,7 @@ class SearchByNameUi (
         getSearchByNameUseCase
             .getSearchByName(query, KnuthMorrisPrattSearchAlgorithm())
             .onSuccess { meals ->
-                SharedFunctions.printSearchResult(meals)
+                SharedUi().printSearchResult(meals)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }

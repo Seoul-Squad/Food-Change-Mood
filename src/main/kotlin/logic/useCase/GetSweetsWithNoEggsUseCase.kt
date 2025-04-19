@@ -8,7 +8,7 @@ import org.seoulsquad.logic.repository.MealRepository
 class GetSweetsWithNoEggsUseCase(
     private val mealRepo: MealRepository,
 ) {
-    fun getSweetsWithNoEggs(): Result<List<Meal>> =
+    operator fun invoke(): Result<List<Meal>> =
         mealRepo
             .getAllMeals()
             .filter(::isSweetWithNoEggs)

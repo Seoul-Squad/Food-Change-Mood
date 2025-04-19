@@ -14,9 +14,9 @@ class SearchFoodsUsingDateUseCase(
     operator fun invoke(data: String): Result<List<MealDate>> {
         val date = convertDateToLocalDate(paresDate(data).getOrElse { return Result.failure(it) })
         return repository.getAllMeals()
-            .filter { it.submitted == date }
+            .filter { it.submittedAt == date }
             .takeIf { it.isNotEmpty() }
-            ?.map { MealDate(id = it.id, nameOfMeal = it.name, date = it.submitted!!) }
+            ?.map { MealDate(id = it.id, nameOfMeal = it.name, date = it.submittedAt!!) }
             ?.let { Result.success(it) } ?: Result.failure(InvalidSearchException())
     }
 

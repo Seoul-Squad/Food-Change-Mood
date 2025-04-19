@@ -5,9 +5,9 @@ import kotlinx.datetime.LocalDate
 data class Meal(
     val name: String,
     val id: Int,
-    val minutes: Int,
+    val preparationTimeInMinutes: Int,
     val contributorId: Int,
-    val submitted: LocalDate?,
+    val submittedAt: LocalDate?,
     val tags: List<String>,
     val nutrition: Nutrition,
     val numberOfSteps: Int,

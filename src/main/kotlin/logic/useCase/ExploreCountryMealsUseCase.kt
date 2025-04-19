@@ -5,10 +5,10 @@ import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 
 
-class ExploreOtherCountriesFoodUseCase(
+class ExploreCountryMealsUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun findMealsByCountry(countryName: String,limit:Int=DEFAULT_LIMIT): Result<List<Meal>> {
+    operator fun invoke(countryName: String,limit:Int=DEFAULT_LIMIT): Result<List<Meal>> {
         val meals = mealRepository
             .getAllMeals()
             .filter { isMealFromCountry(it, countryName) }
