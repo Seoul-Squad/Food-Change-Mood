@@ -6,7 +6,7 @@ class ConsoleUi(
     private val searchByNameConsole: SearchMealByNameUi,
     private val iraqiMealsUi: IraqiMealsUi,
     private val randomEasyMealsUi: RandomEasyMealsUi,
-    private val guessGameUi: GuessGameUi,
+    private val guessMealPreparationTimeGameUI: GuessMealPreparationTimeGameUI,
     private val sweetsWithNoEggsConsole: SweetsWithNoEggsUi,
     private val ketoDietMealsUi: KetoDietMealsUi,
     private val searchMealUsingDateUi: SearchMealUsingDateUi,
@@ -28,7 +28,7 @@ class ConsoleUi(
                 "2" -> searchByNameConsole.searchMealByName()
                 "3" -> iraqiMealsUi.startIraqiMealsFlow()
                 "4" -> randomEasyMealsUi.printRandomEasyMeals()
-                "5" -> guessGameUi.startGuessGame()
+                "5" -> guessMealPreparationTimeGameUI.startGuessGame()
                 "6" -> sweetsWithNoEggsConsole.startSweetsWithNoEggsFlow()
                 "7" -> ketoDietMealsUi.startKetoDietFlow()
                 "8" -> searchMealUsingDateUi.searchMealUsingDate()

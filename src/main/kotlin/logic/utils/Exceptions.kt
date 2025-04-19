@@ -22,6 +22,11 @@ class NoEnoughMealsFoundException(
     message: String,
 ) : Exception(message)
 
-class NegativeNumberException(
-    message: String,
+class InvalidGuessException(
+    message: String
 ) : Exception(message)
+
+class NegativeGuessException(
+    message: String
+) : Exception(message)
+
