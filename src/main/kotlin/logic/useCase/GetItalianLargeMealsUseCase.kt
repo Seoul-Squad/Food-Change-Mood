@@ -1,17 +1,18 @@
 import logic.model.Meal
 import logic.utils.Constants
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 
 class GetItalianLargeMealsUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun getItalianLargeMeals(): Result<List<Meal>> {
+    operator fun invoke(): Result<List<Meal>> {
         return mealRepository.getAllMeals()
             .filter(::isItalianLargeMeal)
             .takeIf { it.isNotEmpty() }
             ?.let {
                 Result.success(it)
-            } ?: Result.failure(Exception("No Italian large meals found"))
+            } ?: Result.failure(NoMealsFoundException("No Italian large meals found"))
     }
 
     private fun isItalianLargeMeal(meal: Meal) =
