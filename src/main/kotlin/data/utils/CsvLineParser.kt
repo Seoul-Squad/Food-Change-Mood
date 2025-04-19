@@ -3,26 +3,23 @@ package data.utils
 class CsvLineParser {
 
     fun parseCsvLine(line: String): List<String> {
-        val result = mutableListOf<String>()
-        val sb = StringBuilder()
-        var inQuotes = false
+        val fields = mutableListOf<String>()
+        val currentField = StringBuilder()
+        var insideQuotes = false
 
         for (char in line) {
             when {
-                char == '"' -> {
-                    inQuotes = !inQuotes
+                char == '"' -> insideQuotes = !insideQuotes
+                char == ',' && !insideQuotes -> {
+                    fields.add(currentField.toString().trim())
+                    currentField.clear()
                 }
-                char == ',' && !inQuotes -> {
-                    result.add(sb.toString().trim())
-                    sb.clear()
-                }
-                else -> {
-                    sb.append(char)
-                }
+                else -> currentField.append(char)
             }
         }
 
-        result.add(sb.toString().trim())
-        return result
+        fields.add(currentField.toString().trim())
+
+        return fields
     }
 }

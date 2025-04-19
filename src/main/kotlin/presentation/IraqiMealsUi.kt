@@ -18,7 +18,7 @@ class IraqiMealsUi(
 
     private fun getIraqiMeals() {
         getIraqiMealsUseCase
-            .getAllIraqMeals()
+            .getAllIraqiMeals()
             .onSuccess { mealsList ->
                 mealsList.forEach { meal ->
                     SharedUi().printFullMeal(meal)

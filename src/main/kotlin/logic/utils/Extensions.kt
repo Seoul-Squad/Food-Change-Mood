@@ -1,9 +1,12 @@
 package org.seoulsquad.logic.utils
 
+import org.seoulsquad.logic.model.MealDate
 
-fun List<Double>.precntage(precentage: Double): Double {
-    if (isEmpty()) return 0.0
-    val sorted = this.sorted()
-    val index = (precentage * (sorted.size - 1)).toInt()
-    return sorted[index]
+
+fun List<Double>.veryLowNutritionValue(percentage: Double): Double {
+    val index = (percentage * (this.size - 1)).toInt()
+    return this[index]
+}
+fun List<MealDate>.isIdExistingAtList(id: String): Boolean {
+    return any { it.id == id.toInt() }
 }

@@ -21,8 +21,7 @@ class ItalianLargeMealsUi(
     }
 
     private fun getItalianLargeMeals() {
-        getItalianLargeMealsUseCase
-            .getItalianLargeMeals()
+        getItalianLargeMealsUseCase()
             .onSuccess { italianMeals ->
                 SharedUi().printSearchResult(italianMeals)
             }.onFailure { e ->

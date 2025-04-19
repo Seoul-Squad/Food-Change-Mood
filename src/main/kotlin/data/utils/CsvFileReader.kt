@@ -4,30 +4,23 @@ import data.model.CsvData
 import java.io.BufferedReader
 import java.io.FileReader
 
-class CsvFileReader(private val fileReader: FileReader, private val parser: CsvLineParser) {
-
-    fun readCsv(): CsvData {
-        val rows = mutableListOf<List<String>>()
-        var headers = emptyList<String>()
-        var isFirstLine = true
-
-        BufferedReader(fileReader).use { reader ->
-            var line: String?
-
-            while (reader.readLine().also { line = it } != null) {
-                line?.let {
-                    val parsed = parser.parseCsvLine(it)
-                    if (isFirstLine) {
-                        headers = parsed
-                        isFirstLine = false
-                    } else {
-                        if (parsed.size >= headers.size) {
-                            rows.add(parsed)
-                        }
-                    }
+class CsvFileReader(
+    private val fileReader: FileReader,
+    private val parser: CsvLineParser
+) {
+    fun readCsv(): CsvData = BufferedReader(fileReader).use { reader ->
+        reader.lineSequence()
+            .map { parser.parseCsvLine(it) }
+            .filter { it.isNotEmpty() }
+            .toList()
+            .let { lines ->
+                when {
+                    lines.isEmpty() -> CsvData(emptyList(), emptyList())
+                    else -> CsvData(
+                        headers = lines.first(),
+                        rows = lines.drop(1).filter { it.size >= lines.first().size }
+                    )
                 }
             }
-        }
-        return CsvData(headers, rows)
     }
 }
