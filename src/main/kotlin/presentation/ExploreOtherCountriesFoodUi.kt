@@ -1,10 +1,10 @@
 package org.seoulsquad.presentation
 
-import logic.useCase.ExploreOtherCountriesFoodUseCase
+import logic.useCase.ExploreCountryMealsUseCase
 import logic.utils.Constants.EXIT
 
 class ExploreOtherCountriesFoodUi(
-    private val exploreOtherCountriesFoodUseCase: ExploreOtherCountriesFoodUseCase,
+    private val exploreOtherCountriesFoodUseCase: ExploreCountryMealsUseCase,
 ) {
      fun exploreOtherCountriesFood() {
         println("Welcome to the Food Explorer!")
@@ -16,8 +16,7 @@ class ExploreOtherCountriesFoodUi(
                 return
             }
             country?.let {
-                exploreOtherCountriesFoodUseCase
-                    .findMealsByCountry(it)
+                exploreOtherCountriesFoodUseCase(it)
                     .onSuccess { meals ->
                         println("Here are some meals from $country:")
                         meals.forEach { meal ->

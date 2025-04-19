@@ -1,17 +1,15 @@
 package org.seoulsquad.presentation
 
 import logic.model.Meal
-import org.seoulsquad.logic.useCase.GetSortedSeafoodMealsUseCase
+import org.seoulsquad.logic.useCase.GetSeafoodMealsSortedByProteinUseCase
 import kotlin.math.max
 
 class SeaFoodMealsSortedByProteinUi(
-    private val getSortedSeafoodMealsUseCase: GetSortedSeafoodMealsUseCase,
+    private val getSortedSeafoodMealsUseCase: GetSeafoodMealsSortedByProteinUseCase,
 ) {
     fun startSeafoodMealsSortedByProtein() {
         println("Loading, Please wait...")
-        getSortedSeafoodMealsUseCase(
-            compareByDescending<Meal> { it.nutrition.protein }.thenBy { it.name },
-        ).onSuccess(::printMealsProteinTable).onFailure { e ->
+        getSortedSeafoodMealsUseCase().onSuccess(::printMealsProteinTable).onFailure { e ->
             println("Error: ${e.message}")
         }
     }

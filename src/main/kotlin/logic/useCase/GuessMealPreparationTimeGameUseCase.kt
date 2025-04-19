@@ -78,8 +78,8 @@ class GuessMealPreparationTimeGameUseCase(
 
     private fun determineGuessResult(guess: Int): GuessResult {
         val result = when {
-            guess == currentMeal?.minutes -> GuessResult.CORRECT
-            guess > (currentMeal?.minutes ?: 0) -> GuessResult.TOO_HIGH
+            guess == currentMeal?.preparationTimeInMinutes -> GuessResult.CORRECT
+            guess > (currentMeal?.preparationTimeInMinutes ?: 0) -> GuessResult.TOO_HIGH
             else -> GuessResult.TOO_LOW
         }
         if (result == GuessResult.CORRECT || currentAttempt >= maxAttempts) {

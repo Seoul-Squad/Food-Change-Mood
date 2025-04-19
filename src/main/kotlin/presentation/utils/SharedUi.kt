@@ -2,7 +2,7 @@ package org.seoulsquad.presentation.utils
 
 import logic.model.Meal
 
-object SharedFunctions {
+class SharedUi {
     fun printLikeAndDislikeOptions() {
         SuggestionFeedbackOption.entries.forEach {
             println("${it.ordinal}. ${it.title}")
@@ -17,7 +17,7 @@ object SharedFunctions {
     fun printFullMeal(meal: Meal) {
         with(meal) {
             println("Meal: $name (ID: $id)")
-            println("Time to Prepare: $minutes minutes")
+            println("Time to Prepare: $preparationTimeInMinutes minutes")
             meal.description.takeIf { !it.isNullOrBlank() }?.run { println(this) }
             println("Ingredients ($numberOfIngredients):")
             ingredients.forEachIndexed { index, ingredient ->

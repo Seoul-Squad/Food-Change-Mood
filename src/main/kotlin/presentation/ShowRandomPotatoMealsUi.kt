@@ -4,7 +4,7 @@ import logic.model.Meal
 import logic.useCase.GetRandomPotatoMealsUseCase
 import logic.utils.Constants.MAX_POTATO_MEALS
 import logic.utils.NoMealsFoundException
-import org.seoulsquad.presentation.utils.SharedFunctions
+import org.seoulsquad.presentation.utils.SharedUi
 
 class ShowRandomPotatoMealsUi(
     private val getRandomPotatoMealsUseCase: GetRandomPotatoMealsUseCase,
@@ -25,6 +25,7 @@ class ShowRandomPotatoMealsUi(
     private fun isNotEnoughMeals(mealsWithPotato: List<Meal>): Boolean = mealsWithPotato.size < MAX_POTATO_MEALS
 
     private fun printPotatoMealsResult(mealsWithPotato: List<Meal>) {
-        mealsWithPotato.forEach { SharedFunctions.printFullMeal(it) }
+        mealsWithPotato.forEach { SharedUi().printFullMeal(it) }
     }
 }
+

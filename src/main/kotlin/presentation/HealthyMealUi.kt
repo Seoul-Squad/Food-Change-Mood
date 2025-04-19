@@ -21,7 +21,7 @@ class HealthyMealUi(
     private fun printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(meal: Meal) {
         with(meal) {
             println("Meal: $name")
-            println("Time to Prepare: $minutes minutes")
+            println("Time to Prepare: $preparationTimeInMinutes minutes")
             println("Nutrition:")
             println("  - Calories: ${nutrition.calories} kcal")
             println("  - Total Fat: ${nutrition.totalFat} g")

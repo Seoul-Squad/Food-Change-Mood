@@ -1,7 +1,7 @@
 package org.seoulsquad.presentation
 
 import logic.useCase.GetKetoDietMealUseCase
-import org.seoulsquad.presentation.utils.SharedFunctions
+import org.seoulsquad.presentation.utils.SharedUi
 
 class KetoDietMealsUi(
     private val getKetoDietMealUseCase: GetKetoDietMealUseCase,
@@ -21,7 +21,7 @@ class KetoDietMealsUi(
         getKetoDietMealUseCase
             .getKetoDietMeal()
             .onSuccess { ketoList ->
-                SharedFunctions.suggestMeal(ketoList)
+                SharedUi().suggestMeal(ketoList)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }

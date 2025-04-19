@@ -4,14 +4,14 @@ import logic.model.Meal
 import logic.utils.Constants.Tags.TAG_SEAFOOD
 import org.seoulsquad.logic.repository.MealRepository
 
-class GetSortedSeafoodMealsUseCase(
+class GetSeafoodMealsSortedByProteinUseCase(
     private val mealRepo: MealRepository,
 ) {
-    operator fun invoke(comparator: Comparator<Meal>): Result<List<Meal>> =
+    operator fun invoke(): Result<List<Meal>> =
         mealRepo
             .getAllMeals()
             .filter(::isSeafoodMeal)
-            .sortedWith(comparator = comparator)
+            .sortedWith(comparator = compareByDescending<Meal> { it.nutrition.protein }.thenBy { it.name },)
             .takeIf { it.isNotEmpty() }
             ?.let { Result.success(it) } ?: Result.failure(NoSuchElementException("No seafood meals found"))
 

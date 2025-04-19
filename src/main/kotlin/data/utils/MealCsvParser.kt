@@ -18,6 +18,7 @@ import data.utils.Constants.ColumnName.COLUMN_N_STEPS
 import data.utils.Constants.ColumnName.COLUMN_STEPS
 import data.utils.Constants.ColumnName.COLUMN_SUBMITTED
 import data.utils.Constants.ColumnName.COLUMN_TAGS
+import data.utils.Constants.NUTRITION
 import kotlinx.datetime.LocalDate
 import logic.model.Meal
 import logic.model.Nutrition
@@ -26,30 +27,30 @@ import logic.model.Nutrition
 class MealCsvParser {
 
     fun parse(headers: List<String>, values: List<String>): Meal {
-        val valueMap = headers.zip(values).toMap()
-        val nutritionList = parseNumberArrayString(valueMap["nutrition"] ?: "[]")
+        val fields = headers.zip(values).toMap()
+        val nutrition = parseNumberArrayString(fields[NUTRITION] ?: "[]")
 
         return Meal(
-            id = valueMap[COLUMN_ID]?.toIntOrNull() ?: 0,
-            name = valueMap[COLUMN_NAME] ?: "",
-            minutes = valueMap[COLUMN_MINUTES]?.toIntOrNull() ?: 0,
-            contributorId = valueMap[COLUMN_CONTRIBUTOR_ID]?.toIntOrNull() ?: 0,
-            submitted = parseDate(valueMap[COLUMN_SUBMITTED]),
-            tags = parseArrayString(valueMap[COLUMN_TAGS] ?: "[]"),
+            id = fields[COLUMN_ID]?.toIntOrNull() ?: 0,
+            name = fields[COLUMN_NAME] ?: "",
+            preparationTimeInMinutes = fields[COLUMN_MINUTES]?.toIntOrNull() ?: 0,
+            contributorId = fields[COLUMN_CONTRIBUTOR_ID]?.toIntOrNull() ?: 0,
+            submittedAt = parseDate(fields[COLUMN_SUBMITTED]),
+            tags = parseArrayString(fields[COLUMN_TAGS] ?: "[]"),
             nutrition = Nutrition(
-                calories = nutritionList.getOrElse(CALORIES) { 0.0 },
-                totalFat = nutritionList.getOrElse(TOTAL_FAT) { 0.0 },
-                sugar = nutritionList.getOrElse(SUGAR) { 0.0 },
-                sodium = nutritionList.getOrElse(SODIUM) { 0.0 },
-                protein = nutritionList.getOrElse(PROTEIN) { 0.0 },
-                saturatedFat = nutritionList.getOrElse(SATURATED_FAT) { 0.0 },
-                carbohydrates = nutritionList.getOrElse(CARBOHYDRATES) { 0.0 }
+                calories = nutrition.getOrElse(CALORIES) { 0.0 },
+                totalFat = nutrition.getOrElse(TOTAL_FAT) { 0.0 },
+                sugar = nutrition.getOrElse(SUGAR) { 0.0 },
+                sodium = nutrition.getOrElse(SODIUM) { 0.0 },
+                protein = nutrition.getOrElse(PROTEIN) { 0.0 },
+                saturatedFat = nutrition.getOrElse(SATURATED_FAT) { 0.0 },
+                carbohydrates = nutrition.getOrElse(CARBOHYDRATES) { 0.0 }
             ),
-            numberOfSteps = valueMap[COLUMN_N_STEPS]?.toIntOrNull() ?: 0,
-            steps = parseArrayString(valueMap[COLUMN_STEPS] ?: "[]"),
-            description = valueMap[COLUMN_DESCRIPTION]?.takeIf { it.isNotBlank() },
-            ingredients = parseArrayString(valueMap[COLUMN_INGREDIENTS] ?: "[]"),
-            numberOfIngredients = valueMap[COLUMN_N_INGREDIENTS]?.toIntOrNull() ?: 0
+            numberOfSteps = fields[COLUMN_N_STEPS]?.toIntOrNull() ?: 0,
+            steps = parseArrayString(fields[COLUMN_STEPS] ?: "[]"),
+            description = fields[COLUMN_DESCRIPTION]?.takeIf { it.isNotBlank() },
+            ingredients = parseArrayString(fields[COLUMN_INGREDIENTS] ?: "[]"),
+            numberOfIngredients = fields[COLUMN_N_INGREDIENTS]?.toIntOrNull() ?: 0
         )
 
     }
