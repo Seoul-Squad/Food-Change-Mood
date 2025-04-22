@@ -22,5 +22,6 @@ val useCaseModule =
         single { GetMealUsingIDUseCase(get()) }
         single { GuessMealPreparationTimeGameUseCase(get()) }
         single { GetHealthyFastFoodUseCase(get()) }
-        single { IngredientGameUseCase(get()) }
+        single { GetIngredientGameQuestionsUseCase(get()) }
+        single { GetIngredientGameStatusUseCase() }
     }

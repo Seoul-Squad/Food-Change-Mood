@@ -1,49 +1,55 @@
 package org.seoulsquad.presentation
 
-import logic.utils.InvalidInputException
+import logic.utils.InvalidNumberException
 import org.seoulsquad.logic.model.IngredientGameStatus
 import org.seoulsquad.logic.model.IngredientQuestion
-import org.seoulsquad.logic.useCase.IngredientGameUseCase
+import org.seoulsquad.logic.useCase.GetIngredientGameQuestionsUseCase
+import org.seoulsquad.logic.useCase.GetIngredientGameStatusUseCase
 
 class IngredientGameUi(
-    private val ingredientGameUseCase: IngredientGameUseCase,
+    private val getIngredientGameStatusUseCase: GetIngredientGameStatusUseCase,
+    private val getIngredientGameQuestionsUseCase: GetIngredientGameQuestionsUseCase,
 ) {
     fun startIngredientGame() {
         var isPlaying = true
         while (isPlaying) {
-            var totalScore = 0
             try {
-                val questions = ingredientGameUseCase.getIngredientGameQuestions()
+                val questions = getIngredientGameQuestionsUseCase()
                 for (question in questions) {
                     printQuestion(question)
                     val userInput = getUserAnswer(question.chooses)
-                    val status = checkGameStatus(userInput, question)
-                    totalScore = status.totalScore
-                    if (status.isGameOver) break
+                    val status =
+                        checkGameStatus(
+                            userInput,
+                            question,
+                        )
+                    if (status.isGameOver) {
+                        println("Your score is ${status.totalScore}")
+                        break
+                    }
                 }
-            } catch (e: InvalidInputException) {
+            } catch (e: InvalidNumberException) {
                 println(e.message)
             }
             println("Game Over")
-            println("Your score is $totalScore")
-            isPlaying = wantToPlayAgain()
+            wantToPlayAgain().also { isPlaying = it }
         }
     }
 
     private fun checkGameStatus(
         userAnswer: Int,
         question: IngredientQuestion,
-    ): IngredientGameStatus = ingredientGameUseCase.checkGameStatus(userAnswer, question)
+    ): IngredientGameStatus = getIngredientGameStatusUseCase(userAnswer, question)
 
     private fun getUserAnswer(chooses: List<Pair<Boolean, String>>): Int {
         val input =
-            getUserInput().trim().toIntOrNull() ?: throw InvalidInputException("Invalid input. Please enter a number.")
+            getUserInput().trim().toIntOrNull() ?: throw InvalidNumberException()
         val userAnswer = input.dec()
 
         return if (userAnswer in chooses.indices) {
             userAnswer
         } else {
-            throw InvalidInputException("Invalid input. Please enter a number between 1 and ${chooses.size}")
+            throw InvalidNumberException()
         }
     }
 
