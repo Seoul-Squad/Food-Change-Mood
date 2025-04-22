@@ -8,7 +8,7 @@ import org.seoulsquad.logic.repository.MealRepository
 class GetIraqiMealsUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun getAllIraqiMeals(): Result<List<Meal>> {
+    operator fun invoke(): Result<List<Meal>> {
         return mealRepository.getAllMeals()
             .filter(::isIraqMeal)
             .takeIf { it.isNotEmpty() }
