@@ -1,6 +1,7 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.utils.veryLowNutritionValue
 
@@ -17,7 +18,7 @@ class GetHealthyFastFoodUseCase(
         return filteredMeals
             .takeIf { it.isNotEmpty() }
             ?.let { Result.success(it) }
-            ?: Result.failure(NoSuchElementException("No Healthy meal that can be prepared under 15 minutes"))
+            ?: Result.failure(NoMealsFoundException())
     }
 
     private fun getNutritionWithLowStats(meals: List<Meal>, NutritionPrecentage: Double ): List<Double> {

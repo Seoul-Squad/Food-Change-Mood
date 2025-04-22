@@ -2,7 +2,7 @@ package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
 import logic.utils.InvalidIdException
-import logic.utils.InvalidSearchException
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.model.MealDate
 import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.utils.isIdExistingAtList
@@ -16,7 +16,7 @@ class GetMealUsingIDUseCase(
         return if (isIdValid && idExistingAtList) {
             repository.getAllMeals()
                 .firstOrNull { it.id == id.toInt() }
-                ?.let { Result.success(it) } ?: Result.failure(InvalidSearchException())
+                ?.let { Result.success(it) } ?: Result.failure(NoMealsFoundException())
         } else
             return Result.failure(InvalidIdException())
     }

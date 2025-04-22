@@ -2,8 +2,8 @@ package org.seoulsquad.logic.useCase
 
 import kotlinx.datetime.*
 import logic.utils.Constants
-import logic.utils.InvalidDateForSearchException
-import logic.utils.InvalidSearchException
+import logic.utils.InvalidDateException
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.model.MealDate
 
@@ -17,7 +17,7 @@ class SearchFoodsUsingDateUseCase(
             .filter { it.submittedAt == date }
             .takeIf { it.isNotEmpty() }
             ?.map { MealDate(id = it.id, nameOfMeal = it.name, date = it.submittedAt!!) }
-            ?.let { Result.success(it) } ?: Result.failure(InvalidSearchException())
+            ?.let { Result.success(it) } ?: Result.failure(NoMealsFoundException())
     }
 
 
@@ -25,7 +25,7 @@ class SearchFoodsUsingDateUseCase(
         return splitDate(data)
             .takeIf { checkDateValidation(it) }
             ?.let { Result.success(it) }
-            ?: Result.failure(InvalidDateForSearchException())
+            ?: Result.failure(InvalidDateException())
     }
 
     private fun convertDateToLocalDate(date: List<String>): LocalDate {
