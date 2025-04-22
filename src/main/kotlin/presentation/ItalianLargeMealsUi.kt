@@ -1,6 +1,6 @@
 package org.seoulsquad.presentation
 
-import GetItalianLargeMealsUseCase
+import logic.useCase.GetItalianLargeMealsUseCase
 import org.seoulsquad.presentation.utils.SharedUi
 
 class ItalianLargeMealsUi(

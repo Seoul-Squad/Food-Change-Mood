@@ -18,15 +18,18 @@ class InvalidSearchException : InvalidDateException("No meals found")
 
 class InvalidIdException : Exception("Invalid id")
 
+class InvalidInputException(
+    message: String,
+) : Exception(message)
+
 class NoEnoughMealsFoundException(
     message: String,
 ) : Exception(message)
 
 class InvalidGuessException(
-    message: String
+    message: String,
 ) : Exception(message)
 
 class NegativeGuessException(
-    message: String
+    message: String,
 ) : Exception(message)
-

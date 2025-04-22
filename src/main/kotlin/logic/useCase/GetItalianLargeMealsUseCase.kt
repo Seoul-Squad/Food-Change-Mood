@@ -1,3 +1,5 @@
+package logic.useCase
+
 import logic.model.Meal
 import logic.utils.Constants
 import logic.utils.NoMealsFoundException
