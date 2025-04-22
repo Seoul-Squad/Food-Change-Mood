@@ -1,35 +1,15 @@
 package logic.utils
 
-class NoIraqiMealsFoundException(
-    message: String,
-) : Exception(message)
+class NoMealsFoundException : Exception("No meals found")
 
-class NoMealsFoundException(
-    message: String,
-) : Throwable(message)
-
-open class InvalidDateException(
-    message: String,
-) : Exception(message)
-
-class InvalidDateForSearchException : InvalidDateException("Invalid date for search please enter format like that MM-DD-YYYY")
-
-class InvalidSearchException : InvalidDateException("No meals found")
+class InvalidDateException : Exception("Invalid date format please enter format like that MM-DD-YYYY")
 
 class InvalidIdException : Exception("Invalid id")
 
-class InvalidInputException(
-    message: String,
-) : Exception(message)
+class NotEnoughMealsFoundException: Exception("Not enough meals found")
 
-class NoEnoughMealsFoundException(
-    message: String,
-) : Exception(message)
+class InvalidNumberException: NumberFormatException("Please enter a valid number")
 
-class InvalidGuessException(
-    message: String,
-) : Exception(message)
+class NoIngredientFoundException: Exception("No ingredient found")
 
-class NegativeGuessException(
-    message: String,
-) : Exception(message)
+class BlankInputException: Exception("Input cannot be blank")

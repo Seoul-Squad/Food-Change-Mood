@@ -1,50 +1,72 @@
-.gradle
+### Kotlin / Gradle ###
+*.class
+*.jar
+*.war
+*.ear
+
+.gradle/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
 
-.kotlin
-
 ### IntelliJ IDEA ###
-.idea
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-.idea/ktlint-plugin.xml
-*.iws
+.idea/
+.kotlin/
 *.iml
+*.iws
 *.ipr
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 
+# Specific IntelliJ configs to ignore
+.idea/modules.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/libraries/
+.idea/ktlint-plugin.xml
+
+### Android Studio ###
+local.properties
+.cxx/
+
 ### Eclipse ###
-.apt_generated
 .classpath
-.factorypath
 .project
-.settings
-.springBeans
-.sts4-cache
+.settings/
+.factorypath
+.apt_generated/
+.springBeans/
+.sts4-cache/
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
 ### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-/food.csv
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
 ### VS Code ###
 .vscode/
 
-### Mac OS ###
+### macOS ###
 .DS_Store
 
-### food file ###
+### Others ###
+*.log
+*.tmp
+*.swp
+*.bak
+*.orig
+
+# Environment / Secrets
+.env
+*.keystore
+
+# Misc project files
 /food.csv
 /qodana.yaml

@@ -3,6 +3,7 @@ package logic.useCase
 import logic.utils.Constants.NutritionConstants
 import logic.model.Meal
 import logic.model.Nutrition
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 
 class GetKetoDietMealUseCase(
@@ -14,7 +15,7 @@ class GetKetoDietMealUseCase(
             .filter(::isKetoDietMeal)
             .takeIf { it.isNotEmpty() }
             ?.let { Result.success(it) }
-            ?: Result.failure(NoSuchElementException("No sweet meals without eggs found"))
+            ?: Result.failure(NoMealsFoundException())
 
 
     private fun isKetoDietMeal(meal: Meal): Boolean {

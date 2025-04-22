@@ -2,6 +2,8 @@ package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
 import logic.utils.Constants.Tags.TAG_SEAFOOD
+import logic.utils.NoIngredientFoundException
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 
 class GetSeafoodMealsSortedByProteinUseCase(
@@ -13,7 +15,7 @@ class GetSeafoodMealsSortedByProteinUseCase(
             .filter(::isSeafoodMeal)
             .sortedWith(comparator = compareByDescending<Meal> { it.nutrition.protein }.thenBy { it.name },)
             .takeIf { it.isNotEmpty() }
-            ?.let { Result.success(it) } ?: Result.failure(NoSuchElementException("No seafood meals found"))
+            ?.let { Result.success(it) } ?: Result.failure(NoMealsFoundException())
 
     private fun isSeafoodMeal(meal: Meal): Boolean = meal.tags.any { it.equals(other = TAG_SEAFOOD, ignoreCase = true) }
 }

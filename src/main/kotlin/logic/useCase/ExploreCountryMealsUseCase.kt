@@ -18,7 +18,7 @@ class ExploreCountryMealsUseCase(
         return meals
             .takeIf { it.isNotEmpty() }
             ?.let { Result.success(it) }
-            ?: Result.failure(NoMealsFoundException("No meals found for country: $countryName"))
+            ?: Result.failure(NoMealsFoundException())
     }
 
     private fun isMealFromCountry(meal: Meal, countryName: String) =

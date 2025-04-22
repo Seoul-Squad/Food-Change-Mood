@@ -21,7 +21,7 @@ class GetMealsByCaloriesAndProteinUseCase(
         }
 
         if (filteredMeals.isEmpty()) {
-            throw NoMealsFoundException("No meals match your nutrition criteria.")
+            throw NoMealsFoundException()
         }
         return filteredMeals
     }
