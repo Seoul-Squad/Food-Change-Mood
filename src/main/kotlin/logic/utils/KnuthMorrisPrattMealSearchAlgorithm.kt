@@ -1,6 +1,7 @@
 package org.seoulsquad.logic.utils
 
 import logic.model.Meal
+import logic.utils.NoMealsFoundException
 
 class KnuthMorrisPrattMealSearchAlgorithm {
 
@@ -10,7 +11,7 @@ class KnuthMorrisPrattMealSearchAlgorithm {
             knuthMorrisPrattMealSearch(it.name.lowercase(), query.lowercase(), longestPrefixString)
         }.takeIf { it.isNotEmpty() }
             ?.let { Result.success(it) }
-            ?: Result.failure(NoSuchElementException("No Meals found"))
+            ?: Result.failure(NoMealsFoundException())
     }
 
     private fun computeLongestPrefixStringArray(pattern: String): IntArray {

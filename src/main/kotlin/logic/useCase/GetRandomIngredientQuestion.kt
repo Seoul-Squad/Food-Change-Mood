@@ -1,7 +1,8 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
-import logic.utils.NoEnoughMealsFoundException
+import logic.utils.NoIngredientFoundException
+import logic.utils.NotEnoughMealsFoundException
 import org.seoulsquad.logic.model.IngredientQuestion
 import org.seoulsquad.logic.repository.MealRepository
 
@@ -11,13 +12,13 @@ class GetRandomIngredientQuestion(
     operator fun invoke(numberOfIngredientQuestion: Int = 2): Result<IngredientQuestion> {
         val allMeals = mealRepository.getAllMeals()
         if (allMeals.size < numberOfIngredientQuestion) {
-            return Result.failure(NoEnoughMealsFoundException("Not enough meals to generate a question."))
+            return Result.failure(NotEnoughMealsFoundException())
         }
 
         val randomMeal = allMeals.random()
         val correctAnswer =
             randomMeal.ingredients.randomOrNull()
-                ?: return Result.failure(Exception("Meal has no ingredients."))
+                ?: return Result.failure(NoIngredientFoundException())
 
         val otherMeals =
             allMeals
@@ -28,7 +29,7 @@ class GetRandomIngredientQuestion(
         val wrongAnswers = getRandomWrongOptions(randomMeal, otherMeals)
 
         if (wrongAnswers.size < numberOfIngredientQuestion) {
-            return Result.failure(Exception("Not enough wrong answers."))
+            return Result.failure(NoIngredientFoundException())
         }
 
         val options =

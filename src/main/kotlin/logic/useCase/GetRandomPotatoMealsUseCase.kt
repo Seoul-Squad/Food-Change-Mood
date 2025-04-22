@@ -20,7 +20,7 @@ class GetRandomPotatoMealsUseCase(
                     meals.take(limit),
                 )
             }
-            ?: Result.failure(NoMealsFoundException("No meals found containing potato"))
+            ?: Result.failure(NoMealsFoundException())
 
     private fun hasPotato(meal: Meal): Boolean = meal.ingredients.any { it.contains(POTATO_ONLY, ignoreCase = true) }
 }

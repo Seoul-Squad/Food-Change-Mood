@@ -12,7 +12,7 @@ class GetItalianLargeMealsUseCase(
             .takeIf { it.isNotEmpty() }
             ?.let {
                 Result.success(it)
-            } ?: Result.failure(NoMealsFoundException("No Italian large meals found"))
+            } ?: Result.failure(NoMealsFoundException())
     }
 
     private fun isItalianLargeMeal(meal: Meal) =

@@ -2,8 +2,7 @@ package logic.useCase
 
 import logic.model.GuessResult
 import logic.model.Meal
-import logic.utils.InvalidGuessException
-import logic.utils.NegativeGuessException
+import logic.utils.InvalidNumberException
 import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 
@@ -58,21 +57,21 @@ class GuessMealPreparationTimeGameUseCase(
                 return Result.success(GuessResult.TOO_LOW)
             }
             Result.success(determineGuessResult(guessValue))
-        } catch (e: InvalidGuessException) {
+        } catch (e: InvalidNumberException) {
             Result.failure(e)
-        } catch (e: NegativeGuessException) {
+        } catch (e: InvalidNumberException) {
             Result.failure(e)
         }
 
     }
     private fun validateGuess(guess: String?): Int {
         val number = guess?.toIntOrNull()
-            ?: throw InvalidGuessException("Please enter a valid number")
+            ?: throw InvalidNumberException()
 
         return if (number >= 0) {
             number
         } else {
-            throw NegativeGuessException("Time must be positive")
+            throw InvalidNumberException()
         }
     }
 
@@ -91,6 +90,6 @@ class GuessMealPreparationTimeGameUseCase(
     private fun generateRandomMeal(): Result<Meal> {
         val meals = mealRepository.getAllMeals().filter { it.name.isNotBlank() }
         return meals.randomOrNull()?.let { Result.success(it) }
-            ?: Result.failure(NoMealsFoundException("No meals available!"))
+            ?: Result.failure(NoMealsFoundException())
     }
 }
