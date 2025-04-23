@@ -4,6 +4,7 @@ import logic.model.GuessResult
 import logic.useCase.GuessMealPreparationTimeGameUseCase
 import logic.model.Meal
 
+
 class GuessMealPreparationTimeGameUI(
     private val guessGameUseCase: GuessMealPreparationTimeGameUseCase
 ) {
@@ -12,19 +13,14 @@ class GuessMealPreparationTimeGameUI(
     }
 
     private fun manageGameFlow() {
-        var shouldContinueGame = true
-
-        while (shouldContinueGame) {
-            if (guessGameUseCase.shouldStartNewRound()) {
-                shouldContinueGame = doesUserWantToPlayAgain()
-                if (!shouldContinueGame) break
-                continue
+        while (true) {
+            if (guessGameUseCase.getGameState().shouldStartNewRound) {
+                if (!doesUserWantToPlayAgain()) break
             }
 
-            val meal = guessGameUseCase.getCurrentMeal()
+            val meal = guessGameUseCase.getGameState().currentMeal
             if (meal == null) {
-                shouldContinueGame = initializeNewGameRound()
-                if (!shouldContinueGame) break
+                initializeNewGameRound()
             } else {
                 manageGuessAttempt(meal)
             }
@@ -32,23 +28,15 @@ class GuessMealPreparationTimeGameUI(
     }
 
     private fun doesUserWantToPlayAgain(): Boolean {
-        val playAgainInput = askUserToPlayAgain()
-        val playAgainResult = guessGameUseCase.doesUserWantToPlayAgain(playAgainInput)
-
-        return playAgainResult.fold(
-            onSuccess = { shouldContinue ->
-                if (!shouldContinue) {
-                    displayExitMessage()
-                    return false
-                }
-                guessGameUseCase(null)
-                true
-            },
-            onFailure = { e ->
-                displayError("Error processing play again: ${e.message}")
-                false
-            }
-        )
+        val playAgainInput = askUserToPlayAgain()?.trim()?.lowercase()
+        val playAgain = playAgainInput == "y" || playAgainInput == "yes"
+        if (playAgain) {
+            guessGameUseCase(GuessResult.PLAY_AGAIN.name)
+            return true
+        } else {
+            displayExitMessage()
+            return false
+        }
     }
 
     private fun initializeNewGameRound(): Boolean {
@@ -56,22 +44,22 @@ class GuessMealPreparationTimeGameUI(
         return initResult.fold(
             onSuccess = { outcome ->
                 if (outcome == GuessResult.GAME_STARTED) {
-                    val newMeal = guessGameUseCase.getCurrentMeal()
+                    val newMeal = guessGameUseCase.getGameState().currentMeal
                     if (newMeal == null) {
-                        displayError("No meals available!")
-                        false
+                        displayError("No meal found.")
+                        return false
                     } else {
                         manageGuessAttempt(newMeal)
-                        true
+                        return true
                     }
                 } else {
                     displayError("Unexpected game start outcome")
-                    false
+                    return false
                 }
             },
             onFailure = { e ->
-                displayError("Error starting game: ${e.message ?: "No meals found"}")
-                false
+                displayError("Error starting game: ${e.message ?: "Unknown error"}")
+                return false
             }
         )
     }
@@ -79,8 +67,8 @@ class GuessMealPreparationTimeGameUI(
     private fun manageGuessAttempt(meal: Meal) {
         val guessInput = askUserToEnterGuess(
             meal = meal,
-            currentAttempt = guessGameUseCase.getCurrentAttempt(),
-            maxAttempts = guessGameUseCase.getMaxAttempts()
+            currentAttempt = guessGameUseCase.getGameState().currentAttempt,
+            maxAttempts = guessGameUseCase.getGameState().maxAttempts
         )
         validateAndProcessGuess(guessInput)
     }
@@ -100,18 +88,16 @@ class GuessMealPreparationTimeGameUI(
             GuessResult.CORRECT -> displayCorrectGuess()
             GuessResult.TOO_HIGH -> handleIncorrectGuess(isTooHigh = true)
             GuessResult.TOO_LOW -> handleIncorrectGuess(isTooHigh = false)
-            GuessResult.INVALID -> displayInvalidInput()
-            GuessResult.NEGATIVE -> displayNegativeInput()
-            GuessResult.GAME_STARTED -> displayNewGameStartMessage()
+            else -> {}
         }
     }
 
     private fun handleIncorrectGuess(isTooHigh: Boolean) {
-        if (guessGameUseCase.shouldStartNewRound()) {
+        if (guessGameUseCase.getGameState().shouldStartNewRound) {
             displayGameOver(
                 isTooHigh = isTooHigh,
-                maxAttempts = guessGameUseCase.getMaxAttempts(),
-                correctTime = guessGameUseCase.getCurrentMeal()!!.preparationTimeInMinutes
+                maxAttempts = guessGameUseCase.getGameState().maxAttempts,
+                correctTime = guessGameUseCase.getGameState().currentMeal!!.preparationTimeInMinutes
             )
         } else {
             displayIncorrectGuess(isTooHigh = isTooHigh)
@@ -125,7 +111,7 @@ class GuessMealPreparationTimeGameUI(
 
     private fun askUserToEnterGuess(meal: Meal, currentAttempt: Int, maxAttempts: Int): String? {
         println("\nGuess the preparation time (in minutes) for: ${meal.name}")
-        println("Attempt ${currentAttempt + 1} of $maxAttempts:") // Show attempt as 1-based
+        println("Attempt ${currentAttempt + 1} of $maxAttempts:")
         print("Enter your guess: ")
         return readlnOrNull()
     }
@@ -143,13 +129,6 @@ class GuessMealPreparationTimeGameUI(
         println("Game Over! You've used all $maxAttempts attempts. The correct time was $correctTime minutes.")
     }
 
-    private fun displayInvalidInput() {
-        println("Invalid input: Please enter a number.")
-    }
-
-    private fun displayNegativeInput() {
-        println("Invalid input: Input must be greater than 0")
-    }
 
     private fun displayError(message: String) {
         println("\n$message")
@@ -159,7 +138,4 @@ class GuessMealPreparationTimeGameUI(
         println("Thanks for playing!")
     }
 
-    private fun displayNewGameStartMessage() {
-        println("New game started! Guess the preparation time for the next meal.")
-    }
 }
