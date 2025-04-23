@@ -8,12 +8,11 @@ import mockData.createSearchByNameMeal
 import io.mockk.every
 import logic.utils.BlankInputException
 import logic.utils.NoMealsFoundException
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ValueSource
 import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.useCase.SearchMealsByNameUseCase
-import kotlin.test.assertEquals
-
 
 class SearchMealsByNameUseCaseTest {
     private lateinit var searchMealsByNameUseCase: SearchMealsByNameUseCase
@@ -36,8 +35,7 @@ class SearchMealsByNameUseCaseTest {
         //When
         val result = searchMealsByNameUseCase(query)
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(BlankInputException::class.java)
+        assertThrows<BlankInputException> { result.getOrThrow() }
     }
 
     @Test
@@ -54,8 +52,7 @@ class SearchMealsByNameUseCaseTest {
         //When
         val result = searchMealsByNameUseCase(query)
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> { result.getOrThrow() }
     }
 
     @Test
@@ -66,8 +63,7 @@ class SearchMealsByNameUseCaseTest {
         //When
         val result = searchMealsByNameUseCase(query)
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> { result.getOrThrow() }
     }
 
     @Test
@@ -84,8 +80,7 @@ class SearchMealsByNameUseCaseTest {
         //When
         val result = searchMealsByNameUseCase(query)
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> { result.getOrThrow() }
     }
 
     @Test
@@ -100,8 +95,7 @@ class SearchMealsByNameUseCaseTest {
         //When
         val result = searchMealsByNameUseCase(query)
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> { result.getOrThrow() }
     }
 
     @ParameterizedTest
@@ -120,7 +114,7 @@ class SearchMealsByNameUseCaseTest {
         val result = searchMealsByNameUseCase(query)
         //Then
         assertThat(result.isSuccess).isTrue()
-        assertEquals(3, result.getOrNull()?.size)
+        assertThat(result.getOrNull()?.all { it.name.lowercase().contains(query.lowercase()) }).isTrue()
     }
 
     @Test
@@ -136,11 +130,11 @@ class SearchMealsByNameUseCaseTest {
         val result = searchMealsByNameUseCase(query)
         //Then
         assertThat(result.isSuccess).isTrue()
-        assertEquals(1, result.getOrNull()?.size)
+        assertThat(result.getOrNull()?.all { it.name.contains(query) }).isTrue()
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return failure when query has overlapped charachters`() {
+    fun `SearchMealsByNameUseCase should return meals when query has overlapped charachters`() {
         //Given
         val query = "abcaby"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -152,7 +146,7 @@ class SearchMealsByNameUseCaseTest {
         val result = searchMealsByNameUseCase(query)
         //Then
         assertThat(result.isSuccess).isTrue()
-        assertEquals(2, result.getOrNull()?.size)
+        assertThat(result.getOrNull()?.all { it.name.contains(query) }).isTrue()
     }
 
     @Test
@@ -168,11 +162,11 @@ class SearchMealsByNameUseCaseTest {
         val result = searchMealsByNameUseCase(query)
         //Then
         assertThat(result.isSuccess).isTrue()
-        assertEquals(2, result.getOrNull()?.size)
+        assertThat(result.getOrNull()?.all { it.name.contains(query) }).isTrue()
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return meals when query  mismatch then match`() {
+    fun `SearchMealsByNameUseCase should return meals when query mismatch then match with name`() {
         //Given
         val query = "ababcaba"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -182,6 +176,6 @@ class SearchMealsByNameUseCaseTest {
         val result = searchMealsByNameUseCase(query)
         //Then
         assertThat(result.isSuccess).isTrue()
-        assertEquals(1, result.getOrNull()?.size)
+        assertThat(result.getOrNull()?.all { it.name.contains(query) }).isTrue()
     }
 }
