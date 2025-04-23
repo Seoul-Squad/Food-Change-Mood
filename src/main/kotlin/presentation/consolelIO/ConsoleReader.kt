@@ -3,7 +3,7 @@ package org.seoulsquad.presentation.consolelIO
 import kotlinx.datetime.LocalDate
 
 class ConsoleReader : Reader {
-    override fun readString(): String? = readlnOrNull()
+    override fun readString(): String = readln()
 
     override fun readInt(): Int? = readlnOrNull()?.toIntOrNull()
 
