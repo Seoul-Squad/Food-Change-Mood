@@ -1,10 +1,11 @@
 package org.seoulsquad.presentation
 
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.presentation.utils.SharedUi
+import org.seoulsquad.presentation.utils.MealSuggestionUi
 
 class SweetsWithNoEggsUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val mealSuggestionUi: MealSuggestionUi
 ) {
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
@@ -20,7 +21,7 @@ class SweetsWithNoEggsUi(
     private fun getSweetsWithNoEggs() {
         getSweetsWithNoEggsUseCase()
             .onSuccess { sweetsList ->
-                SharedUi().suggestMeal(sweetsList)
+                mealSuggestionUi.suggestMeal(sweetsList)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }

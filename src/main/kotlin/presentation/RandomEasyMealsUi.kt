@@ -1,10 +1,11 @@
 package org.seoulsquad.presentation
 
 import logic.useCase.GetRandomEasyMealsUseCase
-import org.seoulsquad.presentation.utils.SharedUi
+import org.seoulsquad.presentation.utils.MealPrinter
 
 class RandomEasyMealsUi(
-    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
+    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
+    private val mealPrinter: MealPrinter
 ) {
     fun printRandomEasyMeals() {
         val result = getRandomEasyMealsUseCase()
@@ -12,7 +13,7 @@ class RandomEasyMealsUi(
         result
             .onSuccess { randomEasyMealsList ->
                 randomEasyMealsList.forEach { meal ->
-                    SharedUi().printFullMeal(meal)
+                    mealPrinter.printFullMeal(meal)
                 }
             }.onFailure { exception ->
                 println(exception.message)
