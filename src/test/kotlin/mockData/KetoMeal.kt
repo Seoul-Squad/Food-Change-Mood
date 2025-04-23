@@ -3,7 +3,6 @@ package mockData
 import logic.model.Meal
 import logic.model.Nutrition
 
-
 fun createMeal(
     totalFat: Double,
     protein: Double,
