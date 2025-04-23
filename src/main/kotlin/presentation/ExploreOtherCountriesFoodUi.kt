@@ -1,5 +1,6 @@
 package org.seoulsquad.presentation
 
+import logic.model.Meal
 import logic.useCase.ExploreCountryMealsUseCase
 import logic.utils.Constants.EXIT
 import org.seoulsquad.presentation.consolelIO.Reader
@@ -12,24 +13,32 @@ class ExploreOtherCountriesFoodUi(
 ) {
     fun exploreOtherCountriesFood() {
         viewer.display("Welcome to the Food Explorer!")
-        while (true) {
-            viewer.display("\n Please enter a country name to explore its food (or type '$EXIT' to quit):")
-            val country = reader.readString()
-            if (country == EXIT) {
-                viewer.display("Exiting the Food Explorer. Goodbye!")
-                return
-            }
-            country?.let {
-                exploreOtherCountriesFoodUseCase(it)
+        loop()
+    }
+
+    private fun loop() {
+        viewer.display("\n Please enter a country name to explore its food (or type '$EXIT' to quit):")
+
+        when (val countryName = reader.readString()) {
+            EXIT -> viewer.display("Exiting the Food Explorer. Goodbye()")
+            else -> {
+                exploreOtherCountriesFoodUseCase(countryName)
                     .onSuccess { meals ->
-                        viewer.display("Here are some meals from $country:")
-                        meals.forEach { meal ->
-                            viewer.display("- ${meal.name}: ${meal.description}")
-                        }
-                    }.onFailure { error ->
+                        displayMeals(countryName, meals)
+                    }
+                    .onFailure { error ->
                         viewer.display("Error: ${error.message}")
                     }
+                loop()
             }
         }
     }
+
+    private fun displayMeals(country: String, meals: List<Meal>) {
+        viewer.display("Here are some meals from $country:")
+        meals.forEach { meal ->
+            viewer.display("- ${meal.name}: ${meal.description}")
+        }
+    }
+
 }
