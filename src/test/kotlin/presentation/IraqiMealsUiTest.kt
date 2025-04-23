@@ -12,20 +12,21 @@ import org.junit.jupiter.api.Test
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
 import org.seoulsquad.presentation.IraqiMealsUi
 import org.seoulsquad.presentation.consolelIO.Viewer
-import org.seoulsquad.presentation.utils.SharedUi
+import org.seoulsquad.presentation.utils.MealPrinter
+
 
 class IraqiMealsUiTest{
     private lateinit var getIraqiMealsUseCase: GetIraqiMealsUseCase
     private lateinit var viewer: Viewer
-    private lateinit var sharedUi: SharedUi
+    private lateinit var mealPrinter: MealPrinter
     private lateinit var iraqiMealsUi: IraqiMealsUi
 
     @BeforeEach
     fun setup(){
         getIraqiMealsUseCase = mockk(relaxed = true)
         viewer = mockk(relaxed = true)
-        sharedUi = mockk(relaxed = true)
-        iraqiMealsUi = IraqiMealsUi(getIraqiMealsUseCase, viewer,sharedUi)
+        mealPrinter = mockk(relaxed = true)
+        iraqiMealsUi = IraqiMealsUi(getIraqiMealsUseCase, mealPrinter ,viewer)
     }
 
     @Test
@@ -45,10 +46,10 @@ class IraqiMealsUiTest{
             viewer.display(any())
             viewer.display(any())
 
-            sharedUi.printFullMeal(any())
+            mealPrinter.printFullMeal(any())
             viewer.display(any())
 
-            sharedUi.printFullMeal(any())
+            mealPrinter.printFullMeal(any())
             viewer.display(any())
         }
      }
