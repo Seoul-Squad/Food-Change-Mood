@@ -1,10 +1,13 @@
 package org.seoulsquad.presentation
 
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
+import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.utils.SharedUi
 
 class IraqiMealsUi(
-    private val getIraqiMealsUseCase: GetIraqiMealsUseCase
+    private val getIraqiMealsUseCase: GetIraqiMealsUseCase,
+    private val viewer: Viewer,
+    private val sharedUi: SharedUi
 ) {
     fun startIraqiMealsFlow() {
         printIraqiMealsIntroductionMessage()
@@ -12,19 +15,19 @@ class IraqiMealsUi(
     }
 
     private fun printIraqiMealsIntroductionMessage() {
-        println("Looking for an Iraqi meal? You're in the right place!")
-        println("Loading, Please wait...")
+        viewer.display("Looking for an Iraqi meal? You're in the right place!")
+        viewer.display("Loading, Please wait...")
     }
 
     private fun getIraqiMeals() {
         getIraqiMealsUseCase()
             .onSuccess { mealsList ->
                 mealsList.forEach { meal ->
-                    SharedUi().printFullMeal(meal)
-                    println("\n---\n")
+                    sharedUi.printFullMeal(meal)
+                    viewer.display("\n---\n")
                 }
             }.onFailure { exception ->
-                println(exception.message)
+                viewer.display("error: ${exception.message}")
             }
     }
 }
