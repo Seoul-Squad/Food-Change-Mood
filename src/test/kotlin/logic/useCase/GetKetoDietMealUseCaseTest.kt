@@ -160,4 +160,50 @@ class GetKetoDietMealUseCaseTest {
         assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
     }
 
+    @Test fun `valid keto meal returns true`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(72.0, 22.0, 6.0, 15.0, 3.0)
+        assertThat(result).isTrue()
+    }
+
+    @Test fun `fat percent too low returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(65.0, 22.0, 6.0, 15.0, 3.0)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `fat percent too high returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(80.0, 22.0, 6.0, 15.0, 3.0)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `protein percent too low returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(72.0, 10.0, 6.0, 15.0, 3.0)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `protein percent too high returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(72.0, 30.0, 6.0, 15.0, 3.0)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `carb percent too low returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(72.0, 22.0, 3.0, 15.0, 3.0)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `carb percent too high returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(72.0, 22.0, 11.0, 15.0, 3.0)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `net carbs too high returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(72.0, 22.0, 6.0, 25.0, 3.0)
+        assertThat(result).isFalse()
+    }
+
+    @Test fun `sugar too high returns false`() {
+        val result = getKetoDietMealUseCase.validateKetoConstraints(72.0, 22.0, 6.0, 15.0, 6.0)
+        assertThat(result).isFalse()
+    }
+
+
 }
