@@ -8,12 +8,12 @@ class GetMealsByCaloriesAndProteinUseCase(
     private val mealRepository: MealRepository
 ) {
     operator fun invoke(
-        targetCalories: Int,
-        targetProtein: Int,
-        tolerancePercent: Int = 10
+        targetCalories: Double,
+        targetProtein: Double,
+        tolerancePercentage: Double = 10.0
     ): List<Meal> {
         val (allMeals, calorieRange, proteinRange) = calculateCaloriesAndProteinMargin(
-            targetCalories, tolerancePercent, targetProtein
+            targetCalories, tolerancePercentage, targetProtein
         )
 
         val filteredMeals = allMeals.filter { meal ->
@@ -27,10 +27,10 @@ class GetMealsByCaloriesAndProteinUseCase(
     }
 
     private fun calculateCaloriesAndProteinMargin(
-        targetCalories: Int,
-        tolerancePercent: Int,
-        targetProtein: Int
-    ): Triple<List<Meal>, Int, Int> {
+        targetCalories: Double,
+        tolerancePercent: Double,
+        targetProtein: Double
+    ): Triple<List<Meal>, Double, Double> {
         val allMeals = mealRepository.getAllMeals()
         val calorieMargin = targetCalories * tolerancePercent / 100
         val proteinMargin = targetProtein * tolerancePercent / 100
@@ -39,10 +39,10 @@ class GetMealsByCaloriesAndProteinUseCase(
 
     private fun isCaloriesAndProteinInRange(
         meal: Meal,
-        targetCalories: Int,
-        targetProtein: Int,
-        calorieMargin: Int,
-        proteinMargin: Int
+        targetCalories: Double,
+        targetProtein: Double,
+        calorieMargin: Double,
+        proteinMargin: Double
     ): Boolean {
         val caloriesInRange = meal.nutrition.calories >= (targetCalories - calorieMargin) &&
                 meal.nutrition.calories <= (targetCalories + calorieMargin)

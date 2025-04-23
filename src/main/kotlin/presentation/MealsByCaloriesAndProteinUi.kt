@@ -7,12 +7,12 @@ class MealsByCaloriesAndProteinUi(
         private val getMealsByCaloriesAndProtein: GetMealsByCaloriesAndProteinUseCase
 ) {
     fun startGetMealsByCaloriesAndProtein() {
-        println("=== Meal Nutrition Filter ===")
+        println("=== Gym Helper ===")
         print("Enter target calories: ")
-        val targetCalories = readLine()?.toIntOrNull() ?: 0
+        val targetCalories = readLine()?.toDoubleOrNull() ?: 0.0
 
         print("Enter target protein (g): ")
-        val targetProtein = readLine()?.toIntOrNull() ?: 0
+        val targetProtein = readLine()?.toDoubleOrNull() ?: 0.0
     try {
 
         val meals = getMealsByCaloriesAndProtein.invoke(
@@ -26,5 +26,4 @@ class MealsByCaloriesAndProteinUi(
     println(error.message)
     }
     }
-
 }
