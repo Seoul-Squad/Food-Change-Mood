@@ -3,11 +3,12 @@ package org.seoulsquad.presentation
 import org.seoulsquad.logic.model.MealDate
 import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 import org.seoulsquad.logic.useCase.SearchFoodsUsingDateUseCase
-import org.seoulsquad.presentation.utils.SharedUi
+import org.seoulsquad.presentation.utils.MealPrinter
 
 class SearchMealUsingDateUi(
     private val getMealUsingIDUseCase: GetMealUsingIDUseCase,
     private val searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase,
+    private val mealPrinter: MealPrinter
 ) {
     fun searchMealUsingDate() {
         println("Enter a date to search for meals (format: MM-DD-YYYY):")
@@ -38,7 +39,7 @@ class SearchMealUsingDateUi(
         val mealId = readln()
         getMealUsingIDUseCase(mealId, dateMeals)
             .onSuccess { meals ->
-                SharedUi().printFullMeal(meals)
+                mealPrinter.printFullMeal(meals)
             }.onFailure { e ->
                 println("\n Could not retrieve meal details: ${e.message}")
             }
