@@ -24,7 +24,7 @@ object Constants {
         const val HIGH_CALORIES = 700
     }
 
-    const val ITALIAN_NAME = "Italian"
+    const val ITALIAN_NAME = "italian"
     const val LARGE_GROUP_NAME = "for-large-groups"
     const val EXIT = "0"
 
