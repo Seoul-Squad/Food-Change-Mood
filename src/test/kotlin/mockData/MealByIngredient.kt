@@ -3,7 +3,7 @@ package mockData
 import logic.model.Meal
 import logic.model.Nutrition
 
-fun createPotatoMeal(
+fun createMeal(
     id: Int,
     ingredients: List<String>,
 ) = Meal(
