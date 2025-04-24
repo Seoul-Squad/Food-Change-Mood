@@ -53,7 +53,7 @@ class RandomEasyMealsUiTest {
 
     companion object {
         private val meals = listOf (
-            createMeal(1,25, 2, 5, null),
+            createMeal(1,25, 2, 5),
             createMeal(2,15, 5, 3),
             createMeal(3,18, 3, 4),
             createMeal(4,28, 4, 5),

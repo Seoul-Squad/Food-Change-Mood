@@ -5,7 +5,7 @@ import logic.model.Nutrition
 
 private val nutrition = Nutrition(0.0,0.0,0.0, 0.0, 0.0, 0.0, 0.0)
 
-fun createMeal(id: Int, preparationTimeInMinutes: Int, numberOfIngredients: Int, numberOfSteps: Int, description: String? = "This is a random meal") =
+fun createMeal(id: Int, preparationTimeInMinutes: Int, numberOfIngredients: Int, numberOfSteps: Int) =
     Meal(
     name = "Random meal",
     id = id,
@@ -16,7 +16,7 @@ fun createMeal(id: Int, preparationTimeInMinutes: Int, numberOfIngredients: Int,
     nutrition = nutrition,
     numberOfSteps = numberOfSteps,
     steps = List(numberOfSteps) { "Step $it" },
-    description = description,
+    description = "This is a random meal",
     ingredients = List(numberOfIngredients) { "Ingredient $it" },
     numberOfIngredients = numberOfIngredients
     )
