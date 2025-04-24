@@ -3,6 +3,7 @@ package data.utils
 import data.model.CsvData
 import java.io.BufferedReader
 import java.io.FileReader
+import java.io.Reader
 
 class CsvFileReader(
     private val fileReader: FileReader,
