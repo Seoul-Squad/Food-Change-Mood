@@ -29,7 +29,7 @@ class GetSweetsWithNoEggsUseCaseTest {
 
     @ParameterizedTest
     @MethodSource("provideSuccessScenarios")
-    fun `success scenarios`(
+    fun `should return success result with sweet meals containing no eggs when they are available`(
         meals: List<Meal>, expectedIds: List<Int>
     ) {
         //Given
@@ -44,7 +44,7 @@ class GetSweetsWithNoEggsUseCaseTest {
 
     @ParameterizedTest
     @MethodSource("provideFailureScenarios")
-    fun `failure scenarios`(
+    fun `should return failure result with NoMealsFoundException when no sweet meals without eggs are available`(
         meals: List<Meal>
     ) {
         //Given
@@ -63,7 +63,7 @@ class GetSweetsWithNoEggsUseCaseTest {
         @JvmStatic
         fun provideSuccessScenarios(): Stream<Arguments> = Stream.of(
             Arguments.argumentSet(
-                "should return success result with list of sweets with no eggs when they are available",
+                "list containing sweet meals without eggs",
                 listOf(
                     createMeal(
                         id = 1,
@@ -89,7 +89,7 @@ class GetSweetsWithNoEggsUseCaseTest {
         @JvmStatic
         fun provideFailureScenarios(): Stream<Arguments> = Stream.of(
             Arguments.argumentSet(
-                "should return failure result with NoMealsFoundException when there is only sweets with eggs",
+                "list containing sweets but with eggs",
                 listOf(
                     createMeal(
                         id = 1,
@@ -105,7 +105,7 @@ class GetSweetsWithNoEggsUseCaseTest {
                 )
             ),
             Arguments.argumentSet(
-                "should return failure result with NoMealsFoundException when there is only non-sweets without eggs",
+                "list containing only non-sweets without eggs",
                 listOf(
                     createMeal(
                         id = 1,
@@ -121,7 +121,7 @@ class GetSweetsWithNoEggsUseCaseTest {
                 )
             ),
             Arguments.argumentSet(
-                "should return failure result with NoMealsFoundException when there is only non-sweets with eggs",
+                "list containing only non-sweets with eggs",
                 listOf(
                     createMeal(
                         id = 1,
@@ -132,7 +132,7 @@ class GetSweetsWithNoEggsUseCaseTest {
                 )
             ),
             Arguments.argumentSet(
-                "should return failure result with NoMealsFoundException when there is no meals",
+                "empty list of meals",
                 emptyList<Meal>()
             ),
         )
