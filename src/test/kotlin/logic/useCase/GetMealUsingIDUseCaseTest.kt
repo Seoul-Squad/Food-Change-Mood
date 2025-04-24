@@ -66,7 +66,7 @@ class GetMealUsingIDUseCaseTest {
     }
 
     @Test
-    fun `should throw a NoMealsFoundException when searching with a valid but non-existent ID from the list`() {
+    fun `should throw a NoMealsFoundException when searching with a valid ID but non-existent ID from the list`() {
         every { mealRepository.getAllMeals() } returns meals
 
         val result = getMealUsingIDUseCase(99, mealsDate)
