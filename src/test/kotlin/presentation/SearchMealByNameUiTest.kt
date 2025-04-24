@@ -36,37 +36,39 @@ class SearchMealByNameUiTest {
     }
 
     @Test
-    fun `should show meals when user query not empty and there is a match`() {
+    fun `should show meals when user insert not empty query there is a match`() {
         // Given
-        every { reader.readString() } returnsMany listOf("kushari", "0")
+        val query = "kushari"
+        val exitCode = "0"
+        every { reader.readString() } returnsMany listOf(query, exitCode)
         val meals = kushariMeals
-        every { searchMealsByNameUseCase("kushari") } returns Result.success(meals)
+        every { searchMealsByNameUseCase(query) } returns Result.success(meals)
         // When
         searchMealByNameUi.searchMealByName()
         // Then
-        verify {
-            viewer.display(any())
-        }
+        verify(exactly = 3) { viewer.display(any()) }
     }
 
     @Test
     fun `should throw NoMealsException when user enters query that is not matched`() {
         // Given
-        every { reader.readString() } returnsMany listOf("kushari", "0")
-        every { searchMealsByNameUseCase("kushari") } returns Result.failure(NoMealsFoundException())
+        val query = "kushari"
+        val exitCode = "0"
+        every { reader.readString() } returnsMany listOf(query, exitCode)
+        every { searchMealsByNameUseCase(query) } returns Result.failure(NoMealsFoundException())
         // When
         searchMealByNameUi.searchMealByName()
         // Then
-        verify {
-            viewer.display(any())
-        }
+        verify(exactly = 3) { viewer.display(any()) }
     }
 
     @Test
     fun `should throw BlankInputException when user enters blank query`() {
         // Given
-        every { reader.readString() } returnsMany listOf("", "0")
-        every { searchMealsByNameUseCase("") } returns Result.failure(BlankInputException())
+        val query = ""
+        val exitCode = "0"
+        every { reader.readString() } returnsMany listOf(query, exitCode)
+        every { searchMealsByNameUseCase(query) } returns Result.failure(BlankInputException())
         // When
         searchMealByNameUi.searchMealByName()
         // Then
