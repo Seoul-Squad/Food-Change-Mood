@@ -21,27 +21,38 @@ class SweetsWithNoEggsUiTest {
     private lateinit var reader: Reader
     private lateinit var sweetsWithNoEggsUi: SweetsWithNoEggsUi
 
+    private val meals = listOf(
+        createMeal(
+            id = 1,
+            name = "Vegan cupcake",
+            tags = listOf(TAG_SWEET),
+            ingredients = listOf("flour", "sugar", "vegan butter")
+        ),
+        createMeal(
+            id = 2, name = "Ice cream", tags = listOf(TAG_SWEET), ingredients = listOf("cream", "vanilla", "ice")
+        ),
+    )
+
     @BeforeEach
     fun setup() {
         getSweetsWithNoEggsUseCase = mockk(relaxed = true)
         mealPrinter = mockk(relaxed = true)
         viewer = mockk(relaxed = true)
         reader = mockk(relaxed = true)
-        sweetsWithNoEggsUi = SweetsWithNoEggsUi(getSweetsWithNoEggsUseCase = getSweetsWithNoEggsUseCase, mealPrinter = mealPrinter, viewer = viewer, reader)
+        sweetsWithNoEggsUi = SweetsWithNoEggsUi(
+            getSweetsWithNoEggsUseCase = getSweetsWithNoEggsUseCase,
+            mealPrinter = mealPrinter,
+            viewer = viewer,
+            reader
+        )
     }
 
     @Test
-    fun `should print a short meal and then print full meal when use case returns meals and user likes the meal`() {
+    fun `should print a short meal then full meal when use case returns meals and user likes the meal`() {
         //Given
-        val meals = listOf(
-            createMeal(
-                name = "Vegan cupcake",
-                tags = listOf(TAG_SWEET),
-                ingredients = listOf("flour", "sugar", "vegan butter")
-            ),
-        )
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
         every { reader.readInt() } returns 0
+
         //When
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
 
@@ -53,15 +64,9 @@ class SweetsWithNoEggsUiTest {
     @Test
     fun `should display error message when user enters invalid suggestion feedback`() {
         //Given
-        val meals = listOf(
-            createMeal(
-                name = "Vegan cupcake",
-                tags = listOf(TAG_SWEET),
-                ingredients = listOf("flour", "sugar", "vegan butter")
-            ),
-        )
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
         every { reader.readInt() } returnsMany listOf(2, 0)
+
         //When
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
 
@@ -70,20 +75,8 @@ class SweetsWithNoEggsUiTest {
     }
 
     @Test
-    fun `should print multiple short meals and then print full meal when use case returns more than one meal and user likes the meal`() {
+    fun `should print multiple short meals and then full meal when user dislikes first meal and likes the second meal`() {
         //Given
-        val meals = listOf(
-            createMeal(
-                name = "Vegan cupcake",
-                tags = listOf(TAG_SWEET),
-                ingredients = listOf("flour", "sugar", "vegan butter")
-            ),
-            createMeal(
-                name = "Ice cream",
-                tags = listOf(TAG_SWEET),
-                ingredients = listOf("cream", "vanilla", "ice")
-            ),
-        )
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
         every { reader.readInt() } returnsMany listOf(1, 0)
         //When
@@ -97,20 +90,9 @@ class SweetsWithNoEggsUiTest {
     @Test
     fun `should print out of meals message when user doesn't like all the meals`() {
         //Given
-        val meals = listOf(
-            createMeal(
-                name = "Vegan cupcake",
-                tags = listOf(TAG_SWEET),
-                ingredients = listOf("flour", "sugar", "vegan butter")
-            ),
-            createMeal(
-                name = "Ice cream",
-                tags = listOf(TAG_SWEET),
-                ingredients = listOf("cream", "vanilla", "ice")
-            ),
-        )
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
         every { reader.readInt() } returnsMany listOf(1, 1)
+
         //When
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
 
