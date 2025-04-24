@@ -9,18 +9,21 @@ import mockData.createMeal
 import org.junit.jupiter.api.BeforeEach
 import org.seoulsquad.presentation.RandomEasyMealsUi
 import org.seoulsquad.presentation.consolelIO.Viewer
+import org.seoulsquad.presentation.utils.MealPrinter
 import kotlin.test.Test
 
 class RandomEasyMealsUiTest {
   private lateinit var getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase
   private lateinit var viewer: Viewer
   private lateinit var randomEasyMealsUi: RandomEasyMealsUi
+  private lateinit var mealPrinter: MealPrinter
 
   @BeforeEach
   fun setup() {
-   getRandomEasyMealsUseCase = mockk()
-   viewer = mockk(relaxed = true)
-   randomEasyMealsUi = RandomEasyMealsUi(getRandomEasyMealsUseCase, viewer)
+      getRandomEasyMealsUseCase = mockk()
+      viewer = mockk(relaxed = true)
+       mealPrinter = mockk(relaxed = true)
+      randomEasyMealsUi = RandomEasyMealsUi(getRandomEasyMealsUseCase, mealPrinter, viewer)
   }
 
     @Test
@@ -32,7 +35,7 @@ class RandomEasyMealsUiTest {
         randomEasyMealsUi.printRandomEasyMeals()
 
         //Then
-        verify { viewer.display(any()) }
+        verify { mealPrinter.printFullMeal(any()) }
     }
 
     @Test
