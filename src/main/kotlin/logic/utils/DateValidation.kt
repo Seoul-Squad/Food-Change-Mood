@@ -2,16 +2,15 @@ package org.seoulsquad.logic.utils
 
 import kotlinx.datetime.*
 import logic.utils.Constants
-import logic.utils.InvalidDateException
 
-fun paresDate(data: String): Result<List<String>> {
-    return data.split(Regex("[/-]"))
+
+fun String.toLocalDate(): LocalDate? {
+    return split(Regex("[/-]"))
         .takeIf { checkDateValidation(it) }
-        ?.let { Result.success(it) }
-        ?: Result.failure(InvalidDateException())
+        ?.let { convertDateToLocalDate(it) }
 }
 
-fun convertDateToLocalDate(date: List<String>): LocalDate {
+private fun convertDateToLocalDate(date: List<String>): LocalDate {
     return LocalDate(
         month = Month.of(date[Constants.MONTH].toInt()),
         dayOfMonth = date[Constants.DAY].toInt(),
@@ -20,7 +19,7 @@ fun convertDateToLocalDate(date: List<String>): LocalDate {
 
 }
 
-fun checkDateValidation(partsOfDate: List<String>) =
+private fun checkDateValidation(partsOfDate: List<String>) =
     partsOfDate.all {
         partsOfDate.size == Constants.LENGTH_OF_DATE &&
                 partsOfDate[Constants.YEAR].toIntOrNull() != null &&
@@ -36,7 +35,7 @@ fun checkDateValidation(partsOfDate: List<String>) =
                 )
     }
 
-fun checkIsDateFuture(localDate: LocalDate): Boolean {
+private fun checkIsDateFuture(localDate: LocalDate): Boolean {
     return LocalDate(
         month = Month.of(localDate.monthNumber),
         dayOfMonth = localDate.dayOfMonth,
