@@ -9,6 +9,8 @@ import org.seoulsquad.presentation.consolelIO.ConsoleViewer
 import org.seoulsquad.presentation.consolelIO.Reader
 import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.di.PresentationDependencies
+import org.seoulsquad.presentation.utils.MealPrinter
+import org.seoulsquad.presentation.utils.MealSuggestionUi
 import presentation.ConsoleUi
 
 val uiModule =
@@ -30,6 +32,8 @@ val uiModule =
         singleOf(::IngredientGameUi)
         singleOf(::HealthyMealUi)
         singleOf(::PresentationDependencies)
+        singleOf(::MealPrinter)
+        singleOf(::MealSuggestionUi)
 
         singleOf(::ConsoleReader) { bind<Reader>() }
         singleOf(::ConsoleViewer) { bind<Viewer>() }
