@@ -49,8 +49,8 @@ class SweetsWithNoEggsUi(
         while(true) {
             mealPrinter.printShortMeal(randomMeal)
             mealPrinter.printLikeAndDislikeOptions()
-
-            when (reader.readInt()) {
+            val userInput = reader.readInt() ?: INVALID_OPTION
+            when (userInput) {
                 SuggestionFeedbackOption.LIKE.ordinal -> {
                     return mealPrinter.printFullMeal(randomMeal)
                 }
@@ -58,6 +58,7 @@ class SweetsWithNoEggsUi(
                 SuggestionFeedbackOption.DISLIKE.ordinal -> {
                     return suggestMeal(meals.minusElement(randomMeal))
                 }
+
                 else ->{
                     viewer.display(INVALID_OPTION_MESSAGE)
                 }
@@ -65,6 +66,7 @@ class SweetsWithNoEggsUi(
         }
     }
     companion object{
+        const val INVALID_OPTION = -1
         const val INVALID_OPTION_MESSAGE = "Invalid option"
         const val OUT_OF_MEALS_MESSAGE = "We are out of meals for now."
     }

@@ -63,9 +63,23 @@ class SweetsWithNoEggsUiTest {
     }
 
     @Test
-    fun `should display error message when user enters invalid suggestion feedback`() {
+    fun `should display error message when user enters invalid number suggestion feedback`() {
         //Given
         val invalidFeedback = 2
+        every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
+        every { reader.readInt() } returnsMany listOf(invalidFeedback, SuggestionFeedbackOption.LIKE.ordinal)
+
+        //When
+        sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
+
+        //Then
+        verify(exactly = 1) { viewer.display(SweetsWithNoEggsUi.INVALID_OPTION_MESSAGE) }
+    }
+
+    @Test
+    fun `should display error message when user enters invalid non-number suggestion feedback`() {
+        //Given
+        val invalidFeedback = null
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
         every { reader.readInt() } returnsMany listOf(invalidFeedback, SuggestionFeedbackOption.LIKE.ordinal)
 
