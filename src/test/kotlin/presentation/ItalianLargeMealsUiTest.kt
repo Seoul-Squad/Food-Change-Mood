@@ -7,7 +7,6 @@ import io.mockk.verify
 import logic.utils.Constants.ITALIAN_NAME
 import logic.utils.Constants.LARGE_GROUP_NAME
 import logic.utils.NoMealsFoundException
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.seoulsquad.presentation.ItalianLargeMealsUi
