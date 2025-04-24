@@ -5,10 +5,14 @@ import org.seoulsquad.logic.model.IngredientGameStatus
 import org.seoulsquad.logic.model.IngredientQuestion
 import org.seoulsquad.logic.useCase.GetIngredientGameQuestionsUseCase
 import org.seoulsquad.logic.useCase.GetIngredientGameStatusUseCase
+import org.seoulsquad.presentation.consolelIO.Reader
+import org.seoulsquad.presentation.consolelIO.Viewer
 
 class IngredientGameUi(
     private val getIngredientGameStatusUseCase: GetIngredientGameStatusUseCase,
     private val getIngredientGameQuestionsUseCase: GetIngredientGameQuestionsUseCase,
+    private val viewer: Viewer,
+    private val reader: Reader,
 ) {
     fun startIngredientGame() {
         var isPlaying = true
@@ -17,60 +21,45 @@ class IngredientGameUi(
                 val questions = getIngredientGameQuestionsUseCase()
                 for (question in questions) {
                     printQuestion(question)
-                    val userInput = getUserAnswer(question.chooses)
                     val status =
-                        checkGameStatus(
-                            userInput,
+                        updateGameStatus(
+                            reader.readInt(),
                             question,
                         )
                     if (status.isGameOver) {
-                        println("Your score is ${status.totalScore}")
+                        viewer.display("Your score is ${status.totalScore}")
                         break
                     }
                 }
             } catch (e: InvalidNumberException) {
-                println(e.message)
+                viewer.display(e.message)
             }
-            println("Game Over")
+            viewer.display("Game Over")
             askToPlayAgain().also { isPlaying = it }
         }
     }
 
-    private fun checkGameStatus(
-        userAnswer: Int,
+    private fun updateGameStatus(
+        userAnswer: Int?,
         question: IngredientQuestion,
     ): IngredientGameStatus = getIngredientGameStatusUseCase(userAnswer, question)
 
-    private fun getUserAnswer(chooses: List<Pair<Boolean, String>>): Int {
-        val input =
-            getUserInput().trim().toIntOrNull() ?: throw InvalidNumberException()
-        val userAnswer = input.dec()
-
-        return if (userAnswer in chooses.indices) {
-            userAnswer
-        } else {
-            throw InvalidNumberException()
-        }
-    }
-
     private fun printQuestion(question: IngredientQuestion) {
-        println("What is the correct ingredient for: ${question.mealName}")
+        viewer.display("What is the correct ingredient for: ${question.mealName}")
 
         question.chooses.forEachIndexed { index, choose ->
-            println("${index.inc()}- $choose")
+            viewer.display("${index.inc()}- $choose")
         }
     }
 
     private fun askToPlayAgain(): Boolean { //
-        println("Do you want to play again? (y/n)")
+        viewer.display("Do you want to play again? (y/n)")
         while (true) {
-            when (getUserInput().lowercase()) {
+            when (reader.readString().lowercase()) {
                 "y" -> return true
                 "n" -> return false
-                else -> println("Invalid input. Please enter 'y' or 'n'")
+                else -> viewer.display("Invalid input. Please enter 'y' or 'n'")
             }
         }
     }
-
-    private fun getUserInput() = readlnOrNull() ?: ""
 }

@@ -1,5 +1,6 @@
 package org.seoulsquad.logic.useCase
 
+import logic.utils.InvalidNumberException
 import org.seoulsquad.logic.model.IngredientGameStatus
 import org.seoulsquad.logic.model.IngredientQuestion
 
@@ -8,12 +9,12 @@ class GetIngredientGameStatusUseCase {
     private var isGameOver = false
 
     operator fun invoke(
-        userAnswer: Int,
+        userAnswer: Int?,
         question: IngredientQuestion,
     ): IngredientGameStatus {
         checkGameStatus()
         isCorrectAnswer(
-            userAnswer,
+            checkUserInput(userAnswer, question.chooses),
             question,
         ).also {
             if (it) increaseScore()
@@ -21,6 +22,16 @@ class GetIngredientGameStatusUseCase {
         }
         return IngredientGameStatus(totalScore, isGameOver)
     }
+
+    private fun checkUserInput(
+        userAnswer: Int?,
+        chooses: List<Pair<Boolean, String>>,
+    ): Int =
+        userAnswer
+            .takeIf { it != null }
+            ?.dec()
+            ?.takeIf { it in chooses.indices }
+            ?: throw InvalidNumberException()
 
     private fun checkGameStatus() {
         if (isGameOver) resetGameStatus()
