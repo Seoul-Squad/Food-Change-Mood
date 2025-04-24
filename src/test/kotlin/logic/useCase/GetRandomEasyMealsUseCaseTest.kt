@@ -12,6 +12,7 @@ import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
+import org.junit.jupiter.params.provider.ValueSource
 import org.seoulsquad.logic.repository.MealRepository
 import java.util.stream.Stream
 import kotlin.test.Test
@@ -26,21 +27,18 @@ class GetRandomEasyMealsUseCaseTest{
         getRandomEasyMealsUseCase = GetRandomEasyMealsUseCase(mealRepository)
     }
 
-    @Test
-    fun `should return only 4 random easy meals that available in the list when the limit is 4`() {
+    @ParameterizedTest
+    @ValueSource(ints = [4, 5, 6])
+    fun `should return only the limit random easy meals when change the limit in usecase`(limit: Int) {
 
         //Given
         every { mealRepository.getAllMeals() } returns twelveEasyMeals
 
         //When
-        val result = getRandomEasyMealsUseCase(limit = 4)
+        val result = getRandomEasyMealsUseCase(limit = limit)
 
         //Then
-        val easyMealsIds = listOf(1,2,3,4,5,6,7,8,9,10,11,12)
-        val actualMealsIds = result.getOrNull()?.map { it.id }
-
-        assertThat(easyMealsIds).containsAtLeastElementsIn(actualMealsIds)
-        assertEquals(4, result.getOrNull()?.size)
+        assertEquals(limit, result.getOrNull()?.size)
     }
 
     @Test
@@ -59,7 +57,7 @@ class GetRandomEasyMealsUseCaseTest{
     }
 
     @Test
-    fun `should return only 5 random easy meals that available in the list when the list contain only 5 easy meals`() {
+    fun `should return only easy meals that available in the list when the list contain less than 10 available easy meals`() {
 
         //Given
         every { mealRepository.getAllMeals() } returns fiveEasyMealsAndTwoNotEasyMeals
