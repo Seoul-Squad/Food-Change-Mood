@@ -20,6 +20,10 @@ class IraqiMealsUiTest{
     private lateinit var viewer: Viewer
     private lateinit var mealPrinter: MealPrinter
     private lateinit var iraqiMealsUi: IraqiMealsUi
+    val iraqiMeals = listOf(
+        creatIraqiMeals(id = 1, tags = listOf("iraq"), description = "iraq style"),
+        creatIraqiMeals(id = 2, tags = listOf("iRaQ", "weeknight", "course"), description = "this is an IrAq  dish "),
+    )
 
     @BeforeEach
     fun setup(){
@@ -32,10 +36,6 @@ class IraqiMealsUiTest{
     @Test
     fun `when useCase succeeds, should display intro and each meal`() {
           // given
-        val iraqiMeals = listOf(
-            creatIraqiMeals(tags = listOf("iraq"), description = "iraq style"),
-            creatIraqiMeals(tags = listOf("iRaQ", "weeknight", "course"), description = "this is an IrAq  dish "),
-        )
         every { getIraqiMealsUseCase() } returns Result.success(iraqiMeals)
 
           // when
