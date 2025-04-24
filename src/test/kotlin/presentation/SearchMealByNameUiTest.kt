@@ -36,7 +36,7 @@ class SearchMealByNameUiTest {
     }
 
     @Test
-    fun `should show meals when user query valid and there is a match`() {
+    fun `should show meals when user query not empty and there is a match`() {
         // Given
         every { reader.readString() } returnsMany listOf("kushari", "0")
         val meals = kushariMeals
