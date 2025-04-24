@@ -44,13 +44,10 @@ class IraqiMealsUiTest{
           // then
         verify{
             viewer.display(any())
-            viewer.display(any())
 
             mealPrinter.printFullMeal(any())
             viewer.display(any())
 
-            mealPrinter.printFullMeal(any())
-            viewer.display(any())
         }
      }
     @Test
@@ -62,9 +59,7 @@ class IraqiMealsUiTest{
         iraqiMealsUi.startIraqiMealsFlow()
 
         // then
-        verify {
-            viewer.display(any())
-            viewer.display(any())
+        verify(exactly = 3) {
             viewer.display(any())
         }
     }
