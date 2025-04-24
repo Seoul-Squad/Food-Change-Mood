@@ -22,7 +22,7 @@ class SeaFoodMealsSortedByProteinUi(
                 )
             )
         }.onFailure { e ->
-            viewer.display("Error: ${e.message}")
+            viewer.display(e.message)
         }
     }
 

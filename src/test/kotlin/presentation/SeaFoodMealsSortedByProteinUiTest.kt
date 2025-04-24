@@ -56,6 +56,6 @@ class SeaFoodMealsSortedByProteinUiTest {
         seaFoodMealsSortedByProteinUi.startSeafoodMealsSortedByProtein()
 
         //Then
-        verify (exactly = 2) { viewer.display(any()) }
+        verify (exactly = 1) { viewer.display(NoMealsFoundException().message) }
     }
 }
