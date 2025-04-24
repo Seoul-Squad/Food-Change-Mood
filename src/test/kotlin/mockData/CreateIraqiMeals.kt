@@ -4,11 +4,12 @@ import logic.model.Meal
 import logic.model.Nutrition
 
 fun creatIraqiMeals(
+    id: Int,
     tags: List<String> ,
     description: String?,
 ) = Meal(
     name = "",
-    id = 0,
+    id = id,
     preparationTimeInMinutes = 0,
     contributorId = 0,
     submittedAt = null,
