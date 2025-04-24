@@ -12,6 +12,7 @@ import org.seoulsquad.presentation.SweetsWithNoEggsUi
 import org.seoulsquad.presentation.consolelIO.Reader
 import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.utils.MealPrinter
+import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 import utils.createMeal
 
 class SweetsWithNoEggsUiTest {
@@ -51,7 +52,7 @@ class SweetsWithNoEggsUiTest {
     fun `should print a short meal then full meal when use case returns meals and user likes the meal`() {
         //Given
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
-        every { reader.readInt() } returns 0
+        every { reader.readInt() } returns SuggestionFeedbackOption.LIKE.ordinal
 
         //When
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
@@ -64,8 +65,9 @@ class SweetsWithNoEggsUiTest {
     @Test
     fun `should display error message when user enters invalid suggestion feedback`() {
         //Given
+        val invalidFeedback = 2
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
-        every { reader.readInt() } returnsMany listOf(2, 0)
+        every { reader.readInt() } returnsMany listOf(invalidFeedback, SuggestionFeedbackOption.LIKE.ordinal)
 
         //When
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
@@ -78,7 +80,7 @@ class SweetsWithNoEggsUiTest {
     fun `should print multiple short meals and then full meal when user dislikes first meal and likes the second meal`() {
         //Given
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
-        every { reader.readInt() } returnsMany listOf(1, 0)
+        every { reader.readInt() } returnsMany listOf(SuggestionFeedbackOption.DISLIKE.ordinal, SuggestionFeedbackOption.LIKE.ordinal)
         //When
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
 
@@ -91,7 +93,7 @@ class SweetsWithNoEggsUiTest {
     fun `should print out of meals message when user doesn't like all the meals`() {
         //Given
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
-        every { reader.readInt() } returnsMany listOf(1, 1)
+        every { reader.readInt() } returnsMany listOf(SuggestionFeedbackOption.DISLIKE.ordinal, SuggestionFeedbackOption.DISLIKE.ordinal)
 
         //When
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
@@ -109,6 +111,6 @@ class SweetsWithNoEggsUiTest {
         sweetsWithNoEggsUi.startSweetsWithNoEggsFlow()
 
         //Then
-        verify(exactly = 4) { viewer.display(any()) }
+        verify(exactly = 1) { viewer.display(NoMealsFoundException().message) }
     }
 }
