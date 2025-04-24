@@ -2,8 +2,8 @@
 package logic.utils
 
 object Constants {
-    const val POTATO_ONLY = "potato"
-    const val MAX_POTATO_MEALS = 10
+    const val DEFAULT_INGREDIENT = "Potato"
+    const val MAX_MEALS = 10
 
     object Tags {
         const val TAG_SWEET = "sweet"

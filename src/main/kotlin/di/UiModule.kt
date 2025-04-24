@@ -27,7 +27,7 @@ val uiModule =
         singleOf(::SeaFoodMealsSortedByProteinUi)
         singleOf(::SearchMealByNameUi)
         singleOf(::SearchMealUsingDateUi)
-        singleOf(::ShowRandomPotatoMealsUi)
+        singleOf(::ShowRandomMealsByIngredientUi)
         singleOf(::SweetsWithNoEggsUi)
         singleOf(::MealsByCaloriesAndProteinUi)
         singleOf(::IngredientGameUi)
