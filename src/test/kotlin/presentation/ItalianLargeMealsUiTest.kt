@@ -40,7 +40,8 @@ class ItalianLargeMealsUiTest {
         //When
         italianLargeMealsUi.startItalianLargeMealsFlow()
         //Then
-        verify { viewer.display(any()) }
+        verify(exactly = 1) { viewer.display(any()) }
+        verify(exactly = 1) { mealPrinter.printSearchResult(any()) }
     }
     @Test
     fun `should return exception when no meals found `() {
@@ -49,6 +50,6 @@ class ItalianLargeMealsUiTest {
         //When
         italianLargeMealsUi.startItalianLargeMealsFlow()
         //Then
-        verify { viewer.display(any()) }
+        verify(exactly = 2) { viewer.display(any()) }
     }
 }
