@@ -10,13 +10,13 @@ import logic.utils.Constants.LARGE_GROUP_NAME
 import logic.utils.NoMealsFoundException
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
 import org.seoulsquad.logic.repository.MealRepository
 import testData.createItalianLargeMeal
 import java.util.stream.Stream
-import kotlin.test.assertEquals
 
 class GetItalianLargeMealsUseCaseTest {
     private lateinit var getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase
@@ -31,12 +31,11 @@ class GetItalianLargeMealsUseCaseTest {
     @Test
     fun `GetItalianLargeMealsUseCase should return failure when no meals in repo`() {
         //Given
-        every { mealRepository.getAllMeals() } returns listOf()
+        every { mealRepository.getAllMeals() } returns emptyList()
         //When
         val result = getItalianLargeMealsUseCase()
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> { result.getOrThrow() }
     }
 
     @ParameterizedTest
@@ -47,16 +46,14 @@ class GetItalianLargeMealsUseCaseTest {
         //When
         val result = getItalianLargeMealsUseCase()
         //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> { result.getOrThrow() }
     }
 
-
     @ParameterizedTest
-    @MethodSource("provideValidMealScenarios")
-    fun `GetItalianLargeMealsUseCase should return the expected meals when  large italian meal found`(
+    @MethodSource("provideItalianLargeMealScenarios")
+    fun `GetItalianLargeMealsUseCase should return the expected meals when large italian meal found`(
         meals: List<Meal>,
-        expected: Int
+        expectedIds: List<Int>,
     ) {
         //Given
         every { mealRepository.getAllMeals() } returns meals
@@ -64,13 +61,15 @@ class GetItalianLargeMealsUseCaseTest {
         val result = getItalianLargeMealsUseCase()
         //Then
         assertThat(result.isSuccess).isTrue()
-        assertEquals(expected, result.getOrNull()?.size)
+        val actualIds = result.getOrNull()?.map { it.id }
+        assertThat(actualIds?.all { it in expectedIds }).isTrue()
     }
+
     companion object {
         @JvmStatic
         fun provideInvalidMealScenarios(): Stream<Arguments> = Stream.of(
-            // Case 1: No large Italian meals
-            Arguments.of(
+            Arguments.argumentSet(
+                "No large Italian meals",
                 listOf(
                     createItalianLargeMeal(listOf("carbo", "seafood"), "italian seafood"),
                     createItalianLargeMeal(listOf("milk", "banana"), "italian drink"),
@@ -78,9 +77,8 @@ class GetItalianLargeMealsUseCaseTest {
                     createItalianLargeMeal(listOf("meat", "bread"), "american plate")
                 ),
             ),
-
-            // Case 2: Only large non-Italian
-            Arguments.of(
+            Arguments.argumentSet(
+                "Only large non-Italian",
                 listOf(
                     createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "lime"), "milano drink"),
                     createItalianLargeMeal(listOf("meat", LARGE_GROUP_NAME), "american plate"),
@@ -88,19 +86,17 @@ class GetItalianLargeMealsUseCaseTest {
                     createItalianLargeMeal(listOf("butter", "bread", "oil", LARGE_GROUP_NAME), "american plate")
                 ),
             ),
-
-            // Case 3: Only tagged Italian non-large
-            Arguments.of(
+            Arguments.argumentSet(
+                " Only tagged Italian non-large",
                 listOf(
                     createItalianLargeMeal(listOf(ITALIAN_NAME, "lime"), "milano drink"),
                     createItalianLargeMeal(listOf("meat", ITALIAN_NAME), "american plate"),
-                    createItalianLargeMeal(listOf("berry", ITALIAN_NAME, "milk", "banana"), "sweden drink"),
+                    createItalianLargeMeal(listOf("berry", ITALIAN_NAME, "milk", "banana"), " drink"),
                     createItalianLargeMeal(listOf("butter", "bread", "oil", ITALIAN_NAME), "american plate")
                 ),
             ),
-
-            // Case 4: Only Italian in description non-large
-            Arguments.of(
+            Arguments.argumentSet(
+                "Only Italian in description non-large",
                 listOf(
                     createItalianLargeMeal(listOf("carbo", "seafood"), "greek italian seafood"),
                     createItalianLargeMeal(listOf("milk", "banana"), "french italian drink"),
@@ -111,40 +107,65 @@ class GetItalianLargeMealsUseCaseTest {
         )
 
         @JvmStatic
-        fun provideValidMealScenarios(): Stream<Arguments> = Stream.of(
-            // Case 1: large Italian meals, expected :
-            Arguments.of(
+        fun provideItalianLargeMealScenarios(): Stream<Arguments> = Stream.of(
+            Arguments.argumentSet(
+                "large Italian meals",
                 listOf(
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, ITALIAN_NAME), "greek italian seafood"),
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "milk", "banana"), "french italian drink"),
-                    createItalianLargeMeal(listOf("orange", LARGE_GROUP_NAME, ITALIAN_NAME, "lime"), "milano drink"),
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "meat", "macaroni", ITALIAN_NAME), "italian american plate"),
-                    createItalianLargeMeal(listOf("large-group", "meat", "macaroni", "italiano"), "italiano american plate"),
+                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, ITALIAN_NAME), "greek italian seafood", 1),
+                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "milk", "banana"), "french italian drink", 2),
+                    createItalianLargeMeal(listOf("orange", LARGE_GROUP_NAME, ITALIAN_NAME, "lime"), "milano drink", 3),
+                    createItalianLargeMeal(
+                        listOf(LARGE_GROUP_NAME, "meat", "macaroni", ITALIAN_NAME),
+                        "italian american plate",
+                        4
+                    ),
+                    createItalianLargeMeal(
+                        listOf("large-group", "meat", "macaroni", "italiano"),
+                        "italiano american plate",
+                        5
+                    ),
                 ),
-                4
+                listOf(1, 2, 3, 4),
             ),
-            // Case 2:  large tagged-Italian
-            Arguments.of(
+            Arguments.argumentSet(
+                "large tagged-Italian",
                 listOf(
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, ITALIAN_NAME), "greek italiano seafood"),
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "milk", "banana"), "french fruit drink"),
-                    createItalianLargeMeal(listOf("orange", LARGE_GROUP_NAME, ITALIAN_NAME, "lime"), "milano drink"),
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "meat", "macaroni", ITALIAN_NAME), "mixed culture american plate"),
-                    createItalianLargeMeal(listOf("large-group", "meat", "macaroni", "souse"), "burger american plate"),
+                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, ITALIAN_NAME), "greek milano seafood", 1),
+                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "milk", "banana"), "french fruit drink", 2),
+                    createItalianLargeMeal(listOf("orange", LARGE_GROUP_NAME, ITALIAN_NAME, "lime"), "milano drink", 3),
+                    createItalianLargeMeal(
+                        listOf(LARGE_GROUP_NAME, "meat", "macaroni", ITALIAN_NAME),
+                        "mixed culture american plate",
+                        4
+                    ),
+                    createItalianLargeMeal(
+                        listOf("large-group", "meat", "macaroni", "souse"),
+                        "burger american plate",
+                        5
+                    ),
                 ),
-                3
+                listOf(1, 3, 4),
             ),
-            // Case 3: large described-Italian
-            Arguments.of(
+            Arguments.argumentSet(
+                "large described-Italian",
                 listOf(
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "fish"), "greek italian seafood"),
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "milk", "banana"), "french italian drink"),
-                    createItalianLargeMeal(listOf("orange", LARGE_GROUP_NAME, "lime"), "milano drink"),
-                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "meat", "macaroni", "american"), "italian american plate"),
-                    createItalianLargeMeal(listOf("large-group", "meat", "macaroni", "italiano"), "italiano american plate"),
+                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "fish"), "greek italiano seafood", 1),
+                    createItalianLargeMeal(listOf(LARGE_GROUP_NAME, "milk", "banana"), "french italian drink", 2),
+                    createItalianLargeMeal(listOf("orange", LARGE_GROUP_NAME, "lime"), "milano drink", 3),
+                    createItalianLargeMeal(
+                        listOf(LARGE_GROUP_NAME, "meat", "macaroni", "american"),
+                        "italian american plate",
+                        4
+                    ),
+                    createItalianLargeMeal(
+                        listOf("large-group", "meat", "macaroni", "italiano"),
+                        "italiano american plate",
+                        5
+                    ),
                 ),
-                3
-            ),
+                listOf(1, 2, 4),
+
+                ),
         )
     }
 

@@ -4,8 +4,8 @@ import kotlinx.datetime.LocalDate
 import logic.model.Meal
 import logic.model.Nutrition
 
-fun createItalianLargeMeal(tags: List<String>, desc: String? = null) = Meal(
-    id = 0,
+fun createItalianLargeMeal( tags: List<String>, desc: String? = null,id: Int = 0) = Meal(
+    id = id,
     name = "",
     preparationTimeInMinutes = 0,
     contributorId = 1,
