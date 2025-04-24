@@ -89,7 +89,7 @@ class GetIraqiMealsUseCaseTest{
     }
 
     @Test
-    fun `should return iraqi meals when tags or description are empty or null`() {
+    fun `should return iraqi meals when either tags or description contains iraqi keyword even if the other is empty or null`() {
         // given
         every { mealRepository.getAllMeals() } returns mealsWithEmptyOrNullTagsOrDescription
         // when
