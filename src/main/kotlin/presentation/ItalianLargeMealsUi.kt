@@ -1,10 +1,11 @@
 package org.seoulsquad.presentation
 
-import logic.useCase.GetItalianLargeMealsUseCase
-import org.seoulsquad.presentation.utils.SharedUi
+import GetItalianLargeMealsUseCase
+import org.seoulsquad.presentation.utils.MealPrinter
 
 class ItalianLargeMealsUi(
-    private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase
+    private val getItalianLargeMealsUseCase: GetItalianLargeMealsUseCase,
+    private val mealPrinter: MealPrinter
     ) {
     fun startItalianLargeMealsFlow() {
         printItalianLargeMealsIntroductionMessage()
@@ -23,7 +24,7 @@ class ItalianLargeMealsUi(
     private fun getItalianLargeMeals() {
         getItalianLargeMealsUseCase()
             .onSuccess { italianMeals ->
-                SharedUi().printSearchResult(italianMeals)
+                mealPrinter.printSearchResult(italianMeals)
             }.onFailure { e ->
                 println("Error: ${e.message}")
             }
