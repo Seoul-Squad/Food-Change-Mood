@@ -34,9 +34,9 @@ class KetoDietMealsUi(
             }
     }
 
-   private fun suggestMeal(meals: List<Meal>) {
+    private fun suggestMeal(meals: List<Meal>) {
         if (meals.isEmpty()) {
-            viewer.display("We are out of meals for now!")
+            viewer.display(OUT_OF_MEALS_MESSAGE)
             return
         }
         val randomMeal = meals.random()
@@ -51,8 +51,8 @@ class KetoDietMealsUi(
         while(true) {
             mealPrinter.printShortMeal(randomMeal)
             mealPrinter.printLikeAndDislikeOptions()
-
-            when (reader.readInt()) {
+            val userInput = reader.readInt() ?: INVALID_OPTION
+            when (userInput) {
                 SuggestionFeedbackOption.LIKE.ordinal -> {
                     return mealPrinter.printFullMeal(randomMeal)
                 }
@@ -60,10 +60,16 @@ class KetoDietMealsUi(
                 SuggestionFeedbackOption.DISLIKE.ordinal -> {
                     return suggestMeal(meals.minusElement(randomMeal))
                 }
+
                 else ->{
-                    viewer.display("Invalid option")
+                    viewer.display(INVALID_OPTION_MESSAGE)
                 }
             }
         }
+    }
+    companion object{
+        const val INVALID_OPTION = -1
+        const val INVALID_OPTION_MESSAGE = "Invalid option"
+        const val OUT_OF_MEALS_MESSAGE = "We are out of meals for now."
     }
 }

@@ -1,185 +1,178 @@
-package presentation
-
-import io.mockk.*
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
 import logic.model.Meal
 import logic.model.Nutrition
 import logic.useCase.GetKetoDietMealUseCase
 import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Test
 import org.seoulsquad.presentation.KetoDietMealsUi
 import org.seoulsquad.presentation.consolelIO.Reader
 import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.utils.MealPrinter
 import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
-import kotlin.test.Test
-import kotlin.Result
-
 
 class KetoDietMealsUiTest {
 
-    private lateinit var useCase: GetKetoDietMealUseCase
-    private lateinit var printer: MealPrinter
+    private lateinit var getKetoDietMealUseCase: GetKetoDietMealUseCase
+    private lateinit var mealPrinter: MealPrinter
     private lateinit var viewer: Viewer
     private lateinit var reader: Reader
-    private lateinit var ui: KetoDietMealsUi
+    private lateinit var ketoDietMealsUi: KetoDietMealsUi
 
-    private val meal = Meal(
-        name = "Keto Chicken",
+    private val sampleMeal = Meal(
+        name = "Zucchini Noodles",
         id = 1,
-        preparationTimeInMinutes = 30,
-        contributorId = 10,
+        preparationTimeInMinutes = 15,
+        contributorId = 42,
         submittedAt = null,
-        tags = listOf("keto"),
-        nutrition = Nutrition(100.0, 10.0, 1.0, 5.0, 20.0, 2.0, 3.0),
+        tags = listOf("keto", "low-carb"),
+        nutrition = Nutrition(
+            calories = 200.0,
+            totalFat = 14.0,
+            sugar = 2.0,
+            sodium = 300.0,
+            protein = 10.0,
+            saturatedFat = 4.0,
+            carbohydrates = 6.0
+        ),
         numberOfSteps = 2,
-        steps = listOf("Step 1", "Step 2"),
-        description = "Delicious keto meal",
-        ingredients = listOf("Chicken", "Olive oil"),
-        numberOfIngredients = 2
+        steps = listOf("Spiralize the zucchini", "Add pesto"),
+        description = "Zucchini noodles with fresh pesto.",
+        ingredients = listOf("Zucchini", "Pesto", "Olive oil"),
+        numberOfIngredients = 3
+    )
+
+    private val anotherMeal = Meal(
+        name = "Zucchini Noodles",
+        id = 1,
+        preparationTimeInMinutes = 15,
+        contributorId = 42,
+        submittedAt = null,
+        tags = listOf("keto", "low-carb"),
+        nutrition = Nutrition(
+            calories = 200.0,
+            totalFat = 14.0,
+            sugar = 2.0,
+            sodium = 300.0,
+            protein = 10.0,
+            saturatedFat = 4.0,
+            carbohydrates = 6.0
+        ),
+        numberOfSteps = 2,
+        steps = listOf("Spiralize the zucchini", "Add pesto"),
+        description = "Zucchini noodles with fresh pesto.",
+        ingredients = listOf("Zucchini", "Pesto", "Olive oil"),
+        numberOfIngredients = 3
     )
 
     @BeforeEach
-    fun setUp() {
-        useCase = mockk()
-        printer = mockk(relaxed = true)
+    fun setup() {
+        getKetoDietMealUseCase = mockk()
+        mealPrinter = mockk(relaxed = true)
         viewer = mockk(relaxed = true)
         reader = mockk()
-        ui = KetoDietMealsUi(useCase, printer, viewer, reader)
+        ketoDietMealsUi = KetoDietMealsUi(getKetoDietMealUseCase, mealPrinter, viewer, reader)
     }
 
     @Test
-    fun `should show meal and print full details when liked`() {
-        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal))
+    fun `should return intro messages when starting the keto diet flow`() {
+        //Given
+        every { getKetoDietMealUseCase.getKetoDietMeal() } returns Result.success(listOf(sampleMeal))
         every { reader.readInt() } returns SuggestionFeedbackOption.LIKE.ordinal
 
-        ui.startKetoDietFlow()
+        //When
+        ketoDietMealsUi.startKetoDietFlow()
 
-        verify { printer.printFullMeal(meal) }
+        //Then
+        verify { viewer.display(match { it.contains("Following a Keto diet") }) }
+        verify { viewer.display(match { it.contains("like to see full details") }) }
+        verify { viewer.display(match { it.contains("Loading Keto meals") }) }
     }
 
     @Test
-    fun `should suggest another meal when disliked`() {
-        val meal2 = meal.copy(id = 2, name = "Keto Beef")
-        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal, meal2))
-        every { reader.readInt() } returnsMany listOf(SuggestionFeedbackOption.DISLIKE.ordinal, SuggestionFeedbackOption.LIKE.ordinal)
+    fun `should return error message when getting keto meals fails`() {
+        //Given
+        every { getKetoDietMealUseCase.getKetoDietMeal() } returns Result.failure(RuntimeException("Network error"))
 
-        ui.startKetoDietFlow()
+        //When
+        ketoDietMealsUi.startKetoDietFlow()
 
-        verify { printer.printFullMeal(any()) }
-    }
-
-    @Test
-    fun `should display error when use case fails`() {
-        every { useCase.getKetoDietMeal() } returns Result.failure(RuntimeException("Network error"))
-
-        ui.startKetoDietFlow()
-
+        //Then
         verify { viewer.display("Error: Network error") }
     }
 
     @Test
-    fun `should display message when meal list is empty`() {
-        every { useCase.getKetoDietMeal() } returns Result.success(emptyList())
-
-        ui.startKetoDietFlow()
-
-        verify { viewer.display("We are out of meals for now!") }
-    }
-
-    @Test
-    fun `should display invalid message when user input is invalid`() {
-        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal))
-        every { reader.readInt() } returnsMany listOf(99, SuggestionFeedbackOption.LIKE.ordinal)
-
-        ui.startKetoDietFlow()
-
-        verify { viewer.display("Invalid option") }
-    }
-
-//    @Test
-//    fun `when keto meals list is returned and user likes it then full meal is printed`() {
-//        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal))
-//        every { reader.readInt() } returns 0 // LIKE
-//
-//        ui.startKetoDietFlow()
-//
-//        verify {printer.printFullMeal(meal) }
-//    }
-//
-//    @Test
-//    fun `when user dislikes first meal then likes the second`() {
-//        val secondMeal = meal.copy(name = "Keto Soup", id = 2)
-//        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal, secondMeal))
-//        every { reader.readInt() } returnsMany listOf(1, 0) // DISLIKE then LIKE
-//
-//        ui.startKetoDietFlow()
-//
-//        verify { printer.printFullMeal(any()) }
-//    }
-//
-//    @Test
-//    fun `when user inputs invalid option then chooses like`() {
-//        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal))
-//        every { reader.readInt() } returnsMany listOf(99, 0) // Invalid then LIKE
-//
-//        ui.startKetoDietFlow()
-//
-//        verify { viewer.display("Invalid option") }
-//        verify { printer.printFullMeal(meal) }
-//    }
-//
-//    @Test
-//    fun `when keto meals list is empty then viewer displays no meals message`() {
-//        every { useCase.getKetoDietMeal() } returns Result.success(emptyList())
-//
-//        ui.startKetoDietFlow()
-//
-//        verify { viewer.display("We are out of meals for now!") }
-//    }
-//
-//    @Test
-//    fun `when keto use case fails then viewer displays error`() {
-//        every { useCase.getKetoDietMeal() } returns Result.failure(RuntimeException("Failed to fetch"))
-//
-//        ui.startKetoDietFlow()
-//
-//        verify { viewer.display("Error: Failed to fetch") }
-//    }
-
-
-
-    @Test
-    fun `when user selects LIKE, it should print full meal`() {
-        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal))
+    fun `should return full meal details when user likes the suggestion`() {
+        //Given
+        every { getKetoDietMealUseCase.getKetoDietMeal() } returns Result.success(listOf(sampleMeal))
         every { reader.readInt() } returns SuggestionFeedbackOption.LIKE.ordinal
 
-        ui.startKetoDietFlow()
+        //When
+        ketoDietMealsUi.startKetoDietFlow()
 
-        verifySequence {
-            printer.printShortMeal(meal)
-            printer.printLikeAndDislikeOptions()
-            printer.printFullMeal(meal)
-        }
+        //Then
+        verify { mealPrinter.printShortMeal(sampleMeal) }
+        verify { mealPrinter.printFullMeal(sampleMeal) }
     }
-
-
 
     @Test
-    fun `when user selects DISLIKE, it should suggest another meal`() {
-        val secondMeal = meal.copy(id = 2, name = "Keto Chicken")
-        every { useCase.getKetoDietMeal() } returns Result.success(listOf(meal, secondMeal))
-        every { reader.readInt() } returnsMany listOf(SuggestionFeedbackOption.DISLIKE.ordinal, SuggestionFeedbackOption.LIKE.ordinal)
+    fun `should return another suggestion when user dislikes the current meal`() {
+        //Given
+        val meals = listOf(sampleMeal, anotherMeal)
+        every { getKetoDietMealUseCase.getKetoDietMeal() } returns Result.success(meals)
+        every { reader.readInt() } returnsMany listOf(
+            SuggestionFeedbackOption.DISLIKE.ordinal,
+            SuggestionFeedbackOption.LIKE.ordinal
+        )
 
-        ui.startKetoDietFlow()
+        //When
+        ketoDietMealsUi.startKetoDietFlow()
 
-        verify { printer.printFullMeal(any()) }
-        verify(atLeast = 1) { printer.printShortMeal(any()) }
+        //Then
+        verify(exactly = 2) { mealPrinter.printShortMeal(any()) }
+        verify { mealPrinter.printFullMeal(any()) }
     }
 
+    @Test
+    fun `should return invalid option message when user input is not a valid option`() {
+        //Given
+        every { getKetoDietMealUseCase.getKetoDietMeal() } returns Result.success(listOf(sampleMeal))
+        every { reader.readInt() } returnsMany listOf(-99, SuggestionFeedbackOption.LIKE.ordinal)
 
+        //When
+        ketoDietMealsUi.startKetoDietFlow()
 
+        //Then
+        verify { viewer.display(KetoDietMealsUi.INVALID_OPTION_MESSAGE) }
+        verify { mealPrinter.printFullMeal(sampleMeal) }
+    }
 
+    @Test
+    fun `should return out of meals message when meal list is empty`() {
+        //Given
+        every { getKetoDietMealUseCase.getKetoDietMeal() } returns Result.success(emptyList())
 
+        //When
+        ketoDietMealsUi.startKetoDietFlow()
+
+        //Then
+        verify { viewer.display(KetoDietMealsUi.OUT_OF_MEALS_MESSAGE) }
+    }
+
+    @Test
+    fun `should return invalid option message when user input is null`() {
+        //Given
+        every { getKetoDietMealUseCase.getKetoDietMeal() } returns Result.success(listOf(sampleMeal))
+        every { reader.readInt() } returnsMany listOf(null, SuggestionFeedbackOption.LIKE.ordinal)
+
+        //When
+        ketoDietMealsUi.startKetoDietFlow()
+
+        //Then
+        verify { viewer.display(KetoDietMealsUi.INVALID_OPTION_MESSAGE) }
+        verify { mealPrinter.printFullMeal(sampleMeal) }
+    }
 
 }
+
