@@ -30,22 +30,7 @@ class GetRandomEasyMealsUseCaseTest{
     fun `should return only 4 random easy meals that available in the list when the limit is 4`() {
 
         //Given
-        val meals = listOf (
-            createMeal(1, 25, 2, 5),
-            createMeal(2, 15, 5, 3),
-            createMeal(3, 18, 3, 4),
-            createMeal(4, 28, 4, 5),
-            createMeal(5, 30, 5, 6),
-            createMeal(6, 25, 2, 5),
-            createMeal(7, 15, 5, 3),
-            createMeal(8, 18, 3, 4),
-            createMeal(9, 28, 4, 5),
-            createMeal(10,30, 5, 6),
-            createMeal(11,30, 5, 6),
-            createMeal(12,30, 5, 6),
-        )
-
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns twelveEasyMeals
 
         //When
         val result = getRandomEasyMealsUseCase(limit = 4)
@@ -62,22 +47,7 @@ class GetRandomEasyMealsUseCaseTest{
     fun `should return only 10 random easy meals that available in the list when the list contain more than 10 easy meals`() {
 
         //Given
-        val meals = listOf (
-            createMeal(1, 25, 2, 5),
-            createMeal(2, 15, 5, 3),
-            createMeal(3, 18, 3, 4),
-            createMeal(4, 28, 4, 5),
-            createMeal(5, 30, 5, 6),
-            createMeal(6, 25, 2, 5),
-            createMeal(7, 15, 5, 3),
-            createMeal(8, 18, 3, 4),
-            createMeal(9, 28, 4, 5),
-            createMeal(10,30, 5, 6),
-            createMeal(11,30, 5, 6),
-            createMeal(12,30, 5, 6),
-        )
-
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns twelveEasyMeals
 
         //When
         val result = getRandomEasyMealsUseCase()
@@ -92,17 +62,7 @@ class GetRandomEasyMealsUseCaseTest{
     fun `should return only 5 random easy meals that available in the list when the list contain only 5 easy meals`() {
 
         //Given
-        val meals = listOf (
-            createMeal(1, 35, 5, 6),
-            createMeal(2, 30, 8, 6),
-
-            createMeal(3,25, 2, 5),
-            createMeal(4,15, 5, 3),
-            createMeal(5,18, 3, 4),
-            createMeal(6,28, 4, 5),
-            createMeal(7,30, 5, 6),
-        )
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns fiveEasyMealsAndTwoNotEasyMeals
 
         //When
         val result = getRandomEasyMealsUseCase()
@@ -129,10 +89,10 @@ class GetRandomEasyMealsUseCaseTest{
 
     @ParameterizedTest
     @MethodSource("getNotEasyMealsLists")
-    fun `should return failure exception with type NoMealsFoundException when all meals violate any condition of being easy`(mealsList: List<Meal>) {
+    fun `should return failure exception with type NoMealsFoundException when all meals violate any condition of being easy`(meals: List<Meal>) {
 
         //Given
-        every { mealRepository.getAllMeals() } returns mealsList
+        every { mealRepository.getAllMeals() } returns meals
 
         //When
         val result = getRandomEasyMealsUseCase()
@@ -173,6 +133,33 @@ class GetRandomEasyMealsUseCaseTest{
                     )
                 )
             )
+
+
+        val twelveEasyMeals = listOf (
+            createMeal(1, 25, 2, 5),
+            createMeal(2, 15, 5, 3),
+            createMeal(3, 18, 3, 4),
+            createMeal(4, 28, 4, 5),
+            createMeal(5, 30, 5, 6),
+            createMeal(6, 25, 2, 5),
+            createMeal(7, 15, 5, 3),
+            createMeal(8, 18, 3, 4),
+            createMeal(9, 28, 4, 5),
+            createMeal(10,30, 5, 6),
+            createMeal(11,30, 5, 6),
+            createMeal(12,30, 5, 6),
+        )
+
+        val fiveEasyMealsAndTwoNotEasyMeals = listOf (
+            createMeal(1, 35, 5, 6),
+            createMeal(2, 30, 8, 6),
+
+            createMeal(3,25, 2, 5),
+            createMeal(4,15, 5, 3),
+            createMeal(5,18, 3, 4),
+            createMeal(6,28, 4, 5),
+            createMeal(7,30, 5, 6),
+        )
     }
 
  }
