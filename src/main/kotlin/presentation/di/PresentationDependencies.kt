@@ -12,7 +12,7 @@ data class PresentationDependencies(
     val searchMealUsingDateUi: SearchMealUsingDateUi,
     val exploreOtherCountriesFoodConsole: ExploreOtherCountriesFoodUi,
     val ingredientGameUi: IngredientGameUi,
-    val showRandomPotatoMealsUi: ShowRandomPotatoMealsUi,
+    val showRandomMealsByIngredientUi: ShowRandomMealsByIngredientUi,
     val mealsWithHighCaloriesUi: MealsWithHighCaloriesUi,
     val seaFoodMealsSortedByProteinConsole: SeaFoodMealsSortedByProteinUi,
     val healthyMealUi: HealthyMealUi,
