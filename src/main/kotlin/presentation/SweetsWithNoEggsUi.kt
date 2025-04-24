@@ -29,7 +29,7 @@ class SweetsWithNoEggsUi(
             .onSuccess { sweetsList ->
                 suggestMeal(sweetsList)
             }.onFailure { e ->
-                viewer.display("Error: ${e.message}")
+                viewer.display(e.message)
             }
     }
     private fun suggestMeal(meals: List<Meal>) {
