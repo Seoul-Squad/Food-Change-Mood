@@ -46,7 +46,12 @@ class SearchMealByNameUiTest {
         // When
         searchMealByNameUi.searchMealByName()
         // Then
-        verify(exactly = 3) { viewer.display(any()) }
+        verify {  viewer.display(any())
+            viewer.display(any())
+            reader.readString()
+            viewer.display(any())
+            mealPrinter.printSearchResult(meals)
+        }
     }
 
     @Test
@@ -59,7 +64,12 @@ class SearchMealByNameUiTest {
         // When
         searchMealByNameUi.searchMealByName()
         // Then
-        verify(exactly = 3) { viewer.display(any()) }
+        verify {
+            viewer.display(any())
+            viewer.display(any())
+            reader.readString()
+            viewer.display(any())
+        }
     }
 
     @Test
@@ -72,7 +82,10 @@ class SearchMealByNameUiTest {
         // When
         searchMealByNameUi.searchMealByName()
         // Then
-        verify {
+        verify{
+            viewer.display(any())
+            viewer.display(any())
+            reader.readString()
             viewer.display(any())
         }
     }
