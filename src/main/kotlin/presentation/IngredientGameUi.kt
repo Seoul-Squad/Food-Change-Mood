@@ -32,7 +32,7 @@ class IngredientGameUi(
                 println(e.message)
             }
             println("Game Over")
-            wantToPlayAgain().also { isPlaying = it }
+            askToPlayAgain().also { isPlaying = it }
         }
     }
 
@@ -61,7 +61,7 @@ class IngredientGameUi(
         }
     }
 
-    private fun wantToPlayAgain(): Boolean { //
+    private fun askToPlayAgain(): Boolean { //
         println("Do you want to play again? (y/n)")
         while (true) {
             when (getUserInput().lowercase()) {
