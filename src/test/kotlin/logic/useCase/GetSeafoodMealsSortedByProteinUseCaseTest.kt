@@ -3,6 +3,7 @@ package logic.useCase
 import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
+import logic.model.Meal
 import logic.utils.Constants.Tags.TAG_SEAFOOD
 import logic.utils.NoMealsFoundException
 import utils.createMeal
@@ -10,8 +11,13 @@ import utils.createNutritionWithProtein
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.Arguments
+import org.junit.jupiter.params.provider.MethodSource
 import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.useCase.GetSeafoodMealsSortedByProteinUseCase
+import java.util.stream.Stream
 
 class GetSeafoodMealsSortedByProteinUseCaseTest {
     private lateinit var mealsRepo: MealRepository
@@ -23,97 +29,85 @@ class GetSeafoodMealsSortedByProteinUseCaseTest {
         getSeafoodMealsSortedByProteinUseCase = GetSeafoodMealsSortedByProteinUseCase(mealsRepo)
     }
 
-    @Test
-    fun `should return list with sorted seafood meals when they are available`(){
+    @ParameterizedTest
+    @MethodSource("provideSuccessScenarios")
+    fun `success scenarios`(
+        meals: List<Meal>,
+        expectedOrderedIDs: List<Int>,
+    ){
         //Given
-        val meals = listOf(
-            createMeal(name = "Salmon", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 35.0)),
-            createMeal(name = "Shrimp", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 20.0)),
-            createMeal(name = "Tuna", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
-            createMeal(name = "Noodles", tags = listOf("japanese"), nutrition = createNutritionWithProtein(protein = 25.0))
-        )
+        every { mealsRepo.getAllMeals() } returns meals
+
+        //When
+        val actualOrderedIDs = getSeafoodMealsSortedByProteinUseCase().getOrNull()?.map { it.id }
+
+        //Then
+        assertThat(actualOrderedIDs).containsExactlyElementsIn(expectedOrderedIDs).inOrder()
+    }
+
+
+    @ParameterizedTest
+    @MethodSource("provideFailureScenarios")
+    fun `failure scenarios`(
+        meals: List<Meal>
+    ){
+        //Given
         every { mealsRepo.getAllMeals() } returns meals
 
         //When
         val result = getSeafoodMealsSortedByProteinUseCase()
 
         //Then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isNotNull()
-        assertThat(result.getOrNull()?.size).isEqualTo(3)
-        assertThat(result.getOrNull()?.get(0)?.name).isEqualTo("Salmon")
-        assertThat(result.getOrNull()?.get(1)?.name).isEqualTo("Tuna")
-        assertThat(result.getOrNull()?.get(2)?.name).isEqualTo("Shrimp")
+        assertThrows<NoMealsFoundException> {
+            result.getOrThrow()
+        }
     }
 
-    @Test
-    fun `should return list with sorted seafood meals ignoring tag case when they are available`(){
-        //Given
-        val meals = listOf(
-            createMeal(name = "Shrimp", tags = listOf("SEAFOOD"), nutrition = createNutritionWithProtein(protein = 20.0)),
-            createMeal(name = "Tuna", tags = listOf("Seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
-            createMeal(name = "Noodles", tags = listOf("japanese"), nutrition = createNutritionWithProtein(protein = 25.0))
+    companion object{
+        @JvmStatic
+        fun provideSuccessScenarios(): Stream<Arguments>  = Stream.of(
+            Arguments.argumentSet(
+                "should return list with sorted seafood meals when they are available",
+                listOf(
+                    createMeal(id = 1, name = "Salmon", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 35.0)),
+                    createMeal(id = 2, name = "Shrimp", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 20.0)),
+                    createMeal(id = 3, name = "Tuna", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
+                    createMeal(id = 4, name = "Noodles", tags = listOf("japanese"), nutrition = createNutritionWithProtein(protein = 25.0))
+                ),
+                listOf(1, 3, 2)
+            ),
+            Arguments.argumentSet(
+                "should return list with sorted seafood meals ignoring tag case when they are available",
+                listOf(
+                    createMeal(id = 1, name = "Shrimp", tags = listOf("SEAFOOD"), nutrition = createNutritionWithProtein(protein = 20.0)),
+                    createMeal(id = 2, name = "Tuna", tags = listOf("Seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
+                    createMeal(id = 3, name = "Noodles", tags = listOf("japanese"), nutrition = createNutritionWithProtein(protein = 25.0))
+                ),
+                listOf(2, 1)
+            ),
+            Arguments.argumentSet(
+                "should return seafood meals sorted by name when protein content is equal",
+                listOf(
+                    createMeal(id = 1, name = "Tuna", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
+                    createMeal(id = 2, name = "Shrimp", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
+                    createMeal(id = 3, name = "Koshari", tags = listOf("egyptian"), nutrition = createNutritionWithProtein(5.0))
+                ),
+                listOf(2, 1)
+            )
         )
-        every { mealsRepo.getAllMeals() } returns meals
-
-        //When
-        val result = getSeafoodMealsSortedByProteinUseCase()
-
-        //Then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isNotNull()
-        assertThat(result.getOrNull()?.size).isEqualTo(2)
-        assertThat(result.getOrNull()?.get(0)?.name).isEqualTo("Tuna")
-        assertThat(result.getOrNull()?.get(1)?.name).isEqualTo("Shrimp")
-    }
-
-    @Test
-    fun `should return seafood meals sorted by name when protein content is equal`(){
-        //Given
-        val meals = listOf(
-            createMeal(name = "Tuna", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
-            createMeal(name = "Shrimp", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
-            createMeal(name = "Koshari", tags = listOf("egyptian"), nutrition = createNutritionWithProtein(5.0))
+        @JvmStatic
+        fun provideFailureScenarios(): Stream<Arguments> = Stream.of(
+            Arguments.argumentSet(
+                "should return failure result with NoMealsFoundException when there is no seafood meals",
+                listOf(
+                    createMeal(id = 1, name = "Noodles", tags = listOf("japanese"), nutrition = createNutritionWithProtein(protein = 25.0)),
+                    createMeal(id = 2, name = "Koshari", tags = listOf("egyptian"), nutrition = createNutritionWithProtein(5.0))
+                )
+            ),
+            Arguments.argumentSet(
+                "should return failure result with NoMealsFoundException when meals are empty",
+                emptyList<Meal>()
+            )
         )
-        every { mealsRepo.getAllMeals() } returns meals
-
-        //When
-        val result = getSeafoodMealsSortedByProteinUseCase()
-
-        //Then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()).isNotNull()
-        assertThat(result.getOrNull()?.size).isEqualTo(2)
-        assertThat(result.getOrNull()?.get(0)?.name).isEqualTo("Shrimp")
-        assertThat(result.getOrNull()?.get(1)?.name).isEqualTo("Tuna")
-    }
-    @Test
-    fun `should return failure result with NoMealsFoundException when there is no seafood meals`(){
-        //Given
-        val meals = listOf(
-            createMeal(name = "Noodles", tags = listOf("japanese"), nutrition = createNutritionWithProtein(protein = 25.0)),
-            createMeal(name = "Koshari", tags = listOf("egyptian"), nutrition = createNutritionWithProtein(5.0))
-        )
-        every { mealsRepo.getAllMeals() } returns meals
-
-        //When
-        val result = getSeafoodMealsSortedByProteinUseCase()
-
-        //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
-    }
-
-    @Test
-    fun `should return failure result with NoMealsFoundException when meals are empty`(){
-        //Given
-        every { mealsRepo.getAllMeals() } returns emptyList()
-
-        //When
-        val result = getSeafoodMealsSortedByProteinUseCase()
-
-        //Then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
     }
 }

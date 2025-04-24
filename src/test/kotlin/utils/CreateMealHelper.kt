@@ -6,12 +6,13 @@ import logic.model.Nutrition
 
 
 fun createMeal(
+    id: Int,
     name: String,
     tags: List<String>,
     nutrition: Nutrition
 ) = Meal(
     name = name,
-    id = 0,
+    id = id,
     preparationTimeInMinutes = 0,
     contributorId = 0,
     submittedAt = LocalDate(1970, 1, 1),
