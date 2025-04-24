@@ -20,7 +20,7 @@ class GuessMealPreparationTimeGameUI(
 
             val meal = guessGameUseCase.getGameState().currentMeal
             if (meal == null) {
-                initializeNewGameRound()
+                shouldInitializeNewGameRound()
             } else {
                 manageGuessAttempt(meal)
             }
@@ -39,7 +39,7 @@ class GuessMealPreparationTimeGameUI(
         }
     }
 
-    private fun initializeNewGameRound(): Boolean {
+    private fun shouldInitializeNewGameRound(): Boolean {
         val initResult = guessGameUseCase(null)
         return initResult.fold(
             onSuccess = { outcome ->
