@@ -4,6 +4,7 @@ import logic.model.Meal
 import logic.model.Nutrition
 
 fun createMeal(
+    id:Int,
     name:String,
     description:String?,
     tags: List<String>,
@@ -11,7 +12,7 @@ fun createMeal(
     name = name,
     description = description,
     tags = tags,
-    id = 1,
+    id = id,
     ingredients = emptyList(),
     numberOfIngredients = 0,
     steps = emptyList(),

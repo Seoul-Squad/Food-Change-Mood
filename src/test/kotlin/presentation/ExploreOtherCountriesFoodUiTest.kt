@@ -20,6 +20,14 @@ class ExploreOtherCountriesFoodUiTest {
     private lateinit var reader: Reader
     private lateinit var exploreCountryMealsUi: ExploreOtherCountriesFoodUi
     private lateinit var exploreCountryMealsUseCase: ExploreCountryMealsUseCase
+    private val egyptianMeals= listOf(
+        createMeal(1, "egypt koshary", "egyptian koshary", listOf("course")),
+        createMeal(2, "falafel", "falafel", listOf("egypt")),
+        createMeal(3, "shawarma", "egyptian shawarma", listOf("egypt")),
+        createMeal(4, "om alli", "egyptian sweets", listOf("egypt")),
+        createMeal(5, "om alli", "egyptian sweets", listOf("egypt")),
+        createMeal(6, "om alli", "egyptian sweets", listOf("egypt")),
+    )
 
     @BeforeEach
     fun setUp() {
@@ -33,10 +41,7 @@ class ExploreOtherCountriesFoodUiTest {
     fun `should show meals when user enters valid country name`() {
         // Given
         every { reader.readString() } returnsMany listOf("egypt", "0")
-        val meals = listOf(
-            createMeal("Koshary", "Famous Egyptian dish", listOf("egypt")),
-            createMeal("Shawarma", "Delicious wrap", listOf("egypt"))
-        )
+        val meals = egyptianMeals
         every { exploreCountryMealsUseCase("egypt") } returns Result.success(meals)
 
         // When
