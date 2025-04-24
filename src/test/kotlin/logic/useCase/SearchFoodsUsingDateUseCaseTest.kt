@@ -4,10 +4,10 @@ import com.google.common.truth.Truth.assertThat
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.datetime.LocalDate
-import logic.mock_data.createMealForSearchDate
 import logic.model.Meal
 import logic.utils.InvalidDateException
 import logic.utils.NoMealsFoundException
+import mockData.createMealForSearchDate
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
