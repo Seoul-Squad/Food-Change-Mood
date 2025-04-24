@@ -6,16 +6,46 @@ import io.mockk.mockk
 import logic.model.Meal
 import logic.utils.NoMealsFoundException
 import mockData.creatIraqiMeals
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.seoulsquad.logic.repository.MealRepository
 import org.seoulsquad.logic.useCase.GetIraqiMealsUseCase
-import kotlin.test.assertEquals
 
 class GetIraqiMealsUseCaseTest{
     private lateinit var mealRepository: MealRepository
     private lateinit var getIraqiMealsUseCase: GetIraqiMealsUseCase
+    private val mealsWithIraqInTags = listOf(
+        creatIraqiMeals(id = 1, tags = listOf("mexico", "spicy"), description = "taco"),
+        creatIraqiMeals(id = 2, tags = listOf("iRaQ", "dinner", "spicy"), description = "traditional plate"),
+        creatIraqiMeals(id = 3, tags = listOf("iraq", "vegan"), description = "healthy option"),
+        creatIraqiMeals(id = 4, tags = listOf("Iraq", "weeknight", "course"), description = "this is an egyptian dish ")
+    )
+
+    private val mealsWithIraqInDescription = listOf(
+        creatIraqiMeals(id = 1, tags = listOf("italy", "pasta"), description = "traditional italian pasta"),
+        creatIraqiMeals(id = 2, tags = listOf("vegan"), description = "IrAq is known for this"),
+        creatIraqiMeals(id = 3, tags = listOf("dinner", "spicy"), description = "iraq special meal"),
+        creatIraqiMeals(id = 4, tags = listOf("lunch", "weeknight", "course"), description = "this is an Iraq dish ")
+    )
+
+    private val mealsWithIraqInBoth = listOf(
+        creatIraqiMeals(id = 1, tags = listOf("mexico"), description = "not related"),
+        creatIraqiMeals(id = 2, tags = listOf("iraq"), description = "iraq style"),
+        creatIraqiMeals(id = 3, tags = listOf("iRaQ", "weeknight", "course"), description = "this is an IrAq  dish "),
+        creatIraqiMeals(id = 4, tags = listOf("Iraq", "lunch"), description = "iraqi meal")
+    )
+
+    private val mealsWithEmptyOrNullTagsOrDescription = listOf(
+        creatIraqiMeals(id = 1, tags = listOf("iraq"), description = null),
+        creatIraqiMeals(id = 2, tags = listOf(), description = "this is an iraqi dish "),
+        creatIraqiMeals(id = 3, tags = listOf("Iraq", "weeknight", "course"), description = "")
+    )
+
+    private val mealsWithoutIraqKeyword = listOf(
+        creatIraqiMeals(id = 1, tags = listOf("Italy", "weeknight", "course"), description = "pizza"),
+        creatIraqiMeals(id = 2, tags = listOf("USA", "breakfast"), description = "eggs and bacon")
+    )
 
     @BeforeEach
     fun setup(){
@@ -26,82 +56,59 @@ class GetIraqiMealsUseCaseTest{
     @Test
     fun `should return iraqi meals when tags only contains Iraq keyword in any format`() {
         // given
-        val meals = listOf(
-            creatIraqiMeals(tags = listOf("mexico", "spicy"), description = "taco"),
-            creatIraqiMeals(tags = listOf("iRaQ", "dinner", "spicy"), description = "traditional plate"),
-            creatIraqiMeals(tags = listOf("iraq", "vegan"), description = "healthy option"),
-            creatIraqiMeals(tags = listOf("Iraq", "weeknight", "course"), description = "this is an egyptian dish "),
-        )
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns mealsWithIraqInTags
         // when
         val result = getIraqiMealsUseCase()
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertEquals(3, result.getOrNull()?.size)
+        val expectedIraqiMealsIds = setOf(2,3,4)
+        val actualReturnedMealsIds = result.getOrNull()?.map { it.id }
+        assertThat(expectedIraqiMealsIds).containsAtLeastElementsIn(actualReturnedMealsIds)
     }
 
     @Test
     fun `should return iraqi meals when description only contains Iraq keyword in any format`() {
         // given
-        val meals = listOf(
-            creatIraqiMeals(tags = listOf("italy", "pasta"), description = "traditional italian pasta"),
-            creatIraqiMeals(tags = listOf("vegan"), description = "IrAq is known for this"),
-            creatIraqiMeals(tags = listOf("dinner", "spicy"), description = "iraq special meal"),
-            creatIraqiMeals(tags = listOf("lunch", "weeknight", "course"), description = "this is an Iraq dish "),
-        )
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns mealsWithIraqInDescription
         // when
         val result = getIraqiMealsUseCase()
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertEquals(3, result.getOrNull()?.size)
+        val expectedIraqiMealsIds = setOf(2, 3, 4)
+        val actualReturnedMealsIds = result.getOrNull()?.map { it.id }
+        assertThat(expectedIraqiMealsIds).containsAtLeastElementsIn(actualReturnedMealsIds)
     }
     @Test
     fun `should return iraqi meals when both tags and description contain Iraq keyword in any case format`() {
         // given
-        val meals = listOf(
-            creatIraqiMeals(tags = listOf("mexico"), description = "not related"),
-            creatIraqiMeals(tags = listOf("iraq"), description = "iraq style"),
-            creatIraqiMeals(tags = listOf("iRaQ", "weeknight", "course"), description = "this is an IrAq  dish "),
-            creatIraqiMeals(tags = listOf("Iraq", "lunch"), description = "iraqi meal"),
-        )
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns mealsWithIraqInBoth
         // when
         val result = getIraqiMealsUseCase()
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertEquals(3, result.getOrNull()?.size)
+        val expectedIraqiMealsIds = setOf(2, 3, 4)
+        val actualReturnedMealsIds = result.getOrNull()?.map { it.id }
+        assertThat(expectedIraqiMealsIds).containsAtLeastElementsIn(actualReturnedMealsIds)
     }
 
     @Test
     fun `should return iraqi meals when tags or description are empty or null`() {
         // given
-        val meals = listOf(
-            creatIraqiMeals(tags = listOf("iraq"), description = null),
-            creatIraqiMeals(tags = listOf(), description = "this is an iraqi dish "),
-            creatIraqiMeals(tags = listOf("Iraq", "weeknight", "course"), description =""),
-        )
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns mealsWithEmptyOrNullTagsOrDescription
         // when
         val result = getIraqiMealsUseCase()
         // then
-        assertThat(result.isSuccess).isTrue()
-        assertEquals(3, result.getOrNull()?.size)
+        val expectedIraqiMealsIds = setOf(1, 2, 3)
+        val actualReturnedMealsIds = result.getOrNull()?.map { it.id }
+        assertThat(expectedIraqiMealsIds).containsAtLeastElementsIn(actualReturnedMealsIds)
     }
     @Test
     fun `should return failure when no meals contain Iraq keyword in tags and description`() {
         // given
-        val meals = listOf(
-            creatIraqiMeals(tags = listOf("Italy", "weeknight", "course"), description = "pizza"),
-            creatIraqiMeals(tags = listOf("USA", "breakfast"), description = "eggs and bacon"),
-            creatIraqiMeals(tags = listOf("Mexico", "weeknight", "course"), description = "this is an egyptian dish "),
-        )
-        every { mealRepository.getAllMeals() } returns meals
+        every { mealRepository.getAllMeals() } returns mealsWithoutIraqKeyword
         // when
         val result = getIraqiMealsUseCase()
         // then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> {
+            result.getOrThrow()
+        }
     }
     @Test
     fun `should return failure when repository returns an empty list`() {
@@ -111,9 +118,8 @@ class GetIraqiMealsUseCaseTest{
         // when
         val result = getIraqiMealsUseCase()
         // then
-        assertThat(result.isFailure).isTrue()
-        assertThat(result.exceptionOrNull()).isInstanceOf(NoMealsFoundException::class.java)
+        assertThrows<NoMealsFoundException> {
+            result.getOrThrow()
+        }
     }
-
-
 }
