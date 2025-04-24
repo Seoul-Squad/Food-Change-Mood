@@ -19,6 +19,10 @@ class SeaFoodMealsSortedByProteinUiTest {
     private lateinit var viewer: Viewer
     private lateinit var seaFoodMealsSortedByProteinUi: SeaFoodMealsSortedByProteinUi
 
+    private val meals = listOf(
+        createMeal(id = 1, name = "Shrimp", tags = listOf("SEAFOOD"), nutrition = createNutritionWithProtein(protein = 20.0))
+    )
+
     @BeforeEach
     fun setup() {
         tablePrinter = mockk(relaxed = true)
@@ -34,9 +38,6 @@ class SeaFoodMealsSortedByProteinUiTest {
     @Test
     fun `should print meals table when use case returns success result with list of meals`(){
         //Given
-        val meals = listOf(
-            createMeal(name = "Shrimp", tags = listOf("SEAFOOD"), nutrition = createNutritionWithProtein(protein = 20.0))
-        )
         every { getSeafoodMealsSortedByProteinUseCase() } returns Result.success(meals)
 
         //When
