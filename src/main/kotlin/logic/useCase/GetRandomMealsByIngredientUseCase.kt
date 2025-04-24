@@ -14,7 +14,7 @@ class GetRandomMealsByIngredientUseCase(
     ): Result<List<Meal>> =
         mealRepository
             .getAllMeals()
-            .filter { hasPotato(it, ingredient) }
+            .filter { hasTheGivenIngredient(it, ingredient) }
             .shuffled()
             .takeIf { it.isNotEmpty() }
             ?.let { meals ->
@@ -24,7 +24,7 @@ class GetRandomMealsByIngredientUseCase(
             }
             ?: Result.failure(NoMealsFoundException())
 
-    private fun hasPotato(
+    private fun hasTheGivenIngredient(
         meal: Meal,
         ingredient: String,
     ): Boolean = meal.ingredients.any { it.contains(ingredient, ignoreCase = true) }
