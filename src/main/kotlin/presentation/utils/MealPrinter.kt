@@ -1,33 +1,24 @@
-package org.seoulsquad.presentation
+package org.seoulsquad.presentation.utils
 
 import logic.model.Meal
-import logic.useCase.GetRandomEasyMealsUseCase
 import org.seoulsquad.presentation.consolelIO.Viewer
-import org.seoulsquad.presentation.utils.SharedUi
 
-class RandomEasyMealsUi(
-    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
-    private val mealPrinter: MealPrinter
-    private val getRandomEasyMealsUseCase: GetRandomEasyMealsUseCase,
+class MealPrinter (
     private val viewer: Viewer
-) {
-    fun printRandomEasyMeals() {
-        val result = getRandomEasyMealsUseCase()
-
-        result
-            .onSuccess { randomEasyMealsList ->
-                randomEasyMealsList.forEach { meal ->
-                    mealPrinter.printFullMeal(meal)
-                    printFullMeal(meal)
-                }
-            }.onFailure { exception ->
-                //exception.message?.let { viewer.display(it) }
-                viewer.display(exception.message.toString())
-            }
+){
+    fun printLikeAndDislikeOptions() {
+        SuggestionFeedbackOption.entries.forEach {
+            viewer.display("${it.ordinal}. ${it.title}")
+        }
     }
 
 
-    private fun printFullMeal(meal: Meal) {
+    fun printShortMeal(meal: Meal) {
+        viewer.display("\u001B[1mMeal: ${meal.name}\u001B[0m")
+        meal.description.takeIf { !it.isNullOrBlank() }?.run { viewer.display(this) }
+    }
+
+    fun printFullMeal(meal: Meal) {
         with(meal) {
             viewer.display("Meal: $name (ID: $id)")
             viewer.display("Time to Prepare: $preparationTimeInMinutes minutes")
@@ -50,5 +41,21 @@ class RandomEasyMealsUi(
             viewer.display("  - Carbohydrates: ${nutrition.carbohydrates} g")
         }
         viewer.display("\n===========================================================\n")
+    }
+
+
+    fun printMeal(meal: Meal) {
+        viewer.display(
+            """
+            -ID: ${meal.id}
+                This recipe is called: ${meal.name},
+            ${meal.description}
+            
+            ==============================================
+            """.trimIndent(),
+        )
+    }
+    fun printSearchResult(meals: List<Meal>) {
+        meals.forEach { printMeal(it) }
     }
 }
