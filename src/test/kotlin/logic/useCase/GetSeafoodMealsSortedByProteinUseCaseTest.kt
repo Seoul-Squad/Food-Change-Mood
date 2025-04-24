@@ -31,7 +31,7 @@ class GetSeafoodMealsSortedByProteinUseCaseTest {
 
     @ParameterizedTest
     @MethodSource("provideSuccessScenarios")
-    fun `success scenarios`(
+    fun `should return success result with seafood meals sorted by protein then name when they are available`(
         meals: List<Meal>,
         expectedOrderedIDs: List<Int>,
     ){
@@ -48,7 +48,7 @@ class GetSeafoodMealsSortedByProteinUseCaseTest {
 
     @ParameterizedTest
     @MethodSource("provideFailureScenarios")
-    fun `failure scenarios`(
+    fun `should return failure result with NoMealsFoundException when no seafood meals are available`(
         meals: List<Meal>
     ){
         //Given
@@ -67,7 +67,7 @@ class GetSeafoodMealsSortedByProteinUseCaseTest {
         @JvmStatic
         fun provideSuccessScenarios(): Stream<Arguments>  = Stream.of(
             Arguments.argumentSet(
-                "should return list with sorted seafood meals when they are available",
+                "list containing seafood meals with different protein values",
                 listOf(
                     createMeal(id = 1, name = "Salmon", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 35.0)),
                     createMeal(id = 2, name = "Shrimp", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 20.0)),
@@ -77,7 +77,7 @@ class GetSeafoodMealsSortedByProteinUseCaseTest {
                 listOf(1, 3, 2)
             ),
             Arguments.argumentSet(
-                "should return list with sorted seafood meals ignoring tag case when they are available",
+                "list containing seafood meals with different tag cases",
                 listOf(
                     createMeal(id = 1, name = "Shrimp", tags = listOf("SEAFOOD"), nutrition = createNutritionWithProtein(protein = 20.0)),
                     createMeal(id = 2, name = "Tuna", tags = listOf("Seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
@@ -86,7 +86,7 @@ class GetSeafoodMealsSortedByProteinUseCaseTest {
                 listOf(2, 1)
             ),
             Arguments.argumentSet(
-                "should return seafood meals sorted by name when protein content is equal",
+                "list containing seafood meals with equal protein values",
                 listOf(
                     createMeal(id = 1, name = "Tuna", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
                     createMeal(id = 2, name = "Shrimp", tags = listOf("seafood"), nutrition = createNutritionWithProtein(protein = 30.0)),
@@ -98,14 +98,14 @@ class GetSeafoodMealsSortedByProteinUseCaseTest {
         @JvmStatic
         fun provideFailureScenarios(): Stream<Arguments> = Stream.of(
             Arguments.argumentSet(
-                "should return failure result with NoMealsFoundException when there is no seafood meals",
+                "list containing no seafood meals",
                 listOf(
                     createMeal(id = 1, name = "Noodles", tags = listOf("japanese"), nutrition = createNutritionWithProtein(protein = 25.0)),
                     createMeal(id = 2, name = "Koshari", tags = listOf("egyptian"), nutrition = createNutritionWithProtein(5.0))
                 )
             ),
             Arguments.argumentSet(
-                "should return failure result with NoMealsFoundException when meals are empty",
+                "empty list of meals",
                 emptyList<Meal>()
             )
         )
