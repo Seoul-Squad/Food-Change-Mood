@@ -21,32 +21,31 @@ class SearchFoodsUsingDateUseCaseTest {
 
     private lateinit var mealRepository: MealRepository
     private lateinit var searchFoodsUsingDateUseCase: SearchFoodsUsingDateUseCase
-    private lateinit var meals: List<Meal>
+    private val meals: List<Meal> = listOf(
+        createMealForSearchDate(
+            1,
+            "Grilled Chicken Caesar Salad",
+            LocalDate(monthNumber = 9, dayOfMonth = 6, year = 2024)
+        ),
+        createMealForSearchDate(2, "Spaghetti Bolognese", LocalDate(monthNumber = 4, dayOfMonth = 2, year = 2024)),
+        createMealForSearchDate(
+            3,
+            "Teriyaki Salmon with Steamed Rice",
+            LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
+        ),
+        createMealForSearchDate(4, "Vegetable Pad Thai", LocalDate(monthNumber = 6, dayOfMonth = 4, year = 2024)),
+        createMealForSearchDate(
+            5,
+            "Beef Tacos with Pico de Gallo",
+            LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
+        ),
+        createMealForSearchDate(6, "Margherita Pizza", LocalDate(monthNumber = 7, dayOfMonth = 20, year = 2024))
+    )
 
     @BeforeEach
     fun setup() {
         mealRepository = mockk(relaxed = true)
         searchFoodsUsingDateUseCase = SearchFoodsUsingDateUseCase(mealRepository)
-        meals = listOf(
-            createMealForSearchDate(
-                1,
-                "Grilled Chicken Caesar Salad",
-                LocalDate(monthNumber = 9, dayOfMonth = 6, year = 2024)
-            ),
-            createMealForSearchDate(2, "Spaghetti Bolognese", LocalDate(monthNumber = 4, dayOfMonth = 2, year = 2024)),
-            createMealForSearchDate(
-                3,
-                "Teriyaki Salmon with Steamed Rice",
-                LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
-            ),
-            createMealForSearchDate(4, "Vegetable Pad Thai", LocalDate(monthNumber = 6, dayOfMonth = 4, year = 2024)),
-            createMealForSearchDate(
-                5,
-                "Beef Tacos with Pico de Gallo",
-                LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
-            ),
-            createMealForSearchDate(6, "Margherita Pizza", LocalDate(monthNumber = 7, dayOfMonth = 20, year = 2024))
-        )
     }
 
 

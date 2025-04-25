@@ -18,41 +18,39 @@ import org.seoulsquad.logic.useCase.GetMealUsingIDUseCase
 class GetMealUsingIDUseCaseTest {
     private lateinit var mealRepository: MealRepository
     private lateinit var getMealUsingIDUseCase: GetMealUsingIDUseCase
-    private lateinit var mealsDate: List<MealDate>
-    private lateinit var meals: List<Meal>
+    private val mealsDate: List<MealDate> = listOf(
+        MealDate(1, "Grilled Chicken Caesar Salad", LocalDate(monthNumber = 9, dayOfMonth = 6, year = 2024)),
+        MealDate(2, "Spaghetti Bolognese", LocalDate(monthNumber = 4, dayOfMonth = 2, year = 2024)),
+        MealDate(3, "Teriyaki Salmon with Steamed Rice", LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)),
+        MealDate(4, "Vegetable Pad Thai", LocalDate(monthNumber = 6, dayOfMonth = 4, year = 2024)),
+        MealDate(5, "Beef Tacos with Pico de Gallo", LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)),
+        MealDate(6, "Margherita Pizza", LocalDate(monthNumber = 7, dayOfMonth = 20, year = 2024))
+    )
+    private val meals: List<Meal> = listOf(
+        createMealForSearchDate(
+            1,
+            "Grilled Chicken Caesar Salad",
+            LocalDate(monthNumber = 9, dayOfMonth = 6, year = 2024)
+        ),
+        createMealForSearchDate(2, "Spaghetti Bolognese", LocalDate(monthNumber = 4, dayOfMonth = 2, year = 2024)),
+        createMealForSearchDate(
+            3,
+            "Teriyaki Salmon with Steamed Rice",
+            LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
+        ),
+        createMealForSearchDate(4, "Vegetable Pad Thai", LocalDate(monthNumber = 6, dayOfMonth = 4, year = 2024)),
+        createMealForSearchDate(
+            5,
+            "Beef Tacos with Pico de Gallo",
+            LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
+        ),
+        createMealForSearchDate(6, "Margherita Pizza", LocalDate(monthNumber = 7, dayOfMonth = 20, year = 2024))
+    )
 
     @BeforeEach
     fun setup() {
         mealRepository = mockk(relaxed = true)
         getMealUsingIDUseCase = GetMealUsingIDUseCase(mealRepository)
-        mealsDate = listOf(
-            MealDate(1, "Grilled Chicken Caesar Salad", LocalDate(monthNumber = 9, dayOfMonth = 6, year = 2024)),
-            MealDate(2, "Spaghetti Bolognese", LocalDate(monthNumber = 4, dayOfMonth = 2, year = 2024)),
-            MealDate(3, "Teriyaki Salmon with Steamed Rice", LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)),
-            MealDate(4, "Vegetable Pad Thai", LocalDate(monthNumber = 6, dayOfMonth = 4, year = 2024)),
-            MealDate(5, "Beef Tacos with Pico de Gallo", LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)),
-            MealDate(6, "Margherita Pizza", LocalDate(monthNumber = 7, dayOfMonth = 20, year = 2024))
-        )
-        meals = listOf(
-            createMealForSearchDate(
-                1,
-                "Grilled Chicken Caesar Salad",
-                LocalDate(monthNumber = 9, dayOfMonth = 6, year = 2024)
-            ),
-            createMealForSearchDate(2, "Spaghetti Bolognese", LocalDate(monthNumber = 4, dayOfMonth = 2, year = 2024)),
-            createMealForSearchDate(
-                3,
-                "Teriyaki Salmon with Steamed Rice",
-                LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
-            ),
-            createMealForSearchDate(4, "Vegetable Pad Thai", LocalDate(monthNumber = 6, dayOfMonth = 4, year = 2024)),
-            createMealForSearchDate(
-                5,
-                "Beef Tacos with Pico de Gallo",
-                LocalDate(monthNumber = 4, dayOfMonth = 4, year = 2024)
-            ),
-            createMealForSearchDate(6, "Margherita Pizza", LocalDate(monthNumber = 7, dayOfMonth = 20, year = 2024))
-        )
     }
 
 
