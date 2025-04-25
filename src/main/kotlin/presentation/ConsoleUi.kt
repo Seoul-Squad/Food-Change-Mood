@@ -1,10 +1,10 @@
 package presentation
 
-import logic.utils.Constants.MAX_POTATO_MEALS
+import logic.utils.Constants.DEFAULT_INGREDIENT
+import logic.utils.Constants.MAX_MEALS
 import org.seoulsquad.presentation.consolelIO.Reader
 import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.di.PresentationDependencies
-
 
 class ConsoleUi(
     private val di: PresentationDependencies,
@@ -32,7 +32,7 @@ class ConsoleUi(
             "9" -> di.mealsByCaloriesAndProteinUi.startGetMealsByCaloriesAndProtein()
             "10" -> di.exploreOtherCountriesFoodConsole.exploreOtherCountriesFood()
             "11" -> di.ingredientGameUi.startIngredientGame()
-            "12" -> di.showRandomPotatoMealsUi.startShowRandomPotatoMeals()
+            "12" -> di.showRandomMealsByIngredientUi.startShowRandomMealsByIngredient()
             "13" -> di.mealsWithHighCaloriesUi.getMealsWithHighCalories()
             "14" -> di.seaFoodMealsSortedByProteinConsole.startSeafoodMealsSortedByProtein()
             "15" -> di.italianLargeMealsConsole.startItalianLargeMealsFlow()
@@ -63,7 +63,7 @@ class ConsoleUi(
         viewer.display("9  💪 Gym Helper ")
         viewer.display("10 🌍 Explore Other Countries 'Food'")
         viewer.display("11 🥨 Ingredient Game")
-        viewer.display("12 🥔 Show $MAX_POTATO_MEALS Random Potato Meals")
+        viewer.display("12 🥔 Show $MAX_MEALS Random $DEFAULT_INGREDIENT Meals")
         viewer.display("13 🔥 Meals with High Calories")
         viewer.display("14 🐟 Seafood Meals Sorted by Protein")
         viewer.display("15 🍝 Italian Large Meals")
