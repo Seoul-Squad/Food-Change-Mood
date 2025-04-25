@@ -2,10 +2,11 @@ package org.seoulsquad.presentation
 
 import logic.utils.Constants.EXIT
 import org.seoulsquad.logic.useCase.SearchMealsByNameUseCase
-import org.seoulsquad.presentation.utils.SharedUi
+import org.seoulsquad.presentation.utils.MealPrinter
 
 class SearchMealByNameUi(
-    private val searchMealByNameUseCase: SearchMealsByNameUseCase
+    private val searchMealByNameUseCase: SearchMealsByNameUseCase,
+    private val mealPrinter: MealPrinter
 ) {
 
     fun searchMealByName() {
@@ -20,7 +21,7 @@ class SearchMealByNameUi(
             searchMealByNameUseCase(query)
                 .onSuccess { meals ->
                     println("Your search result")
-                    SharedUi().printSearchResult(meals)
+                    mealPrinter.printSearchResult(meals)
                 }.onFailure { e ->
                     println("Error: ${e.message}")
                 }
