@@ -11,6 +11,7 @@ import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.di.PresentationDependencies
 import org.seoulsquad.presentation.utils.MealPrinter
 import org.seoulsquad.presentation.utils.MealSuggestionUi
+import org.seoulsquad.presentation.utils.TablePrinter
 import presentation.ConsoleUi
 
 val uiModule =
@@ -26,7 +27,7 @@ val uiModule =
         singleOf(::SeaFoodMealsSortedByProteinUi)
         singleOf(::SearchMealByNameUi)
         singleOf(::SearchMealUsingDateUi)
-        singleOf(::ShowRandomPotatoMealsUi)
+        singleOf(::ShowRandomMealsByIngredientUi)
         singleOf(::SweetsWithNoEggsUi)
         singleOf(::MealsByCaloriesAndProteinUi)
         singleOf(::IngredientGameUi)
@@ -34,7 +35,7 @@ val uiModule =
         singleOf(::PresentationDependencies)
         singleOf(::MealPrinter)
         singleOf(::MealSuggestionUi)
-
+        singleOf(::TablePrinter)
         singleOf(::ConsoleReader) { bind<Reader>() }
         singleOf(::ConsoleViewer) { bind<Viewer>() }
     }
