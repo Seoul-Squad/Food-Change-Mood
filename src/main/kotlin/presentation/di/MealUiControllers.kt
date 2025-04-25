@@ -2,7 +2,7 @@ package org.seoulsquad.presentation.di
 
 import org.seoulsquad.presentation.*
 
-data class PresentationDependencies(
+data class MealUiControllers(
     val searchByNameConsole: SearchMealByNameUi,
     val iraqiMealsUi: IraqiMealsUi,
     val randomEasyMealsUi: RandomEasyMealsUi,
@@ -19,3 +19,4 @@ data class PresentationDependencies(
     val italianLargeMealsConsole: ItalianLargeMealsUi,
     val mealsByCaloriesAndProteinUi: MealsByCaloriesAndProteinUi,
 )
+

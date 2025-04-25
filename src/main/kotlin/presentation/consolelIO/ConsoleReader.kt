@@ -8,3 +8,4 @@ class ConsoleReader : Reader {
     override fun readDouble(): Double? = readlnOrNull()?.toDoubleOrNull()
 
 }
+
