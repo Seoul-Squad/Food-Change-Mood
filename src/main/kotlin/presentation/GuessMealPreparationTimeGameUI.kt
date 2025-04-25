@@ -1,11 +1,11 @@
 package org.seoulsquad.presentation
 
 import logic.model.GuessResult
-import logic.useCase.GuessMealPreparationTimeGameUseCase
 import logic.model.Meal
+import logic.useCase.GuessMealPreparationTimeGameUseCase
 
 class GuessMealPreparationTimeGameUI(
-    private val guessGameUseCase: GuessMealPreparationTimeGameUseCase
+    private val guessGameUseCase: GuessMealPreparationTimeGameUseCase,
 ) {
     fun startGuessGame() {
         manageGameFlow()
@@ -17,8 +17,6 @@ class GuessMealPreparationTimeGameUI(
         while (shouldContinueGame) {
             if (guessGameUseCase.shouldStartNewRound()) {
                 shouldContinueGame = doesUserWantToPlayAgain()
-                if (!shouldContinueGame) break
-                continue
             }
 
             val meal = guessGameUseCase.getCurrentMeal()
@@ -47,7 +45,7 @@ class GuessMealPreparationTimeGameUI(
             onFailure = { e ->
                 displayError("Error processing play again: ${e.message}")
                 false
-            }
+            },
         )
     }
 
@@ -72,16 +70,17 @@ class GuessMealPreparationTimeGameUI(
             onFailure = { e ->
                 displayError("Error starting game: ${e.message ?: "No meals found"}")
                 false
-            }
+            },
         )
     }
 
     private fun manageGuessAttempt(meal: Meal) {
-        val guessInput = askUserToEnterGuess(
-            meal = meal,
-            currentAttempt = guessGameUseCase.getCurrentAttempt(),
-            maxAttempts = guessGameUseCase.getMaxAttempts()
-        )
+        val guessInput =
+            askUserToEnterGuess(
+                meal = meal,
+                currentAttempt = guessGameUseCase.getCurrentAttempt(),
+                maxAttempts = guessGameUseCase.getMaxAttempts(),
+            )
         validateAndProcessGuess(guessInput)
     }
 
@@ -91,7 +90,7 @@ class GuessMealPreparationTimeGameUI(
             onSuccess = ::handleGuessResult,
             onFailure = { e ->
                 displayError("Error processing guess: ${e.message ?: "An error occurred"}")
-            }
+            },
         )
     }
 
@@ -111,7 +110,7 @@ class GuessMealPreparationTimeGameUI(
             displayGameOver(
                 isTooHigh = isTooHigh,
                 maxAttempts = guessGameUseCase.getMaxAttempts(),
-                correctTime = guessGameUseCase.getCurrentMeal()!!.preparationTimeInMinutes
+                correctTime = guessGameUseCase.getCurrentMeal()!!.preparationTimeInMinutes,
             )
         } else {
             displayIncorrectGuess(isTooHigh = isTooHigh)
@@ -123,7 +122,11 @@ class GuessMealPreparationTimeGameUI(
         return readlnOrNull()
     }
 
-    private fun askUserToEnterGuess(meal: Meal, currentAttempt: Int, maxAttempts: Int): String? {
+    private fun askUserToEnterGuess(
+        meal: Meal,
+        currentAttempt: Int,
+        maxAttempts: Int,
+    ): String? {
         println("\nGuess the preparation time (in minutes) for: ${meal.name}")
         println("Attempt ${currentAttempt + 1} of $maxAttempts:") // Show attempt as 1-based
         print("Enter your guess: ")
@@ -138,7 +141,11 @@ class GuessMealPreparationTimeGameUI(
         println(if (isTooHigh) "Too high! Try again." else "Too low! Try again.")
     }
 
-    private fun displayGameOver(isTooHigh: Boolean, maxAttempts: Int, correctTime: Int) {
+    private fun displayGameOver(
+        isTooHigh: Boolean,
+        maxAttempts: Int,
+        correctTime: Int,
+    ) {
         println(if (isTooHigh) "Too high!" else "Too low!")
         println("Game Over! You've used all $maxAttempts attempts. The correct time was $correctTime minutes.")
     }
