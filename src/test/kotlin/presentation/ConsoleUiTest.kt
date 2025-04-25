@@ -101,7 +101,7 @@ class ConsoleUiTest {
     fun `when input is 11 then startIngredientGame is called`() {
         every { reader.readString() } returnsMany listOf("11", "0")
         mainApp.start()
-        verify { di.ingredientGameUi.startIngredientGame() }
+        verify { di.ingredientGameUi.startIngredientGameFlow() }
     }
 
     @Test
