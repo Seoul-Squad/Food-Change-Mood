@@ -3,10 +3,14 @@ package org.seoulsquad.presentation
 import logic.model.GuessResult
 import logic.useCase.GuessMealPreparationTimeGameUseCase
 import logic.model.Meal
+import org.seoulsquad.presentation.consolelIO.Reader
+import org.seoulsquad.presentation.consolelIO.Viewer
 
 
 class GuessMealPreparationTimeGameUI(
-    private val guessGameUseCase: GuessMealPreparationTimeGameUseCase
+    private val guessGameUseCase: GuessMealPreparationTimeGameUseCase,
+    private val viewer: Viewer,
+    private val reader: Reader
 ) {
     fun startGuessGame() {
         manageGameFlow()
@@ -20,7 +24,7 @@ class GuessMealPreparationTimeGameUI(
 
             val meal = guessGameUseCase.getGameState().currentMeal
             if (meal == null) {
-                shouldInitializeNewGameRound()
+                initializeNewGameRound()
             } else {
                 manageGuessAttempt(meal)
             }
@@ -39,26 +43,26 @@ class GuessMealPreparationTimeGameUI(
         }
     }
 
-    private fun shouldInitializeNewGameRound(): Boolean {
+    private fun initializeNewGameRound(): Boolean {
         val initResult = guessGameUseCase(null)
         return initResult.fold(
             onSuccess = { outcome ->
                 if (outcome == GuessResult.GAME_STARTED) {
                     val newMeal = guessGameUseCase.getGameState().currentMeal
                     if (newMeal == null) {
-                        displayError("No meal found.")
+                        viewer.display("No meal found.")
                         return false
                     } else {
                         manageGuessAttempt(newMeal)
                         return true
                     }
                 } else {
-                    displayError("Unexpected game start outcome")
+                    viewer.display("Unexpected game start outcome")
                     return false
                 }
             },
             onFailure = { e ->
-                displayError("Error starting game: ${e.message ?: "Unknown error"}")
+                viewer.display("Error starting game: ${e.message ?: "Unknown error"}")
                 return false
             }
         )
@@ -78,7 +82,7 @@ class GuessMealPreparationTimeGameUI(
         guessResult.fold(
             onSuccess = ::handleGuessResult,
             onFailure = { e ->
-                displayError("Error processing guess: ${e.message ?: "An error occurred"}")
+                viewer.display("Error processing guess: ${e.message ?: "An error occurred"}")
             }
         )
     }
@@ -105,37 +109,32 @@ class GuessMealPreparationTimeGameUI(
     }
 
     private fun askUserToPlayAgain(): String? {
-        println("\nDo you want to play again? (y/n)")
-        return readlnOrNull()
+        viewer.display("\nDo you want to play again? (y/n)")
+        return reader.readString()
     }
 
     private fun askUserToEnterGuess(meal: Meal, currentAttempt: Int, maxAttempts: Int): String? {
-        println("\nGuess the preparation time (in minutes) for: ${meal.name}")
-        println("Attempt ${currentAttempt + 1} of $maxAttempts:")
-        print("Enter your guess: ")
-        return readlnOrNull()
+        viewer.display("\nGuess the preparation time (in minutes) for: ${meal.name}")
+        viewer.display("Attempt ${currentAttempt + 1} of $maxAttempts:")
+        viewer.display("Enter your guess: ")
+        return reader.readString()
     }
 
     private fun displayCorrectGuess() {
-        println("Correct! You guessed the right time!")
+        viewer.display("Correct! You guessed the right time!")
     }
 
     private fun displayIncorrectGuess(isTooHigh: Boolean) {
-        println(if (isTooHigh) "Too high! Try again." else "Too low! Try again.")
+        viewer.display(if (isTooHigh) "Too high! Try again." else "Too low! Try again.")
     }
 
     private fun displayGameOver(isTooHigh: Boolean, maxAttempts: Int, correctTime: Int) {
-        println(if (isTooHigh) "Too high!" else "Too low!")
-        println("Game Over! You've used all $maxAttempts attempts. The correct time was $correctTime minutes.")
-    }
-
-
-    private fun displayError(message: String) {
-        println("\n$message")
+        viewer.display(if (isTooHigh) "Too high!" else "Too low!")
+        viewer.display("Game Over! You've used all $maxAttempts attempts. The correct time was $correctTime minutes.")
     }
 
     private fun displayExitMessage() {
-        println("Thanks for playing!")
+        viewer.display("Thanks for playing!")
     }
 
 }
