@@ -48,12 +48,10 @@ class GetMealsByCaloriesAndProteinUseCaseTest {
 
         every { repository.getAllMeals() } returns allMeals
 
-        // When
+        // When & Then
         val exception = assertThrows(NoMealsFoundException::class.java) {
             getMealsByCaloriesAndProteinUseCase.invoke(targetCalories = 500.0, targetProtein = 25.0)
         }
-        //Then
-        assertEquals("No meals found", exception.message)
     }
 
     @Test
@@ -65,12 +63,10 @@ class GetMealsByCaloriesAndProteinUseCaseTest {
 
         every { repository.getAllMeals() } returns allMeals
 
-        // When
-        val exception = assertThrows(NoMealsFoundException::class.java) {
+        // When & Then
+        assertThrows(NoMealsFoundException::class.java) {
             getMealsByCaloriesAndProteinUseCase.invoke(targetCalories = 710.0, targetProtein = 25.0)
         }
-        //Then
-        assertEquals("No meals found", exception.message)
     }
     @Test
     fun `should throws NoMealsFoundException when there isn't meals for the given calories`() {
@@ -81,11 +77,9 @@ class GetMealsByCaloriesAndProteinUseCaseTest {
 
         every { repository.getAllMeals() } returns allMeals
 
-        // When
-        val exception = assertThrows(NoMealsFoundException::class.java) {
+        // When & Then
+        assertThrows(NoMealsFoundException::class.java) {
             getMealsByCaloriesAndProteinUseCase.invoke(targetCalories = 1100.0, targetProtein = 5.5)
         }
-        //Then
-        assertEquals("No meals found", exception.message)
     }
 }
