@@ -13,25 +13,33 @@ class GetIngredientGameQuestionsUseCase(
     operator fun invoke(
         questionsLimit: Int = NUMBER_OF_GAME_QUESTIONS,
         optionsLimit: Int = NUMBER_OF_QUESTION_OPTIONS,
-    ): List<IngredientQuestion> =
-        generateSequence { generateIngredientGameQuestion(optionsLimit) }
-            .distinct()
-            .take(questionsLimit)
-            .toList()
+    ): Result<List<IngredientQuestion>> =
+        try {
+            val questionsList =
+                generateSequence {
+                    generateIngredientGameQuestion(optionsLimit)
+                }.distinct()
+                    .take(questionsLimit)
+                    .toList()
+
+            Result.success(questionsList)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
 
     private fun generateIngredientGameQuestion(optionsLimit: Int): IngredientQuestion {
-        val allMeals = getAllMeals(optionsLimit)
-        val randomMeal = allMeals.random()
-        val options =
-            getQuestionOptions(
-                getCorrectAnswer(randomMeal),
-                getRandomWrongOptions(
-                    randomMeal,
-                    getOtherMeals(allMeals, randomMeal, optionsLimit),
-                    optionsLimit,
-                ),
+        val allMeals =
+            getAllMeals(optionsLimit)
+        val meal = allMeals.random()
+        val correctAnswer = getCorrectAnswer(meal)
+        val wrongAnswers =
+            getRandomWrongOptions(
+                meal,
+                getOtherMeals(allMeals, meal, optionsLimit),
+                optionsLimit,
             )
-        return IngredientQuestion(randomMeal.name, options.shuffled())
+        val options = getQuestionOptions(correctAnswer, wrongAnswers)
+        return IngredientQuestion(meal.name, options.shuffled())
     }
 
     private fun getCorrectAnswer(randomMeal: Meal): String =
@@ -48,11 +56,11 @@ class GetIngredientGameQuestionsUseCase(
 
     private fun getOtherMeals(
         allMeals: List<Meal>,
-        randomMeal: Meal,
+        meal: Meal,
         optionsLimit: Int,
     ): List<Meal> =
         allMeals
-            .filter { it.id != randomMeal.id }
+            .filter { it.id != meal.id }
             .shuffledByIndices(optionsLimit)
 
     private fun getRandomWrongOptions(
@@ -71,7 +79,7 @@ class GetIngredientGameQuestionsUseCase(
 
         return candidates
             .takeIf {
-                it.size >= optionsLimit - 1
+                it.size >= optionsLimit.dec()
             }?.take(optionsLimit) ?: throw NotEnoughMealsFoundException()
     }
 
@@ -81,7 +89,7 @@ class GetIngredientGameQuestionsUseCase(
     ): List<Pair<Boolean, String>> = listOf(true to correctAnswer) + wrongAnswers.map { false to it }
 
     companion object {
-        const val NUMBER_OF_QUESTION_OPTIONS = 2
+        const val NUMBER_OF_QUESTION_OPTIONS = 3
         const val NUMBER_OF_GAME_QUESTIONS = 15
     }
 }
