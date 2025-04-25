@@ -1,6 +1,7 @@
 package org.seoulsquad.presentation
 
-import GetItalianLargeMealsUseCase
+
+import logic.useCase.GetItalianLargeMealsUseCase
 import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.utils.MealPrinter
 
