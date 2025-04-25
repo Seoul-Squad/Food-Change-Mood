@@ -31,6 +31,7 @@ class GuessMealPreparationTimeGameUI(
         }
     }
 
+
     private fun doesUserWantToPlayAgain(): Boolean {
         val playAgainInput = askUserToPlayAgain()?.trim()?.lowercase()
         val playAgain = playAgainInput == "y" || playAgainInput == "yes"
