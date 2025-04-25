@@ -2,34 +2,42 @@ package org.seoulsquad.presentation
 
 import logic.model.Meal
 import org.seoulsquad.logic.useCase.GetHealthyFastFoodUseCase
+import org.seoulsquad.presentation.consolelIO.Reader
+import org.seoulsquad.presentation.consolelIO.Viewer
 
 class HealthyMealUi(
-    private val getHealthyFastFoodUseCase: GetHealthyFastFoodUseCase
-    ) {
+    private val getHealthyFastFoodUseCase: GetHealthyFastFoodUseCase,
+    private val viewer: Viewer
+) {
     fun presentHealthyMeal() {
-        greetingMessageForGetHealthyMealFeature()
+        viewer.displayGreeting()
         getHealthyFastFoodUseCase
             .getFastHealthyMeals()
-            .onSuccess { it.forEach { printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(it) } }
-            .onFailure { println(it.message) }
+            .onSuccess { meals ->
+                meals.forEach { viewer.displayMealDetails(it) }
+            }
+            .onFailure { error ->
+                viewer.display(error.message ?: "Unknown error")
+            }
     }
 
-    private fun greetingMessageForGetHealthyMealFeature() {
-        println("Hello this is your list of healthy fast food that can be prepared in under 15 with Low nutrition's")
+    private fun Viewer.displayGreeting() {
+        display(
+            "Hello, this is your list of healthy fast food " +
+                    "that can be prepared in under 15 minutes with low nutrition values:"
+        )
     }
 
-    private fun printHealthyMealsThanCanPreparedUnder15MinutesAndLowNutrition(meal: Meal) {
-        with(meal) {
-            println("Meal: $name")
-            println("Time to Prepare: $preparationTimeInMinutes minutes")
-            println("Nutrition:")
-            println("  - Calories: ${nutrition.calories} kcal")
-            println("  - Total Fat: ${nutrition.totalFat} g")
-            println("  - Saturated Fat: ${nutrition.saturatedFat} g")
-            println("  - Sugar: ${nutrition.sugar} g")
-            println("  - Sodium: ${nutrition.sodium} mg")
-            println("  - Protein: ${nutrition.protein} g")
-            println("  - Carbohydrates: ${nutrition.carbohydrates} g")
-        }
+    private fun Viewer.displayMealDetails(meal: Meal) = with(meal) {
+        display("Meal: $name")
+        display("Time to Prepare: $preparationTimeInMinutes minutes")
+        display("Nutrition:")
+        display("  - Calories: ${nutrition.calories} kcal")
+        display("  - Total Fat: ${nutrition.totalFat} g")
+        display("  - Saturated Fat: ${nutrition.saturatedFat} g")
+        display("  - Sugar: ${nutrition.sugar} g")
+        display("  - Sodium: ${nutrition.sodium} mg")
+        display("  - Protein: ${nutrition.protein} g")
+        display("  - Carbohydrates: ${nutrition.carbohydrates} g")
     }
 }
