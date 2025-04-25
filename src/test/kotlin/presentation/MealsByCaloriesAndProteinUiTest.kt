@@ -44,7 +44,6 @@ class MealsByCaloriesAndProteinUiTest {
 
         verify {
             viewer.display(any())
-            viewer.display(any())
         }
     }
     @Test
@@ -86,7 +85,6 @@ class MealsByCaloriesAndProteinUiTest {
             viewer.display(any())
         }
         verify(exactly = 0) {
-            viewer.display(any())
             viewer.display(any())
         }
     }
