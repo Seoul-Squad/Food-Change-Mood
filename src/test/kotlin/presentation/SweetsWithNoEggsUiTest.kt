@@ -49,7 +49,7 @@ class SweetsWithNoEggsUiTest {
     }
 
     @Test
-    fun `should print a short meal then full meal when use case returns meals and user likes the meal`() {
+    fun `should print a short meal then full meal when there is meals and user likes the first meal`() {
         //Given
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
         every { reader.readInt() } returns SuggestionFeedbackOption.LIKE.ordinal
@@ -104,7 +104,7 @@ class SweetsWithNoEggsUiTest {
     }
 
     @Test
-    fun `should print out of meals message when user doesn't like all the meals`() {
+    fun `should print out of meals message when user doesn't like any meals`() {
         //Given
         every { getSweetsWithNoEggsUseCase() } returns Result.success(meals)
         every { reader.readInt() } returnsMany listOf(SuggestionFeedbackOption.DISLIKE.ordinal, SuggestionFeedbackOption.DISLIKE.ordinal)
@@ -117,7 +117,7 @@ class SweetsWithNoEggsUiTest {
     }
 
     @Test
-    fun `should display error message when use case returns failure result with NoMealsFoundException`() {
+    fun `should display error message when there is failure result with NoMealsFoundException`() {
         //Given
         every { getSweetsWithNoEggsUseCase() } returns Result.failure(NoMealsFoundException())
 
