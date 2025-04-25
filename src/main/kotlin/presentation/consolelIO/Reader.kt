@@ -8,6 +8,4 @@ interface Reader {
     fun readInt(): Int?
 
     fun readDouble(): Double?
-
-    fun readDate(): LocalDate?
 }

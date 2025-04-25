@@ -7,135 +7,212 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.seoulsquad.presentation.consolelIO.Reader
 import org.seoulsquad.presentation.consolelIO.Viewer
-import org.seoulsquad.presentation.di.PresentationDependencies
+import org.seoulsquad.presentation.di.MealUiControllers
 
 class ConsoleUiTest {
-    private lateinit var di: PresentationDependencies
+    private lateinit var mealUiControllers: MealUiControllers
     private lateinit var mainApp: ConsoleUi
     private lateinit var reader: Reader
     private lateinit var viewer: Viewer
 
     @BeforeEach
     fun setUp() {
-        di = mockk(relaxed = true)
+        mealUiControllers = mockk(relaxed = true)
         viewer = mockk(relaxed = true)
         reader = mockk(relaxed = true)
-        mainApp = ConsoleUi(di, viewer, reader)
+        mainApp = ConsoleUi(mealUiControllers, viewer, reader)
     }
 
     @Test
-    fun `when input is 1 then presentHealthyMeal is called`() {
+    fun `should return healthy meal flow when input is 1`() {
+        // Given
         every { reader.readString() } returnsMany listOf("1", "0")
 
+        // When
         mainApp.start()
 
-        verify { di.healthyMealUi.presentHealthyMeal() }
+        // Then
+        verify { mealUiControllers.healthyMealUi.presentHealthyMeal() }
     }
 
     @Test
-    fun `when input is 2 then searchMealByName is called`() {
+    fun `should return search by name flow when input is 2`() {
+        // Given
         every { reader.readString() } returnsMany listOf("2", "0")
 
+        // When
         mainApp.start()
 
-        verify { di.searchByNameConsole.searchMealByName() }
+        // Then
+        verify { mealUiControllers.searchByNameConsole.searchMealByName() }
     }
 
     @Test
-    fun `when input is 3 then startIraqiMealsFlow is called`() {
+    fun `should return iraqi meals flow when input is 3`() {
+        // Given
         every { reader.readString() } returnsMany listOf("3", "0")
+
+        // When
         mainApp.start()
-        verify { di.iraqiMealsUi.startIraqiMealsFlow() }
+
+        // Then
+        verify { mealUiControllers.iraqiMealsUi.startIraqiMealsFlow() }
     }
 
     @Test
-    fun `when input is 4 then printRandomEasyMeals is called`() {
+    fun `should return random easy meals when input is 4`() {
+        // Given
         every { reader.readString() } returnsMany listOf("4", "0")
+
+        // When
         mainApp.start()
-        verify { di.randomEasyMealsUi.printRandomEasyMeals() }
+
+        // Then
+        verify { mealUiControllers.randomEasyMealsUi.printRandomEasyMeals() }
     }
 
     @Test
-    fun `when input is 5 then startGuessGame is called`() {
+    fun `should return guess game flow when input is 5`() {
+        // Given
         every { reader.readString() } returnsMany listOf("5", "0")
+
+        // When
         mainApp.start()
-        verify { di.guessMealPreparationTimeGameUI.startGuessGame() }
+
+        // Then
+        verify { mealUiControllers.guessMealPreparationTimeGameUI.startGuessGame() }
     }
 
     @Test
-    fun `when input is 6 then startSweetsWithNoEggsFlow is called`() {
+    fun `should return sweets with no eggs flow when input is 6`() {
+        // Given
         every { reader.readString() } returnsMany listOf("6", "0")
+
+        // When
         mainApp.start()
-        verify { di.sweetsWithNoEggsConsole.startSweetsWithNoEggsFlow() }
+
+        // Then
+        verify { mealUiControllers.sweetsWithNoEggsConsole.startSweetsWithNoEggsFlow() }
     }
 
     @Test
-    fun `when input is 7 then startKetoDietFlow is called`() {
+    fun `should return keto diet flow when input is 7`() {
+        // Given
         every { reader.readString() } returnsMany listOf("7", "0")
+
+        // When
         mainApp.start()
-        verify { di.ketoDietMealsUi.startKetoDietFlow() }
+
+        // Then
+        verify { mealUiControllers.ketoDietMealsUi.startKetoDietFlow() }
     }
 
     @Test
-    fun `when input is 8 then searchMealUsingDate is called`() {
+    fun `should return search meal using date flow when input is 8`() {
+        // Given
         every { reader.readString() } returnsMany listOf("8", "0")
+
+        // When
         mainApp.start()
-        verify { di.searchMealUsingDateUi.searchMealUsingDate() }
+
+        // Then
+        verify { mealUiControllers.searchMealUsingDateUi.searchMealUsingDate() }
     }
 
     @Test
-    fun `when input is 9 then startGetMealsByCaloriesAndProtein is called`() {
+    fun `should return meals by calories and protein flow when input is 9`() {
+        // Given
         every { reader.readString() } returnsMany listOf("9", "0")
+
+        // When
         mainApp.start()
-        verify { di.mealsByCaloriesAndProteinUi.startGetMealsByCaloriesAndProtein() }
+
+        // Then
+        verify { mealUiControllers.mealsByCaloriesAndProteinUi.startGetMealsByCaloriesAndProtein() }
     }
 
     @Test
-    fun `when input is 10 then exploreOtherCountriesFood is called`() {
+    fun `should return explore other countries food flow when input is 10`() {
+        // Given
         every { reader.readString() } returnsMany listOf("10", "0")
+
+        // When
         mainApp.start()
-        verify { di.exploreOtherCountriesFoodConsole.exploreOtherCountriesFood() }
+
+        // Then
+        verify { mealUiControllers.exploreOtherCountriesFoodConsole.exploreOtherCountriesFood() }
     }
 
     @Test
-    fun `when input is 11 then startIngredientGame is called`() {
+    fun `should return ingredient game flow when input is 11`() {
+        // Given
         every { reader.readString() } returnsMany listOf("11", "0")
+
+        // When
         mainApp.start()
-        verify { di.ingredientGameUi.startIngredientGame() }
+
+        // Then
+        verify { mealUiControllers.ingredientGameUi.startIngredientGame() }
     }
 
     @Test
-    fun `when input is 12 then startShowRandomPotatoMeals is called`() {
+    fun `should return show random meals by ingredient flow when input is 12`() {
+        // Given
         every { reader.readString() } returnsMany listOf("12", "0")
+
+        // When
         mainApp.start()
-        verify { di.showRandomMealsByIngredientUi.startShowRandomMealsByIngredient() }
+
+        // Then
+        verify { mealUiControllers.showRandomMealsByIngredientUi.startShowRandomMealsByIngredient() }
     }
 
     @Test
-    fun `when input is 13 then getMealsWithHighCalories is called`() {
+    fun `should return high calories meals flow when input is 13`() {
+        // Given
         every { reader.readString() } returnsMany listOf("13", "0")
+
+        // When
         mainApp.start()
-        verify { di.mealsWithHighCaloriesUi.getMealsWithHighCalories() }
+
+        // Then
+        verify { mealUiControllers.mealsWithHighCaloriesUi.getMealsWithHighCalories() }
     }
 
     @Test
-    fun `when input is 14 then startSeafoodMealsSortedByProtein is called`() {
+    fun `should return seafood meals sorted by protein flow when input is 14`() {
+        // Given
         every { reader.readString() } returnsMany listOf("14", "0")
+
+        // When
         mainApp.start()
-        verify { di.seaFoodMealsSortedByProteinConsole.startSeafoodMealsSortedByProtein() }
+
+        // Then
+        verify { mealUiControllers.seaFoodMealsSortedByProteinConsole.startSeafoodMealsSortedByProtein() }
     }
 
     @Test
-    fun `when input is 15 then startItalianLargeMealsFlow is called`() {
+    fun `should return italian large meals flow when input is 15`() {
+        // Given
         every { reader.readString() } returnsMany listOf("15", "0")
+
+        // When
         mainApp.start()
-        verify { di.italianLargeMealsConsole.startItalianLargeMealsFlow() }
+
+        // Then
+        verify { mealUiControllers.italianLargeMealsConsole.startItalianLargeMealsFlow() }
     }
 
     @Test
-    fun `when input is invalid then error message is displayed`() {
+    fun `should return error message when input is invalid`() {
+        // Given
         every { reader.readString() } returnsMany listOf("999", "0")
+
+        // When
         mainApp.start()
+
+        // Then
         verify { viewer.display("❌ Invalid option. Please try again!") }
     }
+
 }
