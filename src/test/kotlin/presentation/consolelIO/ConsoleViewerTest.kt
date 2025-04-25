@@ -1,14 +1,14 @@
 package presentation.consolelIO
 
+import com.google.common.truth.Truth.assertThat
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.seoulsquad.presentation.consolelIO.ConsoleViewer
 import java.io.ByteArrayOutputStream
 import java.io.PrintStream
 import kotlin.test.Test
 
-class ConsoleViewerTest{
+class ConsoleViewerTest {
     private val consoleViewer = ConsoleViewer()
     private val originalOut = System.out
     private val outputStream = ByteArrayOutputStream()
@@ -26,30 +26,44 @@ class ConsoleViewerTest{
     }
 
     @Test
-    fun `debug newline issue`() {
-        consoleViewer.display("Test")
+    fun `should return message followed by CRLF when display is called`() {
+        // Given
+        val message = "Test"
 
-        //Then
+        // When
+        consoleViewer.display(message)
+
+        // Then
         val actual = outputStream.toString()
         val expected = "Test\r\n"
-        assertEquals(expected, actual)
+        assertThat(actual).isEqualTo(expected)
     }
 
     @Test
-    fun `should print message with special characters to console`() {
+    fun `should return formatted message with special characters when display is called`() {
+        // Given
         val message = "Hello\nWorld\t!"
         val expected = "$message${System.lineSeparator()}"
+
+        // When
         consoleViewer.display(message)
-        assertEquals(expected, outputStream.toString())
+
+        // Then
+        assertThat(outputStream.toString()).isEqualTo(expected)
     }
 
     @Test
-    fun `should print multiple messages correctly`() {
+    fun `should return multiple lines correctly when display is called multiple times`() {
+        // Given
         val message1 = "First"
         val message2 = "Second"
         val expected = "$message1${System.lineSeparator()}$message2${System.lineSeparator()}"
+
+        // When
         consoleViewer.display(message1)
         consoleViewer.display(message2)
-        assertEquals(expected, outputStream.toString())
+
+        // Then
+        assertThat(outputStream.toString()).isEqualTo(expected)
     }
 }
