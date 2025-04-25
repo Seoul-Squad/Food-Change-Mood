@@ -30,22 +30,17 @@ class IngredientGameUi(
         }
     }
 
-    private fun handleException(exception: Throwable) {
-        when (exception) {
-            is NotEnoughMealsFoundException -> viewer.display(exception.message)
-            is InvalidNumberException -> viewer.display(exception.message)
-            else -> viewer.display("An error occurred: ${exception.message}")
-        }
-    }
-
     private fun startGame(questions: List<IngredientQuestion>) {
         for (question in questions) {
             printQuestion(question)
-            val status =
+            val status: IngredientGameStatus =
                 updateGameStatus(
                     reader.readInt(),
                     question,
-                )
+                ).getOrElse { exception ->
+                    viewer.display("Game Over")
+                    return handleException(exception)
+                }
             if (status.isGameOver) {
                 viewer.display("Game Over")
                 viewer.display("Your score is ${status.totalScore}")
@@ -57,13 +52,21 @@ class IngredientGameUi(
     private fun updateGameStatus(
         userAnswer: Int?,
         question: IngredientQuestion,
-    ): IngredientGameStatus = getIngredientGameStatusUseCase(userAnswer, question)
+    ): Result<IngredientGameStatus> = getIngredientGameStatusUseCase(userAnswer, question)
 
     private fun printQuestion(question: IngredientQuestion) {
         viewer.display("What is the correct ingredient for: ${question.mealName}")
 
         question.chooses.forEachIndexed { index, choose ->
             viewer.display("${index.inc()}- $choose")
+        }
+    }
+
+    private fun handleException(exception: Throwable) {
+        when (exception) {
+            is NotEnoughMealsFoundException -> viewer.display(exception.message)
+            is InvalidNumberException -> viewer.display(exception.message)
+            else -> viewer.display("An error occurred: ${exception.message}")
         }
     }
 
