@@ -3,15 +3,14 @@ package org.seoulsquad.presentation.utils
 import logic.model.Meal
 import org.seoulsquad.presentation.consolelIO.Viewer
 
-class MealPrinter (
+class MealPrinter(
     private val viewer: Viewer
-){
+) {
     fun printLikeAndDislikeOptions() {
         SuggestionFeedbackOption.entries.forEach {
             viewer.display("${it.ordinal}. ${it.title}")
         }
     }
-
 
     fun printShortMeal(meal: Meal) {
         viewer.display("\u001B[1mMeal: ${meal.name}\u001B[0m")
@@ -55,6 +54,7 @@ class MealPrinter (
             """.trimIndent(),
         )
     }
+
     fun printSearchResult(meals: List<Meal>) {
         meals.forEach { printMeal(it) }
     }

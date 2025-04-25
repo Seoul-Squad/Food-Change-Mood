@@ -4,5 +4,4 @@ enum class SuggestionFeedbackOption(
     val title: String,
 ) {
     LIKE("Like"),
-    DISLIKE("Dislike"),
-}
+    DISLIKE("Dislike") }
