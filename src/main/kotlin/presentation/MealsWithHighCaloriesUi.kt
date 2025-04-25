@@ -18,7 +18,7 @@ class MealsWithHighCaloriesUi(
             .onSuccess { mealsList ->
                 suggestMeal(mealsList)
             }.onFailure { e ->
-                println("Error: ${e.message}")
+                viewer.display("Error: ${e.message}")
             }
     }
 
