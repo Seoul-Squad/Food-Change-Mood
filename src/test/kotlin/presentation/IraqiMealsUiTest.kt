@@ -34,7 +34,7 @@ class IraqiMealsUiTest{
     }
 
     @Test
-    fun `when useCase succeeds, should display intro and each meal`() {
+    fun `should display intro and each meal when useCase succeeds`() {
           // given
         every { getIraqiMealsUseCase() } returns Result.success(iraqiMeals)
 
@@ -48,7 +48,7 @@ class IraqiMealsUiTest{
         }
      }
     @Test
-    fun `when useCase fails, should display intro then error message`() {
+    fun `should display intro then error message when useCase fails`() {
         // given
         every { getIraqiMealsUseCase() } returns Result.failure(NoMealsFoundException())
 
