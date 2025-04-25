@@ -36,31 +36,13 @@ class SearchMealByNameUiTest {
     }
 
     @Test
-    fun `should show meals when user insert not empty query there is a match`() {
+    fun `should show meals when not empty query input find match`() {
         // Given
         val query = "kushari"
         val exitCode = "0"
-        every { reader.readString() } returnsMany listOf(query, exitCode)
         val meals = kushariMeals
-        every { searchMealsByNameUseCase(query) } returns Result.success(meals)
-        // When
-        searchMealByNameUi.searchMealByName()
-        // Then
-        verify {  viewer.display(any())
-            viewer.display(any())
-            reader.readString()
-            viewer.display(any())
-            mealPrinter.printSearchResult(meals)
-        }
-    }
-
-    @Test
-    fun `should throw NoMealsException when user enters query that is not matched`() {
-        // Given
-        val query = "kushari"
-        val exitCode = "0"
         every { reader.readString() } returnsMany listOf(query, exitCode)
-        every { searchMealsByNameUseCase(query) } returns Result.failure(NoMealsFoundException())
+        every { searchMealsByNameUseCase(query) } returns Result.success(meals)
         // When
         searchMealByNameUi.searchMealByName()
         // Then
@@ -69,11 +51,25 @@ class SearchMealByNameUiTest {
             viewer.display(any())
             reader.readString()
             viewer.display(any())
+            mealPrinter.printSearchResult(meals)
         }
     }
 
     @Test
-    fun `should throw BlankInputException when user enters blank query`() {
+    fun `should return failure NoMealsException when not empty query input don't find match`() {
+        // Given
+        val query = "kushari"
+        val exitCode = "0"
+        every { reader.readString() } returnsMany listOf(query, exitCode)
+        every { searchMealsByNameUseCase(query) } returns Result.failure(NoMealsFoundException())
+        // When
+        searchMealByNameUi.searchMealByName()
+        // Then
+        verify(exactly = 1) { viewer.display("Error: ${NoMealsFoundException().message}") }
+    }
+
+    @Test
+    fun `should return failure BlankInputException when empty query`() {
         // Given
         val query = ""
         val exitCode = "0"
@@ -82,12 +78,7 @@ class SearchMealByNameUiTest {
         // When
         searchMealByNameUi.searchMealByName()
         // Then
-        verify{
-            viewer.display(any())
-            viewer.display(any())
-            reader.readString()
-            viewer.display(any())
-        }
+        verify(exactly = 1) { viewer.display("Error: ${BlankInputException().message}") }
     }
 
 }

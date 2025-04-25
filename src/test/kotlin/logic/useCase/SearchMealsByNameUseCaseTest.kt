@@ -25,7 +25,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return failure when query input is empty`() {
+    fun `should return failure BlankInputException when query is empty`() {
         //Given
         val query = ""
         every { mealRepository.getAllMeals() } returns listOf(
@@ -39,7 +39,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return failure when no meal found`() {
+    fun `should return failure NoMealsFoundException query don't match any meal`() {
         //Given
         val query = "Most"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -56,7 +56,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return failure when there is no meals`() {
+    fun `should return failure NoMealsFoundException when there is no meals`() {
         //Given
         val query = "Most"
         every { mealRepository.getAllMeals() } returns emptyList()
@@ -67,7 +67,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return failure when query is larger than names`() {
+    fun `should return failure NoMealsFoundException when query is larger than any meal's name`() {
         //Given
         val query = "chocolate cake dessert sweet"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -84,7 +84,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return failure when query has typo`() {
+    fun `should return failure NoMealsFoundException when query has typo`() {
         //Given
         val query = "kushari"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -100,7 +100,7 @@ class SearchMealsByNameUseCaseTest {
 
     @ParameterizedTest
     @ValueSource(strings = ["hello", "Hello", "HELLO", "heLLo"])
-    fun `SearchMealsByNameUseCase should find result in case-insensitive query`(query: String) {
+    fun `should find result in case-insensitive query`(query: String) {
         //Given
         every { mealRepository.getAllMeals() } returns listOf(
             createSearchByNameMeal("hello"),
@@ -118,7 +118,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return meals when query has repeated charachters `() {
+    fun `should find result when query has repeated charachters `() {
         //Given
         val query = "aaa"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -134,7 +134,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return meals when query has overlapped charachters`() {
+    fun `should find result when query has overlapped charachters`() {
         //Given
         val query = "abcaby"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -150,7 +150,7 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return meals when query  matched via substring`() {
+    fun `should find result when query is subset of any meal's name`() {
         //Given
         val query = "berr"
         every { mealRepository.getAllMeals() } returns listOf(
@@ -166,16 +166,33 @@ class SearchMealsByNameUseCaseTest {
     }
 
     @Test
-    fun `SearchMealsByNameUseCase should return meals when query mismatch then match with name`() {
-        //Given
-        val query = "ababcaba"
+    fun `should trigger backtrack when partial match is followed by mismatch`() {
+        // Given
+        val query = "ababd"
         every { mealRepository.getAllMeals() } returns listOf(
-            createSearchByNameMeal("mababnabmoonababcaba Smoothie"),
+            createSearchByNameMeal("ababx")
         )
-        //When
+        // When
         val result = searchMealsByNameUseCase(query)
-        //Then
-        assertThat(result.isSuccess).isTrue()
-        assertThat(result.getOrNull()?.all { it.name.contains(query) }).isTrue()
+        // Then
+        assertThrows<NoMealsFoundException> { result.getOrThrow() }
     }
+    @Test
+    fun `should find result when query mismatch requires meal's name shift `() {
+        val query = "AAAAB"
+        every { mealRepository.getAllMeals() } returns listOf(
+            createSearchByNameMeal("prefix_AAAAAB_suffix"),
+            createSearchByNameMeal("AAAAA"),
+            createSearchByNameMeal("AAAB"),
+            createSearchByNameMeal("Another meal")
+        )
+
+        // When
+        val result = searchMealsByNameUseCase(query)
+
+        // Then
+        assertThat(result.isSuccess).isTrue()
+        assertThat(result.getOrNull()).containsExactly(createSearchByNameMeal("prefix_AAAAAB_suffix"))
+    }
+
 }

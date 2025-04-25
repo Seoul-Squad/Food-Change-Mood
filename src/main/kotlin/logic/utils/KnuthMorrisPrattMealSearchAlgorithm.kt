@@ -41,7 +41,6 @@ class KnuthMorrisPrattMealSearchAlgorithm {
     private fun knuthMorrisPrattMealSearch(text: String, pattern: String, longestPrefixStringArray: IntArray): Boolean {
         val textLength = text.length
         val patternLength = pattern.length
-        //if (patternLength == 0) return true
         if (textLength == 0 || patternLength > textLength) return false
         var textIndex = 0
         var patternIndex = 0
