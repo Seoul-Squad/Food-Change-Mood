@@ -11,7 +11,6 @@ class SeaFoodMealsSortedByProteinUi(
 ) {
     fun startSeafoodMealsSortedByProtein() {
         viewer.display("Loading, Please wait...")
-        IntRange
         getSortedSeafoodMealsUseCase().onSuccess { meals ->
             tablePrinter.printTable(
                 headers = headers,
