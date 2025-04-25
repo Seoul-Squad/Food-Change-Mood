@@ -8,8 +8,5 @@ class ConsoleReader : Reader {
     override fun readInt(): Int? = readlnOrNull()?.toIntOrNull()
 
     override fun readDouble(): Double? = readlnOrNull()?.toDoubleOrNull()
-
-    override fun readDate(): LocalDate? {
-        TODO("Not yet implemented Ya Khaled")
-    }
 }
+
