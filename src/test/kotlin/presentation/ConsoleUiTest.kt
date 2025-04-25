@@ -9,7 +9,6 @@ import org.seoulsquad.presentation.consolelIO.Reader
 import org.seoulsquad.presentation.consolelIO.Viewer
 import org.seoulsquad.presentation.di.PresentationDependencies
 
-
 class ConsoleUiTest {
     private lateinit var di: PresentationDependencies
     private lateinit var mainApp: ConsoleUi
@@ -109,7 +108,7 @@ class ConsoleUiTest {
     fun `when input is 12 then startShowRandomPotatoMeals is called`() {
         every { reader.readString() } returnsMany listOf("12", "0")
         mainApp.start()
-        verify { di.showRandomPotatoMealsUi.startShowRandomPotatoMeals() }
+        verify { di.showRandomMealsByIngredientUi.startShowRandomMealsByIngredient() }
     }
 
     @Test
@@ -139,5 +138,4 @@ class ConsoleUiTest {
         mainApp.start()
         verify { viewer.display("❌ Invalid option. Please try again!") }
     }
-
 }
