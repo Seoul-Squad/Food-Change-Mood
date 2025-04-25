@@ -47,13 +47,13 @@ class GuessMealPreparationTimeGameUseCase(
 
     private fun evaluateUserGuess(guess: String?): Result<GuessResult> {
         return try {
-            val validUserInput = validateGuess(guess)
+            val guessValue = validateGuess(guess)
             currentAttempt++
             if (currentAttempt > maxAttempts) {
                 startNewRound = true
                 return Result.success(GuessResult.TOO_LOW)
             }
-            Result.success(determineGuessResult(validUserInput))
+            Result.success(determineGuessResult(guessValue))
         } catch (e: InvalidNumberException) {
             Result.failure(e)
         }
