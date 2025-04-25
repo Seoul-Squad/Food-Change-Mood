@@ -31,7 +31,7 @@ class ConsoleUi(
             "8" -> di.searchMealUsingDateUi.searchMealUsingDate()
             "9" -> di.mealsByCaloriesAndProteinUi.startGetMealsByCaloriesAndProtein()
             "10" -> di.exploreOtherCountriesFoodConsole.exploreOtherCountriesFood()
-            "11" -> di.ingredientGameUi.startIngredientGame()
+            "11" -> di.ingredientGameUi.startIngredientGameFlow()
             "12" -> di.showRandomMealsByIngredientUi.startShowRandomMealsByIngredient()
             "13" -> di.mealsWithHighCaloriesUi.getMealsWithHighCalories()
             "14" -> di.seaFoodMealsSortedByProteinConsole.startSeafoodMealsSortedByProtein()

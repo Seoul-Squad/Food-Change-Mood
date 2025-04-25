@@ -1,6 +1,5 @@
 package di
 
-import GetItalianLargeMealsUseCase
 import logic.useCase.*
 import org.koin.dsl.module
 import org.seoulsquad.logic.useCase.*
@@ -23,5 +22,6 @@ val useCaseModule =
         single { GetMealUsingIDUseCase(get()) }
         single { GuessMealPreparationTimeGameUseCase(get()) }
         single { GetHealthyFastFoodUseCase(get()) }
-        single { GetRandomIngredientQuestion(get()) }
+        single { GetIngredientGameQuestionsUseCase(get()) }
+        single { GetIngredientGameStatusUseCase() }
     }
