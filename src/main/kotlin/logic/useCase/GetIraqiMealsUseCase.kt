@@ -8,7 +8,7 @@ import org.seoulsquad.logic.repository.MealRepository
 class GetIraqiMealsUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun getAllIraqiMeals(): Result<List<Meal>> {
+    operator fun invoke(): Result<List<Meal>> {
         return mealRepository.getAllMeals()
             .filter(::isIraqMeal)
             .takeIf { it.isNotEmpty() }
@@ -17,7 +17,9 @@ class GetIraqiMealsUseCase(
             } ?: Result.failure(NoMealsFoundException())
     }
 
-    private fun isIraqMeal(meal: Meal) =
-        meal.tags.any { it.equals(IRAQ_NAME, ignoreCase = true) } ||
-                meal.description?.contains(IRAQ_NAME, ignoreCase = true) ?: false
+    private fun isIraqMeal(meal: Meal): Boolean {
+        val tagMatch = meal.tags.any { it.equals(IRAQ_NAME, ignoreCase = true) }
+        val descMatch = meal.description?.contains(IRAQ_NAME, ignoreCase = true) ?: false
+        return tagMatch || descMatch
+    }
 }
