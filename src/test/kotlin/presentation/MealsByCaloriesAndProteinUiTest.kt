@@ -101,15 +101,4 @@ class MealsByCaloriesAndProteinUiTest {
             viewer.display("⚠️ No meals found")
         }
     }
-
-//    @Test
-//    fun `should quits when user types exit`() {
-//        every { mockReader.readString() } returns "exit"
-//
-//        ui.startGetMealsByCaloriesAndProtein()
-//
-//        verify {
-//            mockViewer.display(eq("(Enter 'quit' at any time to exit)"))
-//        }
-//    }
 }
