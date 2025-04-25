@@ -54,7 +54,7 @@ class GetIraqiMealsUseCaseTest{
     }
 
     @Test
-    fun `should return iraqi meals when tags only contains Iraq keyword in any format`() {
+    fun `should return iraqi meals when tags only include  Iraq keyword in any format`() {
         // given
         every { mealRepository.getAllMeals() } returns mealsWithIraqInTags
         // when
@@ -66,7 +66,7 @@ class GetIraqiMealsUseCaseTest{
     }
 
     @Test
-    fun `should return iraqi meals when description only contains Iraq keyword in any format`() {
+    fun `should return iraqi meals when description only include Iraq keyword in any format`() {
         // given
         every { mealRepository.getAllMeals() } returns mealsWithIraqInDescription
         // when
@@ -77,7 +77,7 @@ class GetIraqiMealsUseCaseTest{
         assertThat(expectedIraqiMealsIds).containsAtLeastElementsIn(actualReturnedMealsIds)
     }
     @Test
-    fun `should return iraqi meals when both tags and description contain Iraq keyword in any case format`() {
+    fun `should return iraqi meals when both tags and description include Iraq keyword in any case format`() {
         // given
         every { mealRepository.getAllMeals() } returns mealsWithIraqInBoth
         // when
@@ -89,7 +89,7 @@ class GetIraqiMealsUseCaseTest{
     }
 
     @Test
-    fun `should return iraqi meals when either tags or description contains iraqi keyword even if the other is empty or null`() {
+    fun `should return iraqi meals when either tags or description include iraqi keyword even if the other is empty or null`() {
         // given
         every { mealRepository.getAllMeals() } returns mealsWithEmptyOrNullTagsOrDescription
         // when
@@ -100,7 +100,7 @@ class GetIraqiMealsUseCaseTest{
         assertThat(expectedIraqiMealsIds).containsAtLeastElementsIn(actualReturnedMealsIds)
     }
     @Test
-    fun `should return failure when no meals contain Iraq keyword in tags and description`() {
+    fun `should return failure when no meals include Iraq keyword in tags and description`() {
         // given
         every { mealRepository.getAllMeals() } returns mealsWithoutIraqKeyword
         // when
