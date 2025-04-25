@@ -1,6 +1,7 @@
 package org.seoulsquad.presentation
 
 import logic.utils.InvalidNumberException
+import logic.utils.NotEnoughMealsFoundException
 import org.seoulsquad.logic.model.IngredientGameStatus
 import org.seoulsquad.logic.model.IngredientQuestion
 import org.seoulsquad.logic.useCase.GetIngredientGameQuestionsUseCase
@@ -14,28 +15,42 @@ class IngredientGameUi(
     private val viewer: Viewer,
     private val reader: Reader,
 ) {
-    fun startIngredientGame() {
+    fun startIngredientGameFlow() {
         var isPlaying = true
         while (isPlaying) {
-            try {
-                val questions = getIngredientGameQuestionsUseCase()
-                for (question in questions) {
-                    printQuestion(question)
-                    val status =
-                        updateGameStatus(
-                            reader.readInt(),
-                            question,
-                        )
-                    if (status.isGameOver) {
-                        viewer.display("Your score is ${status.totalScore}")
-                        break
-                    }
+            val questionsResult = getIngredientGameQuestionsUseCase()
+            questionsResult
+                .onSuccess { questions ->
+                    startGame(questions)
+                    askToPlayAgain().also { isPlaying = it }
+                }.onFailure { exception ->
+                    handleException(exception)
+                    return@startIngredientGameFlow
                 }
-            } catch (e: InvalidNumberException) {
-                viewer.display(e.message)
+        }
+    }
+
+    private fun handleException(exception: Throwable) {
+        when (exception) {
+            is NotEnoughMealsFoundException -> viewer.display(exception.message)
+            is InvalidNumberException -> viewer.display(exception.message)
+            else -> viewer.display("An error occurred: ${exception.message}")
+        }
+    }
+
+    private fun startGame(questions: List<IngredientQuestion>) {
+        for (question in questions) {
+            printQuestion(question)
+            val status =
+                updateGameStatus(
+                    reader.readInt(),
+                    question,
+                )
+            if (status.isGameOver) {
+                viewer.display("Game Over")
+                viewer.display("Your score is ${status.totalScore}")
+                break
             }
-            viewer.display("Game Over")
-            askToPlayAgain().also { isPlaying = it }
         }
     }
 
@@ -52,7 +67,7 @@ class IngredientGameUi(
         }
     }
 
-    private fun askToPlayAgain(): Boolean { //
+    private fun askToPlayAgain(): Boolean {
         viewer.display("Do you want to play again? (y/n)")
         while (true) {
             when (reader.readString().lowercase()) {
