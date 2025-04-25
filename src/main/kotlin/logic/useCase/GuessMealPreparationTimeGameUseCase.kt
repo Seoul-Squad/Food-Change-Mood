@@ -4,7 +4,7 @@ import logic.model.GuessResult
 import logic.model.Meal
 import logic.utils.InvalidNumberException
 import logic.utils.NoMealsFoundException
-import org.seoulsquad.logic.model.GameState
+import org.seoulsquad.logic.model.PreperationTimeGameState
 import org.seoulsquad.logic.repository.MealRepository
 
 class GuessMealPreparationTimeGameUseCase(
@@ -32,7 +32,7 @@ class GuessMealPreparationTimeGameUseCase(
         startNewRound = false
     }
 
-    fun getGameState(): GameState = GameState(
+    fun getGameState(): PreperationTimeGameState = PreperationTimeGameState(
         currentMeal = currentMeal,
         currentAttempt = currentAttempt,
         maxAttempts = maxAttempts,

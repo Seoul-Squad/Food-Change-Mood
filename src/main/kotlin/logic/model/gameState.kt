@@ -2,7 +2,7 @@ package org.seoulsquad.logic.model
 
 import logic.model.Meal
 
-data class GameState(
+data class PreperationTimeGameState(
     val currentMeal: Meal?,
     val currentAttempt: Int,
     val maxAttempts: Int,
