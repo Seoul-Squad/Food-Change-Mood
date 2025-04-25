@@ -42,7 +42,8 @@ class MealsWithHighCaloriesUi(
             mealPrinter.printShortMeal(randomMeal)
             mealPrinter.printLikeAndDislikeOptions()
 
-            when (reader.readInt()) {
+            val userInput = reader.readInt() ?: -1
+            when (userInput) {
                 SuggestionFeedbackOption.LIKE.ordinal -> {
                     return mealPrinter.printFullMeal(randomMeal)
                 }

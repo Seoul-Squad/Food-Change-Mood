@@ -5,7 +5,6 @@ import io.mockk.mockk
 import io.mockk.verify
 import logic.utils.NoMealsFoundException
 import mockData.createMeal
-import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.seoulsquad.logic.useCase.GetMealsWithHighCaloriesUseCase
 import org.seoulsquad.presentation.MealsWithHighCaloriesUi
@@ -66,9 +65,25 @@ class MealsWithHighCaloriesUiTest {
     }
 
     @Test
-    fun `should display Invalid option message and display choices again when user enters any invalid input then like one meal`() {
+    fun `should display Invalid option message and display choices again when user enters number out of choices then like one meal`() {
         //Given
         val invalidInput = 5
+        every { getMealsWithHighCaloriesUseCase() } returns Result.success(meals)
+        every { reader.readInt() } returnsMany listOf(invalidInput, SuggestionFeedbackOption.LIKE.ordinal)
+
+        //When
+        mealsWithHighCaloriesUi.getMealsWithHighCalories()
+
+        //Then
+        val invalidInputMessage = "Invalid option"
+        verify { viewer.display(invalidInputMessage) }
+        verify { mealPrinter.printFullMeal(any()) }
+    }
+
+    @Test
+    fun `should display Invalid option message and display choices again when user enters any invalid input then like one meal`() {
+        //Given
+        val invalidInput = null
         every { getMealsWithHighCaloriesUseCase() } returns Result.success(meals)
         every { reader.readInt() } returnsMany listOf(invalidInput, SuggestionFeedbackOption.LIKE.ordinal)
 
