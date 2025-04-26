@@ -25,6 +25,19 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Check open pull requests count
+        id: check_prs
+        run: |
+          echo "Fetching open pull requests..."
+          open_prs=$(gh pr list --state open --json number --jq 'length')
+          echo "Open PRs: $open_prs"
+          if [ "$open_prs" -ge 3 ]; then
+            echo "❌ Cannot open more than 3 pull requests! ($open_prs currently open)"
+            exit 1
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Build and Test
         run: ./gradlew build
 
