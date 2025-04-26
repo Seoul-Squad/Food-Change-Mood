@@ -76,7 +76,7 @@ class IngredientGameUi(
             when (reader.readString().lowercase()) {
                 "y" -> return true
                 "n" -> return false
-                else -> viewer.display("Invalid input. Please enter 'y' or 'n'")
+                else -> viewer.display("Invalid input. Please enter 'y' or 'n'.")
             }
         }
     }
