@@ -152,7 +152,7 @@ class ConsoleUiTest {
         mainApp.start()
 
         // Then
-        verify { mealUiControllers.ingredientGameUi.startIngredientGame() }
+        verify { mealUiControllers.ingredientGameUi.startIngredientGameFlow() }
     }
 
     @Test
@@ -214,5 +214,4 @@ class ConsoleUiTest {
         // Then
         verify { viewer.display("❌ Invalid option. Please try again!") }
     }
-
 }
