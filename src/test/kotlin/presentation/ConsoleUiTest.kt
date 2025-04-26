@@ -152,7 +152,7 @@ class ConsoleUiTest {
         mainApp.start()
 
         // Then
-        verify { mealUiControllers.ingredientGameUi.startIngredientGame() }
+        verify { mealUiControllers.ingredientGameUi.startIngredientGameFlow() }
     }
 
     @Test
