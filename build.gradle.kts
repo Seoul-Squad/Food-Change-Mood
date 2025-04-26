@@ -1,5 +1,6 @@
 plugins {
     kotlin("jvm") version "2.0.20"
+    jacoco
 }
 
 group = "org.seoulsquad"
@@ -24,4 +25,27 @@ tasks.test {
 }
 kotlin {
     jvmToolchain(21)
+}
+
+jacoco {
+    toolVersion = "0.8.11" // latest stable
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // run tests first
+    reports {
+        xml.required.set(true)     // for CI integration (optional)
+        html.required.set(true)    // for local nice browsing
+    }
+}
+
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.test)
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.80".toBigDecimal() // fail if coverage < 80%
+            }
+        }
+    }
 }
