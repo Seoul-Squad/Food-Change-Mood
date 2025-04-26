@@ -1,10 +1,17 @@
 package org.seoulsquad.presentation
 
+import logic.model.Meal
 import logic.useCase.GetSweetsWithNoEggsUseCase
-import org.seoulsquad.presentation.utils.SharedUi
+import org.seoulsquad.presentation.consolelIO.Reader
+import org.seoulsquad.presentation.consolelIO.Viewer
+import org.seoulsquad.presentation.utils.MealPrinter
+import org.seoulsquad.presentation.utils.SuggestionFeedbackOption
 
 class SweetsWithNoEggsUi(
     private val getSweetsWithNoEggsUseCase: GetSweetsWithNoEggsUseCase,
+    private val mealPrinter: MealPrinter,
+    private val viewer: Viewer,
+    private val reader: Reader
 ) {
     fun startSweetsWithNoEggsFlow() {
         printSweetsWithNoEggsIntroductionMessage()
@@ -12,20 +19,55 @@ class SweetsWithNoEggsUi(
     }
 
     private fun printSweetsWithNoEggsIntroductionMessage() {
-        println("Looking for a sweet without eggs? You're in the right place!")
-        println("Like to see more details, or dislike to get another suggestion.")
-        println("Loading, Please wait...")
+        viewer.display("Looking for a sweet without eggs? You're in the right place!")
+        viewer.display("Like to see more details, or dislike to get another suggestion.")
+        viewer.display("Loading, Please wait...")
     }
 
     private fun getSweetsWithNoEggs() {
         getSweetsWithNoEggsUseCase()
             .onSuccess { sweetsList ->
-                SharedUi().suggestMeal(sweetsList)
+                suggestMeal(sweetsList)
             }.onFailure { e ->
-                println("Error: ${e.message}")
+                viewer.display(e.message)
             }
     }
+    private fun suggestMeal(meals: List<Meal>) {
+        if (meals.isEmpty()) {
+            viewer.display(OUT_OF_MEALS_MESSAGE)
+            return
+        }
+        val randomMeal = meals.random()
 
+        handleSuggestionFeedback(randomMeal, meals)
+    }
 
+    private fun handleSuggestionFeedback(
+        randomMeal: Meal,
+        meals: List<Meal>,
+    ) {
+        while(true) {
+            mealPrinter.printShortMeal(randomMeal)
+            mealPrinter.printLikeAndDislikeOptions()
+            val userInput = reader.readInt() ?: INVALID_OPTION
+            when (userInput) {
+                SuggestionFeedbackOption.LIKE.ordinal -> {
+                    return mealPrinter.printFullMeal(randomMeal)
+                }
 
+                SuggestionFeedbackOption.DISLIKE.ordinal -> {
+                    return suggestMeal(meals.minusElement(randomMeal))
+                }
+
+                else ->{
+                    viewer.display(INVALID_OPTION_MESSAGE)
+                }
+            }
+        }
+    }
+    companion object{
+        const val INVALID_OPTION = -1
+        const val INVALID_OPTION_MESSAGE = "Invalid option"
+        const val OUT_OF_MEALS_MESSAGE = "We are out of meals for now."
+    }
 }

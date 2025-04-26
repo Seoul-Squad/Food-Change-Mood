@@ -57,7 +57,7 @@ class MealCsvParser {
 
 
     private fun parseDate(value: String?): LocalDate? {
-        return value?.let { LocalDate.parse(it) }
+        return value?.takeIf { it.isNotBlank() }?.let { LocalDate.parse(it) }
     }
 
     private fun parseArrayString(arrayStr: String): List<String> {

@@ -2,22 +2,24 @@ package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
 import logic.utils.Constants.IRAQ_NAME
-import logic.utils.NoIraqiMealsFoundException
+import logic.utils.NoMealsFoundException
 import org.seoulsquad.logic.repository.MealRepository
 
 class GetIraqiMealsUseCase(
     private val mealRepository: MealRepository
 ) {
-    fun getAllIraqiMeals(): Result<List<Meal>> {
+    operator fun invoke(): Result<List<Meal>> {
         return mealRepository.getAllMeals()
             .filter(::isIraqMeal)
             .takeIf { it.isNotEmpty() }
             ?.let {
                 Result.success(it)
-            } ?: Result.failure(NoIraqiMealsFoundException("No Iraqi meals found"))
+            } ?: Result.failure(NoMealsFoundException())
     }
 
-    private fun isIraqMeal(meal: Meal) =
-        meal.tags.any { it.equals(IRAQ_NAME, ignoreCase = true) } ||
-                meal.description?.contains(IRAQ_NAME, ignoreCase = true) ?: false
+    private fun isIraqMeal(meal: Meal): Boolean {
+        val tagMatch = meal.tags.any { it.equals(IRAQ_NAME, ignoreCase = true) }
+        val descMatch = meal.description?.contains(IRAQ_NAME, ignoreCase = true) ?: false
+        return tagMatch || descMatch
+    }
 }

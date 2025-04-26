@@ -2,9 +2,9 @@ package logic.useCase
 
 import logic.model.GuessResult
 import logic.model.Meal
-import logic.utils.InvalidGuessException
-import logic.utils.NegativeGuessException
+import logic.utils.InvalidNumberException
 import logic.utils.NoMealsFoundException
+import org.seoulsquad.logic.model.PreparationTimeGameState
 import org.seoulsquad.logic.repository.MealRepository
 
 class GuessMealPreparationTimeGameUseCase(
@@ -16,32 +16,32 @@ class GuessMealPreparationTimeGameUseCase(
     private var startNewRound: Boolean = false
 
     operator fun invoke(guess: String?): Result<GuessResult> {
+        if (guess == "n") {
+            resetGame()
+            return Result.success(GuessResult.EXIT)
+        }
+        if (guess == GuessResult.PLAY_AGAIN.name) {
+            resetGame()
+            return Result.success(GuessResult.PLAY_AGAIN)
+        }
         if (currentMeal == null || startNewRound) {
             return initializeGame()
         }
         return evaluateUserGuess(guess)
     }
 
-    fun doesUserWantToPlayAgain(input: String?): Result<Boolean> {
-        val normalizedInput = input?.trim()?.lowercase()
-        val playAgain = normalizedInput == "y" || normalizedInput == "yes"
-        if (playAgain) {
-            currentMeal = null
-            currentAttempt = 0
-            startNewRound = false
-        } else {
-            currentMeal = null
-            currentAttempt = 0
-            startNewRound = false
-        }
-        return Result.success(playAgain)
+    private fun resetGame() {
+        currentMeal = null
+        currentAttempt = 0
+        startNewRound = false
     }
 
-    fun getCurrentMeal(): Meal? = currentMeal
-    fun getCurrentAttempt(): Int = currentAttempt
-    fun getMaxAttempts(): Int = maxAttempts
-    fun shouldStartNewRound(): Boolean = startNewRound
-
+    fun getGameState(): PreparationTimeGameState = PreparationTimeGameState(
+        currentMeal = currentMeal,
+        currentAttempt = currentAttempt,
+        maxAttempts = maxAttempts,
+        shouldStartNewRound = startNewRound
+    )
     private fun initializeGame(): Result<GuessResult> {
         currentMeal = generateRandomMeal().getOrElse { return Result.failure(it) }
         currentAttempt = 0
@@ -58,22 +58,16 @@ class GuessMealPreparationTimeGameUseCase(
                 return Result.success(GuessResult.TOO_LOW)
             }
             Result.success(determineGuessResult(guessValue))
-        } catch (e: InvalidGuessException) {
-            Result.failure(e)
-        } catch (e: NegativeGuessException) {
+        } catch (e: InvalidNumberException) {
             Result.failure(e)
         }
 
     }
     private fun validateGuess(guess: String?): Int {
-        val number = guess?.toIntOrNull()
-            ?: throw InvalidGuessException("Please enter a valid number")
+        val number = guess?.toIntOrNull() ?: throw InvalidNumberException()
+        if (number <= 0) throw InvalidNumberException()
+        return number
 
-        return if (number >= 0) {
-            number
-        } else {
-            throw NegativeGuessException("Time must be positive")
-        }
     }
 
     private fun determineGuessResult(guess: Int): GuessResult {
@@ -91,6 +85,6 @@ class GuessMealPreparationTimeGameUseCase(
     private fun generateRandomMeal(): Result<Meal> {
         val meals = mealRepository.getAllMeals().filter { it.name.isNotBlank() }
         return meals.randomOrNull()?.let { Result.success(it) }
-            ?: Result.failure(NoMealsFoundException("No meals available!"))
+            ?: Result.failure(NoMealsFoundException())
     }
 }

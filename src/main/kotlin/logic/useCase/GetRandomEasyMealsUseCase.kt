@@ -5,6 +5,7 @@ import logic.utils.Constants.EasyFood.MAX_INGREDIENTS
 import org.seoulsquad.logic.repository.MealRepository
 import logic.utils.Constants.EasyFood.MAX_MINUTES
 import logic.utils.Constants.EasyFood.MAX_STEPS
+import logic.utils.NoMealsFoundException
 
 class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
 
@@ -16,7 +17,7 @@ class GetRandomEasyMealsUseCase(private val mealRepository: MealRepository) {
             .shuffled()
             .takeIf { it.isNotEmpty() }
             ?.let { Result.success(easyMealsList.take(limit)) }
-            ?: Result.failure(Exception("The file is empty"))
+            ?: Result.failure(NoMealsFoundException())
     }
 
     private fun isEasyMeal(meal: Meal): Boolean =

@@ -2,28 +2,37 @@ package org.seoulsquad.presentation
 
 import logic.utils.Constants.EXIT
 import org.seoulsquad.logic.useCase.SearchMealsByNameUseCase
-import org.seoulsquad.presentation.utils.SharedUi
+import org.seoulsquad.presentation.consolelIO.Reader
+import org.seoulsquad.presentation.consolelIO.Viewer
+import org.seoulsquad.presentation.utils.MealPrinter
 
 class SearchMealByNameUi(
-    private val searchMealByNameUseCase: SearchMealsByNameUseCase
+    private val searchMealByNameUseCase: SearchMealsByNameUseCase,
+    private val reader: Reader,
+    private val viewer: Viewer,
+    private val mealPrinter: MealPrinter
 ) {
 
     fun searchMealByName() {
-        println("Welcome to the Meal Searcher!")
+        viewer.display("Welcome to the Meal Searcher!")
         while (true) {
-            println("Please enter a meal name to search for (or type '$EXIT' to quit):")
-            val query = readlnOrNull() ?: ""
-            if (query == EXIT) {
-                println("Exiting the Meal Searcher. Goodbye!")
-                return
-            }
-            searchMealByNameUseCase(query)
-                .onSuccess { meals ->
-                    println("Your search result")
-                    SharedUi().printSearchResult(meals)
-                }.onFailure { e ->
-                    println("Error: ${e.message}")
+            viewer.display("Please enter a meal name to search for (or type '$EXIT' to quit):")
+            when (val query = reader.readString()) {
+                EXIT -> {
+                    viewer.display("Exiting the Meal Searcher. Goodbye!")
+                    break
                 }
+
+                else -> {
+                    searchMealByNameUseCase(query)
+                        .onSuccess { meals ->
+                            viewer.display("Your search result")
+                            mealPrinter.printSearchResult(meals)
+                        }.onFailure { e ->
+                            viewer.display("Error: ${e.message}")
+                        }
+                }
+            }
         }
     }
 
