@@ -4,10 +4,10 @@ import logic.utils.Constants.DEFAULT_INGREDIENT
 import logic.utils.Constants.MAX_MEALS
 import org.seoulsquad.presentation.consolelIO.Reader
 import org.seoulsquad.presentation.consolelIO.Viewer
-import org.seoulsquad.presentation.di.PresentationDependencies
+import org.seoulsquad.presentation.di.MealUiControllers
 
 class ConsoleUi(
-    private val di: PresentationDependencies,
+    private val di: MealUiControllers,
     private val viewer: Viewer,
     private val reader: Reader,
 ) {

@@ -19,7 +19,7 @@ class KnuthMorrisPrattMealSearchAlgorithm {
         val longestPrefixString = IntArray(patternLength)
         var longestPrefixStringLength = 0
         var indexOfComparison = 1
-        if (patternLength > 0) longestPrefixString[0] = 0
+        longestPrefixString[0] = 0
 
         while (indexOfComparison < patternLength) {
             if (pattern[indexOfComparison].lowercaseChar() == pattern[longestPrefixStringLength].lowercaseChar()) {
@@ -41,7 +41,6 @@ class KnuthMorrisPrattMealSearchAlgorithm {
     private fun knuthMorrisPrattMealSearch(text: String, pattern: String, longestPrefixStringArray: IntArray): Boolean {
         val textLength = text.length
         val patternLength = pattern.length
-        if (patternLength == 0) return true
         if (textLength == 0 || patternLength > textLength) return false
         var textIndex = 0
         var patternIndex = 0
@@ -52,7 +51,7 @@ class KnuthMorrisPrattMealSearchAlgorithm {
             }
 
             if (patternIndex == patternLength) {
-                return true // Found
+                return true
             } else if (textIndex < textLength && pattern[patternIndex].lowercaseChar() != text[textIndex].lowercaseChar()) {
                 if (patternIndex != 0) {
                     patternIndex = longestPrefixStringArray[patternIndex - 1]
