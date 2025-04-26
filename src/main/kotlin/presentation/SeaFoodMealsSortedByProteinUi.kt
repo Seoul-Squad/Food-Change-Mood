@@ -28,5 +28,6 @@ class SeaFoodMealsSortedByProteinUi(
     companion object {
         val headers = listOf("#", "Meal Name", "Protein (g)")
     }
+
 }
 
