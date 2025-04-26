@@ -214,5 +214,4 @@ class ConsoleUiTest {
         // Then
         verify { viewer.display("❌ Invalid option. Please try again!") }
     }
-
 }
