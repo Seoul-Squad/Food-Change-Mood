@@ -71,7 +71,7 @@ class IngredientGameUi(
     }
 
     private fun askToPlayAgain(): Boolean {
-        viewer.display("Do you want to play again? (y/n)")
+        viewer.display("Do you want to play again? (y/n).")
         while (true) {
             when (reader.readString().lowercase()) {
                 "y" -> return true
