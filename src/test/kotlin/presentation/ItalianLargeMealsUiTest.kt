@@ -1,9 +1,9 @@
 package presentation
 
-import GetItalianLargeMealsUseCase
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
+import logic.useCase.GetItalianLargeMealsUseCase
 import logic.utils.Constants.ITALIAN_NAME
 import logic.utils.Constants.LARGE_GROUP_NAME
 import logic.utils.NoMealsFoundException

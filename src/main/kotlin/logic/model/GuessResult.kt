@@ -5,5 +5,6 @@ enum class GuessResult {
     TOO_HIGH,
     TOO_LOW,
     GAME_STARTED,
-    PLAY_AGAIN
+    PLAY_AGAIN,
+    EXIT
 }
