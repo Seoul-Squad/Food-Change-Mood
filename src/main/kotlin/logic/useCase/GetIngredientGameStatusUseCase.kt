@@ -11,17 +11,20 @@ class GetIngredientGameStatusUseCase {
     operator fun invoke(
         userAnswer: Int?,
         question: IngredientQuestion,
-    ): IngredientGameStatus {
-        checkGameStatus()
-        isCorrectAnswer(
-            checkUserInput(userAnswer, question.chooses),
-            question,
-        ).also {
-            if (it) increaseScore()
-            isGameOver = !it
+    ): Result<IngredientGameStatus> =
+        try {
+            checkGameStatus()
+            isCorrectAnswer(
+                checkUserInput(userAnswer, question.chooses),
+                question,
+            ).also {
+                if (it) increaseScore()
+                isGameOver = !it
+            }
+            Result.success(IngredientGameStatus(totalScore, isGameOver))
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-        return IngredientGameStatus(totalScore, isGameOver)
-    }
 
     private fun checkUserInput(
         userAnswer: Int?,

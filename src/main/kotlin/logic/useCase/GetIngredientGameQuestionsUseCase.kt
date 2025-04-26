@@ -1,6 +1,7 @@
 package org.seoulsquad.logic.useCase
 
 import logic.model.Meal
+import logic.utils.InvalidNumberException
 import logic.utils.NoIngredientFoundException
 import logic.utils.NotEnoughMealsFoundException
 import org.seoulsquad.logic.model.IngredientQuestion
@@ -17,8 +18,8 @@ class GetIngredientGameQuestionsUseCase(
         try {
             val questionsList =
                 generateSequence {
-                    generateIngredientGameQuestion(optionsLimit)
-                }.distinct()
+                    generateIngredientGameQuestion(questionsLimit, optionsLimit)
+                }.distinctBy { it.id }
                     .take(questionsLimit)
                     .toList()
 
@@ -27,19 +28,23 @@ class GetIngredientGameQuestionsUseCase(
             Result.failure(e)
         }
 
-    private fun generateIngredientGameQuestion(optionsLimit: Int): IngredientQuestion {
+    private fun generateIngredientGameQuestion(
+        questionsLimit: Int,
+        optionsLimit: Int,
+    ): IngredientQuestion {
+        if (questionsLimit < 3 || optionsLimit < 3) throw InvalidNumberException()
         val allMeals =
-            getAllMeals(optionsLimit)
+            getAllMeals(questionsLimit)
         val meal = allMeals.random()
         val correctAnswer = getCorrectAnswer(meal)
         val wrongAnswers =
             getRandomWrongOptions(
                 meal,
-                getOtherMeals(allMeals, meal, optionsLimit),
+                getOtherMeals(allMeals, meal, questionsLimit),
                 optionsLimit,
             )
         val options = getQuestionOptions(correctAnswer, wrongAnswers)
-        return IngredientQuestion(meal.name, options.shuffled())
+        return IngredientQuestion(meal.id, meal.name, options.shuffled())
     }
 
     private fun getCorrectAnswer(randomMeal: Meal): String =
@@ -48,20 +53,20 @@ class GetIngredientGameQuestionsUseCase(
             .randomOrNull()
             ?: throw NoIngredientFoundException()
 
-    private fun getAllMeals(optionsLimit: Int): List<Meal> =
+    private fun getAllMeals(questionsLimit: Int): List<Meal> =
         mealRepository
             .getAllMeals()
-            .takeIf { it.size >= optionsLimit }
+            .takeIf { it.size >= questionsLimit }
             ?: throw NotEnoughMealsFoundException()
 
     private fun getOtherMeals(
         allMeals: List<Meal>,
         meal: Meal,
-        optionsLimit: Int,
+        questionsLimit: Int,
     ): List<Meal> =
         allMeals
             .filter { it.id != meal.id }
-            .shuffledByIndices(optionsLimit)
+            .shuffledByIndices(questionsLimit)
 
     private fun getRandomWrongOptions(
         meal: Meal,
@@ -77,10 +82,7 @@ class GetIngredientGameQuestionsUseCase(
                     mealIngredients.any { it.contains(ingredient, ignoreCase = true) }
                 }
 
-        return candidates
-            .takeIf {
-                it.size >= optionsLimit.dec()
-            }?.take(optionsLimit) ?: throw NotEnoughMealsFoundException()
+        return candidates.take(optionsLimit.dec())
     }
 
     private fun getQuestionOptions(
