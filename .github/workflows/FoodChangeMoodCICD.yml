@@ -2,60 +2,14 @@ name: FoodChangeModeCICD
 
 on:
   push:
-    branches: [ develop ]
+    branches:
+      - develop
   pull_request:
-    branches: [ develop ]
-    # we only care about new PRs for the limit check; build will still run on updates
-    types: [opened]
+    branches:
+      - develop
 
 jobs:
-  # ────────────────────────────────────────────────────────────────────────────
-  # 1) PR‐limit job: counts open PRs, closes the new one if count > 3
-  # ────────────────────────────────────────────────────────────────────────────
-  pr_limit:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: read
-    steps:
-      - name: Count open PRs
-        id: count
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const { owner, repo } = context.repo;
-            const { data: prs } = await github.rest.pulls.list({
-              owner, repo,
-              state: "open"
-            });
-            core.setOutput("open_count", prs.length);
-
-      - name: Close PR if > 3 open
-        if: steps.count.outputs.open_count > '3'
-        uses: actions/github-script@v6
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            const prNo = context.payload.pull_request.number;
-            await github.rest.pulls.update({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNo,
-              state: "closed"
-            });
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNo,
-              body: "🚫 Sorry! Only 3 open PRs allowed — this one has been auto-closed."
-            });
-
-  # ────────────────────────────────────────────────────────────────────────────
-  # 2) build job: depends on pr_limit, so it won’t run until pr_limit finishes
-  # ────────────────────────────────────────────────────────────────────────────
   build:
-    needs: pr_limit
     runs-on: ubuntu-latest
 
     steps:
@@ -74,6 +28,6 @@ jobs:
       - name: Build and Test
         run: ./gradlew build
 
-      - name: Build, Test & Enforce 100% Coverage
+      - name: Build, Test, Generate Coverage
         run: |
           ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
