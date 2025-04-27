@@ -25,15 +25,22 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Check open pull requests count
+      - name: Check open pull requests count and close if necessary
         id: check_prs
         run: |
           echo "Fetching open pull requests..."
           open_prs=$(gh pr list --state open --json number --jq 'length')
           echo "Open PRs: $open_prs"
-          if [ "$open_prs" -ge 3 ]; then
-            echo "❌ Cannot open more than 3 pull requests! ($open_prs currently open)"
-            exit 1
+          
+          if [ "$open_prs" -gt 3 ]; then
+            echo "❌ More than 3 open PRs. Closing this PR automatically."
+
+            current_pr_number="${{ github.event.pull_request.number }}"
+            echo "Current PR number: $current_pr_number"
+
+            gh pr close "$current_pr_number" --comment "🚫 Too many open pull requests (more than 3 allowed). This PR was closed automatically."
+
+            exit 0  # Exit cleanly, no error
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
