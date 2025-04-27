@@ -207,6 +207,7 @@ class GetIngredientGameQuestionsUseCaseTest {
         }
     }
 
+
     @Test
     fun `should return failure with NoIngredientFoundException when wrong options cannot be generated`() {
         // Given
