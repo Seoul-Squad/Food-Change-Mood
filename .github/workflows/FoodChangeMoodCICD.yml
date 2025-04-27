@@ -40,7 +40,7 @@ jobs:
 
             gh pr close "$current_pr_number" --comment "🚫 Too many open pull requests (more than 3 allowed). This PR was closed automatically."
 
-            exit 0  # Exit cleanly, no error
+            exit 0
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -49,5 +49,56 @@ jobs:
         run: ./gradlew build
 
       - name: Build, Test, Generate Coverage
+        run: ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
+
+      - name: Parse JaCoCo Report and Generate Summary
+        id: coverage
         run: |
-          ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
+          echo "Reading JaCoCo report..."
+          report_path="app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml"
+
+          if [ ! -f "$report_path" ]; then
+            echo "❌ Coverage report not found at $report_path"
+            exit 1
+          fi
+
+          covered_lines=$(xmllint --xpath "string(//report/counter[@type='LINE']/@covered)" "$report_path")
+          missed_lines=$(xmllint --xpath "string(//report/counter[@type='LINE']/@missed)" "$report_path")
+          covered_branches=$(xmllint --xpath "string(//report/counter[@type='BRANCH']/@covered)" "$report_path")
+          missed_branches=$(xmllint --xpath "string(//report/counter[@type='BRANCH']/@missed)" "$report_path")
+
+          total_lines=$((covered_lines + missed_lines))
+          total_branches=$((covered_branches + missed_branches))
+
+          if [ "$total_lines" -eq 0 ]; then
+            line_coverage=0
+          else
+            line_coverage=$((covered_lines * 100 / total_lines))
+          fi
+
+          if [ "$total_branches" -eq 0 ]; then
+            branch_coverage=0
+          else
+            branch_coverage=$((covered_branches * 100 / total_branches))
+          fi
+
+          echo "line_coverage=$line_coverage" >> $GITHUB_OUTPUT
+          echo "branch_coverage=$branch_coverage" >> $GITHUB_OUTPUT
+
+      - name: Comment nice coverage report on PR
+        if: github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            # ✅ Test Coverage Report
+
+            | Metric             | Value    |
+            |:------------------:|:--------:|
+            | **Lines Covered**   | `${{ steps.coverage.outputs.line_coverage }}%` ${{ steps.coverage.outputs.line_coverage >= 80 && '✅' || '⚠️' }} |
+            | **Branches Covered** | `${{ steps.coverage.outputs.branch_coverage }}%` ${{ steps.coverage.outputs.branch_coverage >= 80 && '✅' || '⚠️' }} |
+
+            ---
+            > ⬆️ *Good job! Coverage looks healthy. Keep it up!*
+            > 🧪 *Generated automatically by CI/CD pipeline.*
