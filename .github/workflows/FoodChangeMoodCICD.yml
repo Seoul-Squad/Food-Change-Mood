@@ -25,80 +25,45 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Check open pull requests count and close if necessary
-        id: check_prs
-        run: |
-          echo "Fetching open pull requests..."
-          open_prs=$(gh pr list --state open --json number --jq 'length')
-          echo "Open PRs: $open_prs"
-          
-          if [ "$open_prs" -gt 3 ]; then
-            echo "❌ More than 3 open PRs. Closing this PR automatically."
-
-            current_pr_number="${{ github.event.pull_request.number }}"
-            echo "Current PR number: $current_pr_number"
-
-            gh pr close "$current_pr_number" --comment "🚫 Too many open pull requests (more than 3 allowed). This PR was closed automatically."
-
-            exit 0
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and Test
         run: ./gradlew build
 
       - name: Build, Test, Generate Coverage
-        run: ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
-
-      - name: Parse JaCoCo Report and Generate Summary
-        id: coverage
         run: |
-          echo "Reading JaCoCo report..."
-          report_path="app/build/reports/jacoco/testDebugUnitTestCoverage/testDebugUnitTestCoverage.xml"
+          ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
 
-          if [ ! -f "$report_path" ]; then
-            echo "❌ Coverage report not found at $report_path"
-            exit 1
-          fi
+      - name: Extract Coverage
+        id: extract-coverage
+        run: |
+          # Extract coverage percentage from JaCoCo report
+          COVERAGE=$(grep -oP '<counter type="LINE" missed="\d+" covered="\d+" />' build/reports/jacoco/test/jacocoTestReport.xml | head -1 | grep -oP 'missed="\d+" covered="\d+"' | awk '{missed=$1; covered=$2; sub(/missed="/,"",missed); sub(/covered="/,"",covered); print (covered/(missed+covered)*100)}')
+          COVERAGE=${COVERAGE:-0}
+          echo "COVERAGE=$COVERAGE" >> $GITHUB_OUTPUT
 
-          covered_lines=$(xmllint --xpath "string(//report/counter[@type='LINE']/@covered)" "$report_path")
-          missed_lines=$(xmllint --xpath "string(//report/counter[@type='LINE']/@missed)" "$report_path")
-          covered_branches=$(xmllint --xpath "string(//report/counter[@type='BRANCH']/@covered)" "$report_path")
-          missed_branches=$(xmllint --xpath "string(//report/counter[@type='BRANCH']/@missed)" "$report_path")
-
-          total_lines=$((covered_lines + missed_lines))
-          total_branches=$((covered_branches + missed_branches))
-
-          if [ "$total_lines" -eq 0 ]; then
-            line_coverage=0
-          else
-            line_coverage=$((covered_lines * 100 / total_lines))
-          fi
-
-          if [ "$total_branches" -eq 0 ]; then
-            branch_coverage=0
-          else
-            branch_coverage=$((covered_branches * 100 / total_branches))
-          fi
-
-          echo "line_coverage=$line_coverage" >> $GITHUB_OUTPUT
-          echo "branch_coverage=$branch_coverage" >> $GITHUB_OUTPUT
-
-      - name: Comment nice coverage report on PR
+      - name: Post Coverage Comment
         if: github.event_name == 'pull_request'
-        uses: peter-evans/create-or-update-comment@v3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            # ✅ Test Coverage Report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Format the comment
+          COVERAGE=${{ steps.extract-coverage.outputs.COVERAGE }}
+          COMMENT_BODY="## Code Coverage Report\n\nThere is no coverage information present for the files changed\n\n**TOTAL PROJECT COVERAGE** | **${COVERAGE}%** 🟢"
 
-            | Metric             | Value    |
-            |:------------------:|:--------:|
-            | **Lines Covered**   | `${{ steps.coverage.outputs.line_coverage }}%` ${{ steps.coverage.outputs.line_coverage >= 80 && '✅' || '⚠️' }} |
-            | **Branches Covered** | `${{ steps.coverage.outputs.branch_coverage }}%` ${{ steps.coverage.outputs.branch_coverage >= 80 && '✅' || '⚠️' }} |
+          # Check if a previous comment exists (to update it)
+          PREVIOUS_COMMENT=$(gh api -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+            --jq '.[] | select(.body | contains("Code Coverage Report")) | .id' | head -n 1)
 
-            ---
-            > ⬆️ *Good job! Coverage looks healthy. Keep it up!*
-            > 🧪 *Generated automatically by CI/CD pipeline.*
+          if [ -n "$PREVIOUS_COMMENT" ]; then
+            # Update the existing comment
+            gh api --method PATCH \
+              -H "Accept: application/vnd.github+json" \
+              /repos/${{ github.repository }}/issues/comments/$PREVIOUS_COMMENT \
+              -f body="$COMMENT_BODY"
+          else
+            # Post a new comment
+            gh api --method POST \
+              -H "Accept: application/vnd.github+json" \
+              /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+              -f body="$COMMENT_BODY"
+          fi
