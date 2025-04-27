@@ -25,29 +25,45 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Check open pull requests count and close if necessary
-        id: check_prs
-        run: |
-          echo "Fetching open pull requests..."
-          open_prs=$(gh pr list --state open --json number --jq 'length')
-          echo "Open PRs: $open_prs"
-          
-          if [ "$open_prs" -gt 3 ]; then
-            echo "❌ More than 3 open PRs. Closing this PR automatically."
-
-            current_pr_number="${{ github.event.pull_request.number }}"
-            echo "Current PR number: $current_pr_number"
-
-            gh pr close "$current_pr_number" --comment "🚫 Too many open pull requests (more than 3 allowed). This PR was closed automatically."
-
-            exit 0  # Exit cleanly, no error
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Build and Test
         run: ./gradlew build
 
       - name: Build, Test, Generate Coverage
         run: |
           ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
+
+      - name: Extract Coverage
+        id: extract-coverage
+        run: |
+          # Extract coverage percentage from JaCoCo report
+          COVERAGE=$(grep -oP '<counter type="LINE" missed="\d+" covered="\d+" />' build/reports/jacoco/test/jacocoTestReport.xml | head -1 | grep -oP 'missed="\d+" covered="\d+"' | awk '{missed=$1; covered=$2; sub(/missed="/,"",missed); sub(/covered="/,"",covered); print (covered/(missed+covered)*100)}')
+          COVERAGE=${COVERAGE:-0}
+          echo "COVERAGE=$COVERAGE" >> $GITHUB_OUTPUT
+
+      - name: Post Coverage Comment
+        if: github.event_name == 'pull_request'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # Format the comment
+          COVERAGE=${{ steps.extract-coverage.outputs.COVERAGE }}
+          COMMENT_BODY="## Code Coverage Report\n\nThere is no coverage information present for the files changed\n\n**TOTAL PROJECT COVERAGE** | **${COVERAGE}%** 🟢"
+
+          # Check if a previous comment exists (to update it)
+          PREVIOUS_COMMENT=$(gh api -H "Accept: application/vnd.github+json" \
+            /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+            --jq '.[] | select(.body | contains("Code Coverage Report")) | .id' | head -n 1)
+
+          if [ -n "$PREVIOUS_COMMENT" ]; then
+            # Update the existing comment
+            gh api --method PATCH \
+              -H "Accept: application/vnd.github+json" \
+              /repos/${{ github.repository }}/issues/comments/$PREVIOUS_COMMENT \
+              -f body="$COMMENT_BODY"
+          else
+            # Post a new comment
+            gh api --method POST \
+              -H "Accept: application/vnd.github+json" \
+              /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
+              -f body="$COMMENT_BODY"
+          fi
