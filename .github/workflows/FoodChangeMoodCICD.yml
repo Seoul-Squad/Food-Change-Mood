@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write # Needed to comment on PR
 
     steps:
       - name: Checkout code
@@ -25,45 +27,71 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      - name: Build and Test
-        run: ./gradlew build
-
       - name: Build, Test, Generate Coverage
         run: |
           ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
 
-      - name: Extract Coverage
-        id: extract-coverage
+      - name: Install jq
+        run: sudo apt-get install jq
+
+      - name: Get total coverage
+        id: coverage
         run: |
-          # Extract coverage percentage from JaCoCo report
-          COVERAGE=$(grep -oP '<counter type="LINE" missed="\d+" covered="\d+" />' build/reports/jacoco/test/jacocoTestReport.xml | head -1 | grep -oP 'missed="\d+" covered="\d+"' | awk '{missed=$1; covered=$2; sub(/missed="/,"",missed); sub(/covered="/,"",covered); print (covered/(missed+covered)*100)}')
-          COVERAGE=${COVERAGE:-0}
-          echo "COVERAGE=$COVERAGE" >> $GITHUB_OUTPUT
+          TOTAL_COVERAGE=$(grep -oP 'counter type="INSTRUCTION" missed="\d+" covered="\d+"' build/reports/jacoco/test/jacocoTestReport.xml | \
+            awk -F'"' '{missed += $2; covered += $4} END {print (covered/(covered+missed))*100}')
+          echo "Total Coverage: $TOTAL_COVERAGE%"
+          echo "total_coverage=$TOTAL_COVERAGE" >> $GITHUB_ENV
 
-      - name: Post Coverage Comment
-        if: github.event_name == 'pull_request'
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get changed files
+        id: changed-files
         run: |
-          # Format the comment
-          COVERAGE=${{ steps.extract-coverage.outputs.COVERAGE }}
-          COMMENT_BODY="## Code Coverage Report\n\nThere is no coverage information present for the files changed\n\n**TOTAL PROJECT COVERAGE** | **${COVERAGE}%** 🟢"
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD > changed_files.txt
+          cat changed_files.txt
 
-          # Check if a previous comment exists (to update it)
-          PREVIOUS_COMMENT=$(gh api -H "Accept: application/vnd.github+json" \
-            /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
-            --jq '.[] | select(.body | contains("Code Coverage Report")) | .id' | head -n 1)
-
-          if [ -n "$PREVIOUS_COMMENT" ]; then
-            # Update the existing comment
-            gh api --method PATCH \
-              -H "Accept: application/vnd.github+json" \
-              /repos/${{ github.repository }}/issues/comments/$PREVIOUS_COMMENT \
-              -f body="$COMMENT_BODY"
+      - name: Calculate changed files coverage
+        id: changed-coverage
+        run: |
+          FILE_COVERAGE=0
+          FILE_COUNT=0
+          while IFS= read -r file; do
+            if [[ "$file" == *.kt ]]; then
+              filename_no_ext="${file%.kt}"
+              escaped_file=$(echo "$filename_no_ext" | sed 's/\//\\\//g')
+              coverage=$(grep -oP "<sourcefile name=\"${file##*/}\".*?/>" build/reports/jacoco/test/jacocoTestReport.xml | \
+                grep -oP 'line-rate="\K[0-9\.]+')
+              if [[ ! -z "$coverage" ]]; then
+                FILE_COVERAGE=$(echo "$FILE_COVERAGE + $coverage" | bc)
+                FILE_COUNT=$((FILE_COUNT + 1))
+              fi
+            fi
+          done < changed_files.txt
+          
+          if [[ $FILE_COUNT -gt 0 ]]; then
+            CHANGED_FILES_COVERAGE=$(echo "scale=2; $FILE_COVERAGE / $FILE_COUNT * 100" | bc)
           else
-            # Post a new comment
-            gh api --method POST \
-              -H "Accept: application/vnd.github+json" \
-              /repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments \
-              -f body="$COMMENT_BODY"
+            CHANGED_FILES_COVERAGE=0
           fi
+          
+          echo "Changed Files Coverage: $CHANGED_FILES_COVERAGE%"
+          echo "changed_files_coverage=$CHANGED_FILES_COVERAGE" >> $GITHUB_ENV
+
+      - name: Comment coverage report on PR
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const totalCoverage = process.env.total_coverage;
+            const changedCoverage = process.env.changed_files_coverage;
+            const prNumber = context.payload.pull_request.number;
+            const body = `
+            ## 📊 Coverage Report
+            - Total Coverage: **${totalCoverage}%**
+            - Changed Files Coverage: **${changedCoverage}%**
+            `;
+            await github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            });
