@@ -148,6 +148,7 @@ class KetoDietMealsUiTest {
         verify { mealPrinter.printFullMeal(sampleMeal) }
     }
 
+
     @Test
     fun `should return out of meals message when meal list is empty`() {
         //Given
