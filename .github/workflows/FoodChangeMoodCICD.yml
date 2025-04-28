@@ -11,43 +11,51 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  
 
       - name: Set up JDK
-        uses: actions/setup-java@v3
+        uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '21'
 
-      - name: Grant execute permission for gradlew
+      - name: Make gradlew executable
         run: chmod +x ./gradlew
 
-      - name: Check open pull requests count and close if necessary
-        id: check_prs
-        run: |
-          echo "Fetching open pull requests..."
-          open_prs=$(gh pr list --state open --json number --jq 'length')
-          echo "Open PRs: $open_prs"
-          
-          if [ "$open_prs" -gt 3 ]; then
-            echo "❌ More than 3 open PRs. Closing this PR automatically."
+      - name: Build and Run Tests
+        run: ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
 
-            current_pr_number="${{ github.event.pull_request.number }}"
-            echo "Current PR number: $current_pr_number"
+      - name: Upload JaCoCo HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: jacoco-html
+          path: build/reports/jacoco/test/html
 
-            gh pr close "$current_pr_number" --comment "🚫 Too many open pull requests (more than 3 allowed). This PR was closed automatically."
-
-            exit 0  # Exit cleanly, no error
-          fi
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and Test
-        run: ./gradlew build
-
-      - name: Build, Test, Generate Coverage
-        run: |
-          ./gradlew clean build jacocoTestReport jacocoTestCoverageVerification
+      - name: Comment on coverage for current branch
+        if: github.event_name == 'pull_request' && github.base_ref == 'develop'
+        uses: madrapps/jacoco-report@v1.7.1
+        with:
+          paths: |
+            build/reports/jacoco/test/jacocoTestReport.xml
+          token: ${{ secrets.GITHUB_TOKEN }}
+          min-coverage-overall: 80
+          min-coverage-changed-files: 80
+          update-comment: true
+          title: "🛡️ Code Coverage Report"
+          check-for-current-branch: true
+          coverage-counter-type: LINE,INSTRUCTION,BRANCH,METHOD,CLASS
+          include-all-sources: true
+          debug-mode: true
+          fail-if-coverage-less: true
+          fail-on-coverage-violation: true
+          failure-message: "Code coverage is currently at {coverage}%. Target is 100%."
+          success-message: "✅ Code coverage is at {coverage}%."
+          report-on-status: true
